@@ -57,21 +57,27 @@ Socket::Socket(string _locationsfile, string _config,Point2f _location, Mat& con
 				Mat temp=image.clone();
 				drawContours(temp,contours,i,cv::Scalar(0,225,255));
 				Point2f topLeft(image.size().width, image.size().height);
+				Point2f botLeft(image.size().width, 0);
 				for(unsigned int j=0; j<4; ++j)
 				{
 					if(rect_points[j].x<topLeft.x && rect_points[j].y<topLeft.y)
 					{
 						topLeft=rect_points[j];
 					}
-					line(temp, rect_points[j], rect_points[(j+1)%4], cv::Scalar(255,0,0),1);
-					
+					if(rect_points[j].x<botLeft.x && rect_points[j].y>botLeft.y)
+					{
+						botLeft=rect_points[j];
+					}
+					//line(temp, rect_points[j], rect_points[(j+1)%4], cv::Scalar(255,0,0),1);
+						
 				}
 				//cout<<topLeft.x<<"m"<<topLeft.y<<endl;
 				location=topLeft+location;
 				namedWindow("5Socket"+std::to_string(long long(ID)),CV_WINDOW_FREERATIO);
 				imshow("5Socket"+std::to_string(long long(ID)),temp);
 
-				getRectSubPix(image, PotentialSocket.size, PotentialSocket.center, image);
+				//getRectSubPix(image, PotentialSocket.size, PotentialSocket.center, image);
+				image =image(cv::Rect_<float>(botLeft.x, botLeft.y, PotentialSocket.size().width, PotentialSocket.size().height);}
 			} catch(Exception e){}
 		}
 	}
