@@ -138,35 +138,29 @@ namespace {
 			   vector<Gripper> grippers;
 			 for (int i = 0; i < contours.size(); i++)
 				{
-					
-					if (hierarchy[i][3]==-1 && hierarchy[i][2]!=-1 ) //only make parents with children map. as these are our box
-					{	
-						RotatedRect PotentialHoldingBox(minAreaRect(contours[i]));
-						cout<<PotentialHoldingBox.size.area()<<endl;
-						try{
+					RotatedRect PotentialHoldingBox(minAreaRect(contours[i]));
+					//cout<<PotentialHoldingBox.size.area()<<endl;
+					try{
+						if (hierarchy[i][3]==-1 && hierarchy[i][2]!=-1 ) //only make parents with children map. as these are our box
+						{	
 							if( PotentialHoldingBox.size.area() > 6000 && PotentialHoldingBox.size.area()<8000)
 								holders.push_back( HoldingBox(PotentialHoldingBox,output4) );
-							
+							else if( PotentialHoldingBox.size.area() > 2000 && PotentialHoldingBox.size.area()<5000)
+								grippers.push_back( Gripper(PotentialHoldingBox,output4) );
 						}
-						catch(std::invalid_argument e)
-						{
-							// if at this point, there was a large block, but it had no red corner.... so its the gripper?
-							try{
-									if( PotentialHoldingBox.size.area() > 3000 && PotentialHoldingBox.size.area()<5000)
-											grippers.push_back( Gripper(PotentialHoldingBox,output4) );
-								}
-							catch(std::invalid_argument e)
-							{}
-
-						}
-						cv::drawContours(output4,contours,i,cv::Scalar(0,225,255));
 					}
-
-			
-					
-						
+					catch(std::invalid_argument e)
+					{
+						// if at this point, there was a large block, but it had no red corner.... so its the gripper?
+						try{
+								if( PotentialHoldingBox.size.area() > 2000 && PotentialHoldingBox.size.area()<5000)
+										grippers.push_back( Gripper(PotentialHoldingBox,output4) );
+							}
+						catch(std::invalid_argument e)
+						{}
+					}
+					//cv::drawContours(output4,contours,i,cv::Scalar(0,225,255));
 			   }
-
 			      for(int j=0; j<grippers.size(); j++ ) //del me
 					{
 
