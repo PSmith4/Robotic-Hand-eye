@@ -2,12 +2,17 @@
 #define debug false
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include <stdexcept>
+#ifndef M_PI
+#define M_PI           3.14159265358979323846
+#endif
 #include "opencv2/highgui/highgui.hpp"
 #include "HoldingBox.h"
 using namespace cv;
 
 using namespace std;
-extern float ratio;
+//extern float ratio;
+float ratio;
 #include "opencv2/imgproc/imgproc.hpp"
 
 #include <string>
@@ -34,7 +39,7 @@ extern float ratio;
 
 	void HoldingBox::Orientate(Mat& image)
 	{
-		Point2f rect_points[4]; 
+		Point2f rect_points[4];
 		rotatedRect.points( rect_points );
 		float radius=(rotatedRect.size.width+ rotatedRect.size.height)/10.0;
 		Point2f center[4];
@@ -48,7 +53,7 @@ extern float ratio;
 				center[i].x=rect_points[i].x+radius*0.66;
 			else
 				center[i].x=rect_points[i].x-radius*0.66;
-			
+
 			if(rotatedRect.center.y>rect_points[i].y)
 				center[i].y=rect_points[i].y+radius*0.66;
 			else
@@ -67,22 +72,23 @@ extern float ratio;
 				}
 			}
 		}
-	
+
 		if (largest_red<0.35)
 			throw std::invalid_argument("red");
-		
-		if (debug) 
-		{	
-			putText(image,to_string(long long(rotatedRect.angle)),rotatedRect.center,FONT_HERSHEY_PLAIN,2,cv::Scalar(0,255,0));
+
+		if (debug)
+		{
+                    //putText(image,to_string(long long(rotatedRect.angle)),rotatedRect.center,FONT_HERSHEY_PLAIN,2,cv::Scalar(0,255,0));
+			//putText(image,to_string(long long(rotatedRect.angle)),rotatedRect.center,FONT_HERSHEY_PLAIN,2,cv::Scalar(0,255,0));
 			//circle(image, center[1],radius,cv::Scalar(0,255,0));
 			//circle(image, center[2],radius,cv::Scalar(255,0,0));
 			//circle(image, center[3],radius,cv::Scalar(255,255,0));
-	
+
 
 
 			for(int i =0; i<4; i++)
 			{
-				putText(image,to_string(unsigned long long(i)),center[i],FONT_HERSHEY_PLAIN,2,cv::Scalar(0,255,0));
+                        //putText(image,to_string(i),center[i],FONT_HERSHEY_PLAIN,2,cv::Scalar(0,255,0));
 				if (i==referene_corner)
 					circle(image, center[i],radius,cv::Scalar(0,0,255));
 				else
@@ -93,7 +99,7 @@ extern float ratio;
 
 	Point2f* HoldingBox::getPoints()
 	{
-		static Point2f rect_points[4]; 
+		static Point2f rect_points[4];
 		rotatedRect.points( rect_points );
 		Point2f temp;
 		//cout<<referene_corner<<endl;
@@ -144,7 +150,7 @@ extern float ratio;
 				try{sockets.at(i).draw();}catch(cv::Exception e){}
 			}
 			imshow("HoldingBox",image);
-			
+
 			Point2f* rect_points;
 			rect_points=getPoints();
 			//for(unsigned int j=2; j<4; ++j)
@@ -154,9 +160,9 @@ extern float ratio;
 	}
 
 	Point2f HoldingBox::getReferenceCorner()
-	{ 
-		static Point2f rect_points[4]; 
-		rotatedRect.points( rect_points ); 
+	{
+		static Point2f rect_points[4];
+		rotatedRect.points( rect_points );
 		return rect_points[referene_corner];
 	}
 
@@ -171,9 +177,9 @@ extern float ratio;
 			{
 				//point found, now rotate back into camera frame
 				vector<Point2f> returned;
-				
-				nextPoint.x=nextPoint.x;// /ratio;
-				nextPoint.y=nextPoint.y;// /ratio;
+
+				//nextPoint.x=nextPoint.x;// /ratio;
+				//nextPoint.y=nextPoint.y;// /ratio;
 				//cout<<trueAngle<<endl;
 				//cout<<getReferenceCorner().x<<" "<<nextPoint.x* cos(trueAngle/180.0*M_PI)<<" "<<nextPoint.y*sin(trueAngle/180.0*M_PI);
 				RotatedRect rect= rotatedRect;
@@ -184,10 +190,10 @@ extern float ratio;
 				//returned.y=getReferenceCorner().y-rect.size.height*cos(trueAngle/180.0*M_PI) +nextPoint.x*sin(trueAngle/180.0*M_PI)+ nextPoint.y*cos(trueAngle/180.0*M_PI);
 
 				returned.push_back(getReferenceCorner());
-				returned.push_back(Point2f(returned.back().x-rect.size.height*cos((trueAngle+90)/180.0*M_PI),returned.back().y-rect.size.height*sin((trueAngle+90)/180.0*M_PI)));
+				returned.push_back(Point2f(returned.back().x-rect.size.height*cos(float((trueAngle+90)/180.0*M_PI)),returned.back().y-rect.size.height*sin(float((trueAngle+90)/180.0*M_PI))));
 
 //				line(image, Point2f(0,0), nextPoint,cv::Scalar(255,0,255),1);
-				returned.push_back(Point2f(returned.back().x+ nextPoint.x* cos(trueAngle/180.0*M_PI) -nextPoint.y*sin(trueAngle/180.0*M_PI), returned.back().y+nextPoint.x*sin(trueAngle/180.0*M_PI)+ nextPoint.y*cos(trueAngle/180.0*M_PI)));
+				returned.push_back(Point2f(returned.back().x+ nextPoint.x* cos(float(trueAngle/180.0*M_PI)) -nextPoint.y*sin(float(trueAngle/180.0*M_PI)), returned.back().y+nextPoint.x*sin(float(trueAngle/180.0*M_PI))+ nextPoint.y*cos(float(trueAngle/180.0*M_PI))));
 				return returned;
 			}
 		}

@@ -14,33 +14,33 @@ Socket::Socket(string _locationsfile, string _config,Point2f _location, Mat& con
 {
 	ID=_ID;
     location=_location;
-	
+
 
 	try{    image =container(cv::Rect_<float>(location.x, location.y,container.size().width-(location.x*2) ,height));}
 	catch(Exception e){}
-	
 
-	namedWindow("1Socket"+std::to_string(long long(ID)),CV_WINDOW_FREERATIO);
-	imshow("1Socket"+std::to_string(long long(ID)),image);
+
+	////namedWindow("1Socket"+std::to_string( ID),CV_WINDOW_FREERATIO);
+	//imshow("1Socket"+std::to_string(ID),image);
 	Mat redThresh = image.clone();
 	inRange(redThresh, cv::Scalar(0, 0, 125), cv::Scalar(125, 125, 255), redThresh);
-	namedWindow("2Socket"+std::to_string(long long(ID)),CV_WINDOW_KEEPRATIO);
-	imshow("2Socket"+std::to_string(long long(ID)),redThresh);
+	////namedWindow("2Socket"+std::to_string(long long(ID)),CV_WINDOW_KEEPRATIO);
+	//imshow("2Socket"+std::to_string(long long(ID)),redThresh);
 
 	Mat erroded = redThresh.clone();
 	cv::erode(erroded, erroded,Mat());
 	cv::dilate(erroded, erroded,Mat());
-	namedWindow("3Socket"+std::to_string(long long(ID)),CV_WINDOW_KEEPRATIO);
-	cv::resizeWindow("3Socket"+std::to_string(long long(ID)),200,100);
-	imshow("3Socket"+std::to_string(long long(ID)),erroded);
+	////namedWindow("3Socket"+std::to_string(long long(ID)),CV_WINDOW_KEEPRATIO);
+	//cv::resizeWindow("3Socket"+std::to_string(long long(ID)),200,100);
+	//imshow("3Socket"+std::to_string(long long(ID)),erroded);
 
 	Mat cannyed;
 	Canny(erroded,cannyed, 20,60); // Maybe use int threshold = 200;    cv::Mat mask = output > threshold;
-		vector<vector<Point> > contours;	
+		vector<vector<Point> > contours;
 		vector<Vec4i> hierarchy;
 
-	namedWindow("4Socket"+std::to_string(long long(ID)),CV_WINDOW_FREERATIO);
-	imshow("4Socket"+std::to_string(long long(ID)),cannyed);
+	//namedWindow("4Socket"+std::to_string(long long(ID)),CV_WINDOW_FREERATIO);
+	//imshow("4Socket"+std::to_string(long long(ID)),cannyed);
 
 
 	findContours( erroded, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0) );
@@ -51,8 +51,8 @@ Socket::Socket(string _locationsfile, string _config,Point2f _location, Mat& con
 		//cout<< PotentialSocket.size.area()<<" "<<image.rows*image.cols *0.25<<endl;
 		if (PotentialSocket.size.area() > (image.rows*image.cols *0.25) ) // check if this rectangle found is at least 1/4 the expected size
 		{
-			try{ 
-				static Point2f rect_points[4]; 
+			try{
+				static Point2f rect_points[4];
 				PotentialSocket.points( rect_points );
 				Mat temp=image.clone();
 				drawContours(temp,contours,i,cv::Scalar(0,225,255));
@@ -69,21 +69,22 @@ Socket::Socket(string _locationsfile, string _config,Point2f _location, Mat& con
 						botLeft=rect_points[j];
 					}
 					//line(temp, rect_points[j], rect_points[(j+1)%4], cv::Scalar(255,0,0),1);
-						
+
 				}
 				//cout<<topLeft.x<<"m"<<topLeft.y<<endl;
 				location=topLeft+location;
-				namedWindow("5Socket"+std::to_string(long long(ID)),CV_WINDOW_FREERATIO);
-				imshow("5Socket"+std::to_string(long long(ID)),temp);
+				//namedWindow("5Socket"+std::to_string(long long(ID)),CV_WINDOW_FREERATIO);
+				//imshow("5Socket"+std::to_string(long long(ID)),temp);
 
-				//getRectSubPix(image, PotentialSocket.size, PotentialSocket.center, image);
-				image =image(cv::Rect_<float>(botLeft.x, botLeft.y, PotentialSocket.size().width, PotentialSocket.size().height);}
-			} catch(Exception e){}
+				getRectSubPix(image, PotentialSocket.size, PotentialSocket.center, image);
+				//image =image(cv::Rect_<float>(botLeft.x, botLeft.y, PotentialSocket.size().width, PotentialSocket.size().height));
+			}
+			catch(Exception e){}
 		}
 	}
 
-	namedWindow("6Socket"+std::to_string(long long(ID)),CV_WINDOW_FREERATIO);
-	imshow("6Socket"+std::to_string(long long(ID)),image);
+	//namedWindow("6Socket"+std::to_string(long long(ID)),CV_WINDOW_FREERATIO);
+	//imshow("6Socket"+std::to_string(long long(ID)),image);
 
 	//cout<<mean(image)[2]/(mean(image)[2]+mean(image)[1]+mean(image)[0])<<endl;
 	if (mean(image)[2]/(mean(image)[2]+mean(image)[1]+mean(image)[0]) > 0.45)
@@ -98,7 +99,7 @@ Socket::Socket(string _locationsfile, string _config,Point2f _location, Mat& con
 	}
 	if(active)
 	{
-		namedWindow("Socket"+std::to_string(long long(ID)),CV_WINDOW_KEEPRATIO);
+		namedWindow("Socket"+std::to_string(ID),CV_WINDOW_KEEPRATIO);
 		ifstream locationFile (_locationsfile.c_str());
 		string line;
 		while (getline(locationFile,line))
@@ -144,7 +145,7 @@ Point2f Socket::nextRequestedLocation()
 		{
 			//cout<<i<<" "<< pinHoles.at(i).isRequested()<< pinHoles.at(i).isFilled()<<endl;
 			if(pinHoles.at(i).isRequested() && pinHoles.at(i).isFilled()==false)
-			{ 
+			{
 				Point2f temp= pinHoles.at(i).getLocation();
 				temp.y=temp.y-image.size().height;
 				return location+temp;
@@ -179,9 +180,9 @@ void Socket::draw()
 					(this section of the image will be shades of green)*/
 					image.at<Vec3b>(i,j)[0] = 0;
 					if(active)
-						image.at<Vec3b>(i,j)[2] = 0; 
+						image.at<Vec3b>(i,j)[2] = 0;
 					else
-						image.at<Vec3b>(i,j)[1] = 0; 
+						image.at<Vec3b>(i,j)[1] = 0;
 				}
 			}
 	for(int i =0; i< pinHoles.size(); i++)
@@ -189,5 +190,5 @@ void Socket::draw()
 		pinHoles.at(i).draw();
 	}
 	if(active)
-		imshow("Socket"+std::to_string(long long(ID)),image);
+		imshow("Socket"+std::to_string(ID),image);
 }

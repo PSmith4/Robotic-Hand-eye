@@ -1,10 +1,13 @@
 #include "Gripper.h"
-using namespace cv;
-using namespace std;
+
 #include <iostream>
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include "opencv2/imgproc/imgproc.hpp"
+#include "opencv2/highgui/highgui.hpp"
+
+using namespace cv;
+using namespace std;
 
 Gripper::Gripper(RotatedRect rect, Mat& image)
 {
@@ -16,34 +19,34 @@ Gripper::Gripper(RotatedRect rect, Mat& image)
 
 void Gripper::Draw(Mat& input)
 {
-			static Point2f rect_points[4]; 
-		rotatedRect.points( rect_points );
+    static Point2f rect_points[4];
+	rotatedRect.points(rect_points );
 
-			for(unsigned int j=0; j<4; ++j)
-				line(input, rect_points[j], rect_points[(j+1)%4], cv::Scalar(0,255,255),2);
+	for(unsigned int j=0; j<4; ++j)
+		{line(input, rect_points[j], rect_points[(j+1)%4], cv::Scalar(0,255,255),2);}
 }
 
 
 void Gripper::Orientate(Mat& image)
 {
-	
+
 	Mat gripperimage;
 	warpAffine(image, gripperimage, getRotationMatrix2D(rotatedRect.center, rotatedRect.angle,1),image.size());
-	
+
 	//cv::getRectSubPix(gripperimage,rotatedRect.size,rotatedRect.center,gripperimage);
-	
-	
-	
+
+
+
 	float radius=(rotatedRect.size.width+ rotatedRect.size.height)/7.5;
 	Point2f center[4] ;
-	Point2f rect_points[4]; 
+	Point2f rect_points[4];
 	rotatedRect.points( rect_points );
-	
+
 	RotatedRect temp= rotatedRect;
 	temp.angle=0;
 	temp.points(center);
 
-	
+
 	//center[0]=Point2f(radius,radius);
 	//center[1]=Point2f(gripperimage.size().width-radius, radius);
 	//center[2]=Point2f(radius, gripperimage.size().height-radius);
@@ -53,7 +56,7 @@ void Gripper::Orientate(Mat& image)
 	double largest_blue=-1;
 	int blueDot=-1;
 	int greenDot=-1;
-	
+
 
 	for(int i =0; i<4; i++)
 	{
@@ -62,7 +65,7 @@ void Gripper::Orientate(Mat& image)
 				center[i].x=center[i].x+radius;
 		else
 				center[i].x=center[i].x-radius;
-			
+
 		if(rotatedRect.center.y>center[i].y)
 				center[i].y=center[i].y+radius;
 		else
@@ -78,14 +81,14 @@ void Gripper::Orientate(Mat& image)
 		{
 			greenDot=i;
 			largest_green=green_intensity;
-		
-		}	
+
+		}
 		if (blue_intensity> largest_blue)
 		{
 			blueDot=i;
 			largest_blue=blue_intensity;
-		
-		}	
+
+		}
 		}
 		catch(cv::Exception e){}
 	}
@@ -104,7 +107,7 @@ void Gripper::Orientate(Mat& image)
 			circle(gripperimage, center[i],radius,cv::Scalar(0,255,255));
 	}
 
-	
+
 
 	centerPoint.x=((rect_points[blueDot].x+rect_points[greenDot].x)/2);
 	centerPoint.y=((rect_points[blueDot].y+rect_points[greenDot].y)/2);
