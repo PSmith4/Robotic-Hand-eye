@@ -13,12 +13,12 @@ RobotShell::RobotShell()
 	PyRun_SimpleString("import abb\n");
 
 	PyRun_SimpleString("R= abb.Robot(ip='192.168.125.1')\n");
-
-
+    PyRun_SimpleString("R.set_tool([[0,0,105], [1,0,0,0]])\n");
+    PyRun_SimpleString("R.get_tool()\n");
 	//have config CSV file
-	pos0x=250;
-	pos0y=500;
-	pos0z=140;
+	pos0x=370;
+	pos0y=550;
+	pos0z=100;
 
 
 }
@@ -36,7 +36,7 @@ void RobotShell::moveToPosZero()
         to_string(pos0x) +"," +
 		to_string(pos0y) +"," +
 		to_string(pos0z) +
-		"],[0.25,0.25,0.75,0.75]])\n").c_str());
+		"],[0.05,0.01,0.76,0.65]])\n").c_str());
 
 
 }

@@ -10,7 +10,11 @@ string temp;
     //std::cout<<"test\n";
     RobotShell Robot;
 
-   //std::cout<<"moving to zero\n";
+   ////std::cout<<"moving to zero\n";
+    Robot.moveTo(0,600,100);
+
+     //Robot.moveTo(350,650,100);
+     //std::cin>>temp;
     Robot.moveToPosZero();
      // std::cin>>temp;
     // std::cout<<"moving to new pos\n";
