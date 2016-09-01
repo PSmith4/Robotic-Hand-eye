@@ -1,0 +1,15 @@
+\BOOKMARK [0][-]{chapter.1}{Project Outline}{}% 1
+\BOOKMARK [0][-]{chapter.2}{Gripper Design}{}% 2
+\BOOKMARK [0][-]{chapter.3}{Computer Vision}{}% 3
+\BOOKMARK [1][-]{section.3.1}{Object detection}{chapter.3}% 4
+\BOOKMARK [2][-]{subsection.3.1.1}{Environment preparation}{section.3.1}% 5
+\BOOKMARK [2][-]{subsection.3.1.2}{Object recognition}{section.3.1}% 6
+\BOOKMARK [2][-]{subsection.3.1.3}{Object orientation}{section.3.1}% 7
+\BOOKMARK [1][-]{section.3.2}{Pin detection and PinHole Allocation}{chapter.3}% 8
+\BOOKMARK [1][-]{section.3.3}{Path creation}{chapter.3}% 9
+\BOOKMARK [0][-]{chapter.4}{Robotic Arm Control}{}% 10
+\BOOKMARK [1][-]{section.4.1}{Denavit-Hartenberg Algorithm}{chapter.4}% 11
+\BOOKMARK [1][-]{section.4.2}{Matlab Simulations}{chapter.4}% 12
+\BOOKMARK [1][-]{section.4.3}{Open ABB}{chapter.4}% 13
+\BOOKMARK [0][-]{chapter.5}{Coordination}{}% 14
+\BOOKMARK [0][-]{appendix.A}{Initial project request}{}% 15
