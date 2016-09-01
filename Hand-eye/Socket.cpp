@@ -76,10 +76,10 @@ Socket::Socket(string _locationsfile, string _config,Point2f _location, Mat& con
 				//namedWindow("5Socket"+std::to_string(long long(ID)),CV_WINDOW_FREERATIO);
 				//imshow("5Socket"+std::to_string(long long(ID)),temp);
 
-				getRectSubPix(image, PotentialSocket.size, PotentialSocket.center, image);
-				//image =image(cv::Rect_<float>(botLeft.x, botLeft.y, PotentialSocket.size().width, PotentialSocket.size().height));
-			}
-			catch(Exception e){}
+				//getRectSubPix(image, PotentialSocket.size, PotentialSocket.center, image);
+				image =image(cv::Rect_<float>(botLeft.x, botLeft.y, PotentialSocket.size().width, PotentialSocket.size().height);}
+			
+			} catch(Exception e){}
 		}
 	}
 
