@@ -18,7 +18,7 @@
 * 24/07/2014 Code added by Michelle Dunn to read, output and modify pixel values
 * 21/08/2014 Comments added by Michelle Dunn for Swinburne students
 */
-
+#include "RobotShell.h"
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/video/background_segm.hpp"
 #include <opencv2/imgproc/imgproc.hpp>
@@ -35,7 +35,8 @@
 
 using namespace cv;
 using namespace std;
-float ratio; //global (i know, it just works nicely ok)
+#include "ratio.h"
+//RatioSingleton ratio; //global (i know, it just works nicely ok)
 RNG rng(12345);
 
 //hide the local functions in an anon namespace
@@ -75,8 +76,14 @@ namespace {
 		Mat output5;
 		int Cannythresh=20;
 		int MainThresh=10;
-		capture >> background;
-
+		background = imread("background.jpg");
+        RobotShell Robot;
+        Robot.moveToPosZero();
+        if (!background.data)
+        {
+            capture>>background;
+        }
+        vector<Point2f> travel;
 		//threshold(background,background,MainThresh,255,0);
 		//cvtColor(background,background,CV_BGR2GRAY,0);
         for (;;) {
@@ -142,10 +149,10 @@ namespace {
 					//cout<<PotentialHoldingBox.size.area()<<endl;
 					try{
 						if (hierarchy[i][3]==-1 && hierarchy[i][2]!=-1 ) //only make parents with children map. as these are our box
-						{	
+{
 							if( PotentialHoldingBox.size.area() > 6000 && PotentialHoldingBox.size.area()<8000)
 								holders.push_back( HoldingBox(PotentialHoldingBox,output4) );
-							else if( PotentialHoldingBox.size.area() > 2000 && PotentialHoldingBox.size.area()<5000)
+							else if( PotentialHoldingBox.size.area() > 3000 && PotentialHoldingBox.size.area()<4000)
 								grippers.push_back( Gripper(PotentialHoldingBox,output4) );
 						}
 					}
@@ -153,7 +160,7 @@ namespace {
 					{
 						// if at this point, there was a large block, but it had no red corner.... so its the gripper?
 						try{
-								if( PotentialHoldingBox.size.area() > 2000 && PotentialHoldingBox.size.area()<5000)
+								if( PotentialHoldingBox.size.area() > 3000 && PotentialHoldingBox.size.area()<4000)
 										grippers.push_back( Gripper(PotentialHoldingBox,output4) );
 							}
 						catch(std::invalid_argument e)
@@ -194,10 +201,12 @@ namespace {
 									//if (angle<0.0)
 									//	angle=angle+M_PI;
 									putText(output4, to_string( double(dist)), midLine,FONT_HERSHEY_PLAIN,2,cv::Scalar(0,255,0));
-									putText(output4, to_string(double(angle*180.0/M_PI))+" deg", midLine+Point2f(0,20*ratio),FONT_HERSHEY_PLAIN,2,cv::Scalar(0,255,0));
+									putText(output4, to_string(double(angle*180.0/M_PI))+" deg", midLine+Point2f(0,20*RatioSingleton::GetInstance()->GetRatio()),FONT_HERSHEY_PLAIN,2,cv::Scalar(0,255,0));
 
 
 									outFile<<dist<<","<<angle<<endl;
+
+									travel.push_back(Point2f(dist*cos(angle), dist*sin(angle)));
 
 									//send code to robot here.
 								}catch(std::out_of_range e){}
@@ -206,8 +215,6 @@ namespace {
 					}
 
 			   }
-
-
 
 
 
@@ -237,10 +244,39 @@ namespace {
 		case 'y':
 		case 'Y':
 			capture >> background;
-
+            imwrite("background.jpg", background);
 			//threshold(background,background,MainThresh,255,0);
 			//cvtColor(background,background,CV_BGR2GRAY,0);
 			break;
+        case 'm':
+        case 'M':
+            if (travel.size() >100)
+            {
+                float max_x=-9^9;
+                float max_y=-9^9;
+                float min_x=9^9;
+                float min_y=9^9;
+                for (int i=0; i< travel.size(); i++)
+                {
+                    if (travel.at(i).x < min_x)
+                        min_x= travel.at(i).x;
+                    if (travel.at(i).x > max_x)
+                        max_x= travel.at(i).x;
+                    if (travel.at(i).y < min_y)
+                        min_y= travel.at(i).y;
+                    if (travel.at(i).y > max_y)
+                        max_y= travel.at(i).y;
+                }
+                float av_x = (min_x+max_x)/2.0;
+                float av_y = (min_y+max_y)/2.0;
+
+            }
+            Robot.moveRelative(200,00);
+
+            Robot.placePin();
+
+
+            break;
         default:
             break;
             }
@@ -251,7 +287,6 @@ namespace {
 }
 
 int main(int ac, char** av) {
-
     if (ac != 2) {
         help(av);
         return 1;

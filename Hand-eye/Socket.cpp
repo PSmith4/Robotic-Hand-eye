@@ -5,11 +5,12 @@
 #include <stdexcept>
 #include <opencv2/imgproc/imgproc.hpp>
 #include "opencv2/highgui/highgui.hpp"
+#include "ratio.h"
 #include <string>
 #include <vector>
 using namespace std;
 using namespace cv;
-extern float ratio; //holdingbox defined variabl, pixels per mm
+//extern float ratio; //holdingbox defined variabl, pixels per mm
 Socket::Socket(string _locationsfile, string _config,Point2f _location, Mat& container, float height, int _ID)
 {
 	ID=_ID;
@@ -75,7 +76,7 @@ Socket::Socket(string _locationsfile, string _config,Point2f _location, Mat& con
 				location=topLeft+location;
 				//namedWindow("5Socket"+std::to_string(long long(ID)),CV_WINDOW_FREERATIO);
 				//imshow("5Socket"+std::to_string(long long(ID)),temp);
-
+                //cout<<"resizing"<<endl;
 				getRectSubPix(image, PotentialSocket.size, PotentialSocket.center, image);
 				//image =image(cv::Rect_<float>(botLeft.x, botLeft.y, PotentialSocket.size().width, PotentialSocket.size().height);}
 
@@ -83,8 +84,8 @@ Socket::Socket(string _locationsfile, string _config,Point2f _location, Mat& con
 		}
 	}
 
-	//namedWindow("6Socket"+std::to_string(long long(ID)),CV_WINDOW_FREERATIO);
-	//imshow("6Socket"+std::to_string(long long(ID)),image);
+	//namedWindow("6Socket"+std::to_string((ID)),CV_WINDOW_FREERATIO);
+	//imshow("6Socket"+std::to_string((ID)),image);
 
 	//cout<<mean(image)[2]/(mean(image)[2]+mean(image)[1]+mean(image)[0])<<endl;
 	if (mean(image)[2]/(mean(image)[2]+mean(image)[1]+mean(image)[0]) > 0.45)
@@ -110,10 +111,12 @@ Socket::Socket(string _locationsfile, string _config,Point2f _location, Mat& con
 			getline(lineStream,unit,',');
 
 			double x=atof(unit.c_str());
-			x= x*ratio ;
 			getline(lineStream,unit,',');
 			double y=atof(unit.c_str());
-			y=y*ratio;
+            cout<<x<<" "<<y<<endl;
+  			x= x*RatioSingleton::GetInstance()->GetRatio();//ratio ;
+			y=y*RatioSingleton::GetInstance()->GetRatio();
+			cout<<x<<" "<<y<<endl;
 			try{pinHoles.push_back(PinHole(Point2f(x,y),image));} catch(cv::Exception e){}
 		}
 
@@ -171,7 +174,7 @@ vector<Point2f> Socket::allRequestedLocation()
 
 void Socket::draw()
 {
-
+    std::cout << " " << image.size().width <<" " << image.size().height << std::endl;
 	for (int i=0; i<2; i++)
 			{
 				for (int j=0; j<image.cols; j++)

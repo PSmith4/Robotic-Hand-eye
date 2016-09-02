@@ -20,7 +20,12 @@ RobotShell::RobotShell()
 	pos0y=550;
 	pos0z=100;
 
+	//stop wire tangle
+    //PyRun_SimpleString("R.set_joints([85,65,-19,-86.1,-16,173.5])\n");
+    // PyRun_SimpleString("R.open_gripper()\n");
+    //PyRun_SimpleString("R.close_gripper()\n");
 
+    cout<<"Robot setup"<<endl;
 }
 
 RobotShell::~RobotShell()
@@ -43,9 +48,16 @@ void RobotShell::moveToPosZero()
 
 void RobotShell::moveRelative(float x, float y)
 {
-	PyRun_SimpleString(("R.moveRelative2(" +
+	PyRun_SimpleString(("R.moveRelative2_0pose(" +
 			to_string( double(x)) +","+
 			to_string( double(y)) + ")\n").c_str());
+}
+
+void RobotShell::speed(float speed)
+{
+    PyRun_SimpleString(("R.set_speed(["
+                        +to_string(speed)+
+                        ",50,50,50])\n").c_str());
 }
 
 void RobotShell::moveRelative(float x, float y, float z)
@@ -83,3 +95,24 @@ void RobotShell::flipGripper()
 	PyRun_SimpleString("R.flip_gripper()\n");
 }
 
+ void RobotShell::pickPin()
+ {
+	PyRun_SimpleString("R.open_gripper()\n");
+
+	PyRun_SimpleString("R.set_cartesian([[271.3,710.7,27.5],[0.35874,-0.93279,-0.02282,0.0261]])\n");
+
+	PyRun_SimpleString("R.close_gripper()\n");
+
+    PyRun_SimpleString("R.set_cartesian([[271.3,610.7,127.5],[0.359,-0.933,-0.023,0.03]])\n");
+
+ }
+
+ void RobotShell::placePin()
+ {
+            speed(20);
+            moveRelative(00,00,-15);
+            PyRun_SimpleString("R.open_gripper()\n");
+            speed(100);
+            moveRelative(00,00,50);
+            PyRun_SimpleString("R.close_gripper()\n");
+ }

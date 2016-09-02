@@ -113,7 +113,7 @@ void Gripper::Orientate(Mat& image)
 	centerPoint.y=((rect_points[blueDot].y+rect_points[greenDot].y)/2);
 	circle(image, centerPoint,radius,cv::Scalar(0,255,255));
 
-	namedWindow("gripperimage",CV_WINDOW_FREERATIO);
-	imshow("gripperimage",gripperimage);
+	//namedWindow("gripperimage",CV_WINDOW_FREERATIO);
+	//imshow("gripperimage",gripperimage);
 }
 

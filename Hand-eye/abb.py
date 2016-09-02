@@ -9,6 +9,7 @@ For functions which require targets (XYZ positions with quaternion orientation),
 targets can be passed as [[XYZ], [Quats]] OR [XYZ, Quats]
 ​
 '''
+import time;
 import socket
 import json 
 import time
@@ -73,16 +74,31 @@ class Robot:
 		pose[0][2]=poseCur[0][2]
 		msg  = "01 " + self.format_pose(pose)   
 		return self.send(msg)
+
+	def moveRelative2_0pose(self, x, y):
+		time.sleep(2)
+		posetemp = self.get_cartesian()
+		posetemp[0][0]= posetemp[0][0]+x
+		posetemp[0][1]= posetemp[0][1]+y
+		posetemp[1]=[0,0,1,0]
+		
+		self.set_cartesian(posetemp)
+		
+
 	def moveRelative2(self, x, y):
+		time.sleep(2)
 		posetemp = self.get_cartesian()
 		posetemp[0][0]= posetemp[0][0]+x
 		posetemp[0][1]= posetemp[0][1]+y
 		self.set_cartesian(posetemp)
+
 	def moveRelative3(self, x, y,z):
+		time.sleep(2)
 		pose = self.get_cartesian()
 		pose[0][0]= pose[0][0]+x
 		pose[0][1]= pose[0][1]+y
 		pose[0][2]= pose[0][2]+z
+		pose[1]=[0,0,1,0]
 		self.set_cartesian(pose)
 	def set_joints(self, joints):
 		'''
@@ -184,7 +200,7 @@ class Robot:
 		speed: [robot TCP linear speed (mm/s), TCP orientation speed (deg/s),
 			external axis linear, external axis orientation]
 		'''
-
+		
 		if len(speed) <> 4: return False
 		msg = "08 " 
 		msg += format(speed[0], "+08.1f") + " " 
@@ -192,7 +208,7 @@ class Robot:
 		msg += format(speed[2], "+08.1f") + " " 
 		msg += format(speed[3], "+08.2f") + " #"     
 		self.send(msg)
-	
+
 	def set_zone(self, 
 		 zone_key     = 'z1', 
 		 point_motion = False, 
@@ -332,7 +348,17 @@ class Robot:
 			msg += format(quaternion, "+08.5f") + " " 
 		msg += "#" 
 		return msg       
-        
+
+	def close_gripper(self):
+		time.sleep(2)
+		msg= "101 #"
+		return self.send(msg)        
+
+	def open_gripper(self):
+		time.sleep(2)
+		msg ="100 #"
+		return self.send(msg)
+		
 	def close(self):
 		self.send("99 #", False)
 		self.sock.shutdown(socket.SHUT_RDWR)

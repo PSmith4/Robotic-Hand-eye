@@ -5,6 +5,7 @@ using namespace std;
 PinHole::PinHole(Point2f _location, Mat& container)
 {
     location=_location;
+    cout<<location.x<<" "<<location.y<<endl;
    float diam = float(container.size().width)/10;
    location.x= location.x+diam/2.0;
    location.y= location.y+diam/2.0;
@@ -28,21 +29,21 @@ void PinHole::draw()
 					(this section of the image will be shades of green)*/
 
 					if(filled)
-					{	image.at<Vec3b>(i,j)[2] = 0;  
+					{	image.at<Vec3b>(i,j)[2] = 0;
 						image.at<Vec3b>(i,j)[1] = 0;
 						image.at<Vec3b>(i,j)[0] = 255;
 					}
 					else if(requested)
-					{	
-						image.at<Vec3b>(i,j)[0] = 0; 
-						image.at<Vec3b>(i,j)[2] = 255; 
-						image.at<Vec3b>(i,j)[1] = 255; 
+					{
+						image.at<Vec3b>(i,j)[0] = 0;
+						image.at<Vec3b>(i,j)[2] = 255;
+						image.at<Vec3b>(i,j)[1] = 255;
 					}
 					else
 					{
-						image.at<Vec3b>(i,j)[2] = 0;  
+						image.at<Vec3b>(i,j)[2] = 0;
 						image.at<Vec3b>(i,j)[1] = 0;
-						image.at<Vec3b>(i,j)[0] = 0;  
+						image.at<Vec3b>(i,j)[0] = 0;
 					}
 				}
 			}

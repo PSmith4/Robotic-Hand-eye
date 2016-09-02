@@ -8,11 +8,12 @@
 #endif
 #include "opencv2/highgui/highgui.hpp"
 #include "HoldingBox.h"
+#include "ratio.h"
+#include <iostream>
 using namespace cv;
-
+//RatioSingleton ratio;
 using namespace std;
 //extern float ratio;
-float ratio;
 #include "opencv2/imgproc/imgproc.hpp"
 
 #include <string>
@@ -31,10 +32,12 @@ float ratio;
 		cv::getRectSubPix(image,rect.size,rect.center,image);
 
 //This section is harded coded. for later adaption, improve with dynamic box configs, stored in a csv (68,38,8)
-		ratio= rect.size.height/100; //num pixesl per mm
-		sockets.push_back(Socket("Socket_Type1.csv", "Socket_Type1_configA.csv",Point2f(10.0*ratio,10.0*ratio), image, 25.0*ratio, sockets.size()+1));
-		sockets.push_back(Socket("Socket_Type1.csv", "Socket_Type1_configA.csv",Point2f(10.0*ratio,40.0*ratio), image, 25.0*ratio, sockets.size()+1));
-		sockets.push_back(Socket("Socket_Type1.csv", "Socket_Type1_configA.csv",Point2f(10.0*ratio,70.0*ratio), image, 25.0*ratio, sockets.size()+1));
+        //cout<<rect.size.height<<" "<<rect.size.width<<end;
+		RatioSingleton::GetInstance()->SetRatio(rect.size.height/100.0);
+		//ratio= rect.size.height/100; //num pixesl per mm
+		sockets.push_back(Socket("Socket_Type1.csv", "Socket_Type1_configA.csv",Point2f(10.0*RatioSingleton::GetInstance()->GetRatio(),10.0*RatioSingleton::GetInstance()->GetRatio()), image, 25.0*RatioSingleton::GetInstance()->GetRatio(), sockets.size()+1));
+		sockets.push_back(Socket("Socket_Type1.csv", "Socket_Type1_configA.csv",Point2f(10.0*RatioSingleton::GetInstance()->GetRatio(),40.0*RatioSingleton::GetInstance()->GetRatio()), image, 25.0*RatioSingleton::GetInstance()->GetRatio(), sockets.size()+1));
+		sockets.push_back(Socket("Socket_Type1.csv", "Socket_Type1_configA.csv",Point2f(10.0*RatioSingleton::GetInstance()->GetRatio(),70.0*RatioSingleton::GetInstance()->GetRatio()), image, 25.0*RatioSingleton::GetInstance()->GetRatio(), sockets.size()+1));
 	}
 
 	void HoldingBox::Orientate(Mat& image)
