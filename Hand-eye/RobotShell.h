@@ -11,6 +11,7 @@ class RobotShell{
         void moveTo(float x, float y, float z);
         void moveTo(float x, float y);
         void flipGripper();
+        void pickPin();
     private:
         double pos0x;
         double pos0y;

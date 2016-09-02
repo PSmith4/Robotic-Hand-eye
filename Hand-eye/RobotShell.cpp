@@ -14,7 +14,7 @@ RobotShell::RobotShell()
 
 	PyRun_SimpleString("R= abb.Robot(ip='192.168.125.1')\n");
     PyRun_SimpleString("R.set_tool([[0,0,105], [1,0,0,0]])\n");
-    PyRun_SimpleString("R.get_tool()\n");
+
 	//have config CSV file
 	pos0x=370;
 	pos0y=550;
