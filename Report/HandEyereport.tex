@@ -208,23 +208,31 @@ Sockets that have been identified as present are then further examined to find t
 Using a CSV dataset, the locations of the pins is then assigned. \note{may be able to add stuff here if better res camera allows us to have an extra layer of positioning}
 The newly allocated pin hole is examined to find if a pin is present. To do this, the mean value of all three colour channels is compared with the 3 mean channels of the socket, if it is 25\% greater, a (white) pin is determined to be present.\\
 A second CSV file then provides information on which pin holes should be filled. The resulting pin layout is shown in \cref{fig:sock6}, black pin holes are not filled, and should not be, blue have already been filled, and yellow still need to be filled.
-
-
  \FloatBarrier
-\section{Path creation}
-workds words words
-
-
+\begin{flushright}
+	
+\end{flushright}\section{Path creation}
+workds words words.\\
 \chapter{Robotic Arm Control}
+\ \\
 \section{Denavit-Hartenberg Algorithm}
+$\begin{matrix} % I'll change this into a table - Justin
+	Links 	& \theta 	& d 	& a 	& \alpha 	\\
+	1 		& \theta1 	& 0 	& 0 	& 0 		\\
+	2 		& \theta2 	& 0 	& 0.07 	& \pi/2 	\\
+	3 		& \theta3 	& 0 	& 0.36 	& 0 		\\
+	4 		& \theta4 	& 0.38 	& 0 	& \pi/2 	\\
+	5 		& \theta5 	& 0 	& 0 	& -\pi/2 	\\
+	6 		& \theta6 	& 0.065 & 0 	& \pi/2 	\\
+\end{matrix}$
 \section{Matlab Simulations}
 \section{Open ABB}
-For this project, a basic parallel port could not be used. As more complex data transfer was required.\\ The parallel port allowed for single bits to be used as flags which triggered the robotic arm to perform action sets. For this project we needed to send specific travel distances. To achieve this, OpenABB (https://github.com/robotics/open_abb) was used. This system has the robotic controller running a basic TCP server via RAPID code. A python script is used on the computer to connect to this server, and send commands. One such command can move the gripper to any point in the arms \hl{range/ field of operations, something like that} by sending the three axis coordinates.\\
+For this project, a basic parallel port could not be used. As more complex data transfer was required.\\ The parallel port allowed for single bits to be used as flags which triggered the robotic arm to perform action sets. For this project we needed to send specific travel distances. To achieve this, OpenABB $https://github.com/robotics/open_abb$ was used. This system has the robotic controller running a basic TCP server via RAPID code. A python script is used on the computer to connect to this server, and send commands. One such command can move the gripper to any point in the arms \hl{range/ field of operations, something like that} by sending the three axis coordinates.\\
 This command list was extended by the team to  include gripper control and moving about the x and y axis, while leaving the z value constant. 
 An example of the command stack is shown in \cref{fig:comstack1}.
 
 \chapter{Coordination}
-As the computer vision was made in c++, and the openABB c++ code requires a full ROS installation, it was instead chosen to implement a python calling system in c++. This interface called a python run-time, and was sent commands via \textit{PyRun_SimpleString}.\\
+As the computer vision was made in c++, and the openABB c++ code requires a full ROS installation, it was instead chosen to implement a python calling system in c++. This interface called a python run-time, and was sent commands via $PyRun_SimpleString$.\\
 The command stack was thus extended as shown in \cref{fig:comstack2}
 
 \appendix
