@@ -20,4 +20,6 @@ class RobotShell{
         double pos0x;
         double pos0y;
         double pos0z;
+        vector<double[]> pinPlaces();
+
 };

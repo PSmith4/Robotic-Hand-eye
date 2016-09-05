@@ -61,9 +61,9 @@ namespace {
 		string second_window_name ="outputImage";
         cout << "press space to save a picture. q or esc to quit" << endl;
         namedWindow(window_name, CV_WINDOW_KEEPRATIO); //resizable window;
-		namedWindow("out1",CV_WINDOW_KEEPRATIO);
-		namedWindow("out2",CV_WINDOW_KEEPRATIO);
-		namedWindow("out3",CV_WINDOW_KEEPRATIO);
+		//namedWindow("out1",CV_WINDOW_KEEPRATIO);
+		//namedWindow("out2",CV_WINDOW_KEEPRATIO);
+		//namedWindow("out3",CV_WINDOW_KEEPRATIO);
 		namedWindow("out4",CV_WINDOW_KEEPRATIO);
 
 		namedWindow("background",CV_WINDOW_KEEPRATIO);
@@ -79,24 +79,7 @@ namespace {
 		background = imread("background.jpg");
         RobotShell Robot;
         Robot.moveToPosZero();
-        //
-        for(int i=0; i<10; i++)
-        {
-              capture>>input;
-        }
-        capture>>input;
-         imwrite("gripperZero.jpg", input);
-            Robot.moveRelative(200,0);
-            for(int i=0; i<10; i++)
-        {
-              capture>>input;
-            imshow(window_name, input);
 
-        }
-            capture>>input;
-         imwrite("gripper200X.jpg", input);
-
-        //
         if (!background.data)
         {
             capture>>background;
@@ -170,7 +153,7 @@ namespace {
 {
 							if( PotentialHoldingBox.size.area() > 6000 && PotentialHoldingBox.size.area()<8000)
 								holders.push_back( HoldingBox(PotentialHoldingBox,output4) );
-							else if( PotentialHoldingBox.size.area() > 3000 && PotentialHoldingBox.size.area()<4000)
+							else if( PotentialHoldingBox.size.area() > 1000 && PotentialHoldingBox.size.area()<3000)
 								grippers.push_back( Gripper(PotentialHoldingBox,output4) );
 						}
 					}
@@ -178,7 +161,7 @@ namespace {
 					{
 						// if at this point, there was a large block, but it had no red corner.... so its the gripper?
 						try{
-								if( PotentialHoldingBox.size.area() > 3000 && PotentialHoldingBox.size.area()<4000)
+								if( PotentialHoldingBox.size.area() > 1000 && PotentialHoldingBox.size.area()<3000)
 										grippers.push_back( Gripper(PotentialHoldingBox,output4) );
 							}
 						catch(std::invalid_argument e)
@@ -242,11 +225,11 @@ namespace {
 			/****************** End of Swinburne modifications ****************/
 
             imshow(window_name, input);
-			imshow("out1", output1);
-			imshow("out2", output2);
+			//imshow("out1", output1);
+			//imshow("out2", output2);
 			imshow("background",background);
 			imshow("out4",output4);
-			imshow("out3",output3);
+			//imshow("out3",output3);
 
             char key = (char)waitKey(5); //delay N millis, usually long enough to display and capture input
             switch (key) {
@@ -289,9 +272,11 @@ namespace {
                 float av_y = (min_y+max_y)/2.0;
 
             }
-            Robot.moveRelative(200,00);
-
+            Robot.pickPin();
+            Robot.moveToPosZero();
+            Robot.moveRelative_0pose(200,00);
             Robot.placePin();
+            //Robot.placePin();
 
 
             break;
