@@ -79,6 +79,24 @@ namespace {
 		background = imread("background.jpg");
         RobotShell Robot;
         Robot.moveToPosZero();
+        //
+        for(int i=0; i<10; i++)
+        {
+              capture>>input;
+        }
+        capture>>input;
+         imwrite("gripperZero.jpg", input);
+            Robot.moveRelative(200,0);
+            for(int i=0; i<10; i++)
+        {
+              capture>>input;
+            imshow(window_name, input);
+
+        }
+            capture>>input;
+         imwrite("gripper200X.jpg", input);
+
+        //
         if (!background.data)
         {
             capture>>background;

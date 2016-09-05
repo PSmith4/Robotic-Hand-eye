@@ -16,8 +16,16 @@ string temp;
 
 
      //std::cin>>temp;
+   // Robot.moveToPosZero();
+    //Robot.pickPin();
     Robot.moveToPosZero();
-    Robot.pickPin();
+     Robot.moveRelative(200,00);
+
+    Robot.moveToPosZero();
+
+      //Robot.moveRelative(000,00,-5);
+   // Robot.placePin();
+    //    Robot.moveToPosZero();
      // std::cin>>temp;
     // std::cout<<"moving to new pos\n";
 

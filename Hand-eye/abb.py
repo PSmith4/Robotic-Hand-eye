@@ -76,7 +76,7 @@ class Robot:
 		return self.send(msg)
 
 	def moveRelative2_0pose(self, x, y):
-		time.sleep(2)
+		time.sleep(1)
 		posetemp = self.get_cartesian()
 		posetemp[0][0]= posetemp[0][0]+x
 		posetemp[0][1]= posetemp[0][1]+y
@@ -86,14 +86,14 @@ class Robot:
 		
 
 	def moveRelative2(self, x, y):
-		time.sleep(2)
+		time.sleep(1)
 		posetemp = self.get_cartesian()
 		posetemp[0][0]= posetemp[0][0]+x
 		posetemp[0][1]= posetemp[0][1]+y
 		self.set_cartesian(posetemp)
 
 	def moveRelative3(self, x, y,z):
-		time.sleep(2)
+		time.sleep(1)
 		pose = self.get_cartesian()
 		pose[0][0]= pose[0][0]+x
 		pose[0][1]= pose[0][1]+y
@@ -350,12 +350,12 @@ class Robot:
 		return msg       
 
 	def close_gripper(self):
-		time.sleep(2)
+		time.sleep(1)
 		msg= "101 #"
 		return self.send(msg)        
 
 	def open_gripper(self):
-		time.sleep(2)
+		time.sleep(1)
 		msg ="100 #"
 		return self.send(msg)
 		

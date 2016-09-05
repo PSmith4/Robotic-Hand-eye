@@ -42,10 +42,6 @@
 					<Add library="/usr/local/lib/libopencv_video.so" />
 					<Add library="/usr/local/lib/libopencv_videoio.so" />
 					<Add library="/usr/local/lib/libopencv_videostab.so" />
-					<Add library="/usr/local/lib/libgraph.a" />
-					<Add library="/usr/local/lib/libgraph.so" />
-					<Add library="/usr/local/lib/libguile-libgraph.a" />
-					<Add library="/usr/local/lib/libguile-libgraph.so" />
 					<Add directory="/usr/local/lib" />
 				</Linker>
 			</Target>
@@ -77,6 +73,8 @@
 		<Unit filename="RobotShell.h" />
 		<Unit filename="Socket.cpp" />
 		<Unit filename="Socket.h" />
+		<Unit filename="ratio.cpp" />
+		<Unit filename="ratio.h" />
 		<Extensions>
 			<code_completion />
 			<debugger />
