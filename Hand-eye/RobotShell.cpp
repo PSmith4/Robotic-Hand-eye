@@ -20,9 +20,10 @@ RobotShell::RobotShell()
 	pos0y=550;
 	pos0z=115;
 
-	pinPlaces().push_back( {273, 720} );
-    pinPlaces().push_back( {273, 730} );
 
+	pinPlaces.push_back( {273, 740} );
+    pinPlaces.push_back( {273, 730} );
+	pinPlaces.push_back( {273, 720} );
 
 	//stop wire tangle
     //PyRun_SimpleString("R.set_joints([85,65,-19,-86.1,-16,173.5])\n");
@@ -110,13 +111,13 @@ void RobotShell::flipGripper()
  {
 
 speed(100);
-PyRun_SimpleString(("R.set_cartesian([["+to_string(pinPlaces().back()[0])+","+ to_string(pinPlaces().back()[1])+","+to_string(100)+"],[0,1,0,0]])\n").c_str());
+PyRun_SimpleString(("R.set_cartesian([["+to_string(pinPlaces.back()[0])+","+ to_string(pinPlaces.back()[1])+","+to_string(60)+"],[0,1,0,0]])\n").c_str());
 PyRun_SimpleString("R.open_gripper()\n");
 speed(50);
-PyRun_SimpleString(("R.set_cartesian([["+to_string(pinPlaces().back()[0])+","+ to_string(pinPlaces().back()[1])+","+to_string(50)+"],[0,1,0,0]])\n").c_str());
+PyRun_SimpleString(("R.set_cartesian([["+to_string(pinPlaces.back()[0])+","+ to_string(pinPlaces.back()[1])+","+to_string(49)+"],[0,1,0,0]])\n").c_str());
 PyRun_SimpleString("R.close_gripper()\n");
 speed(100);
-PyRun_SimpleString(("R.set_cartesian([["+to_string(pinPlaces().back()[0])+","+ to_string(pinPlaces().back()[1])+","+to_string(100)+"],[0,1,0,0]])\n").c_str());
+PyRun_SimpleString(("R.set_cartesian([["+to_string(pinPlaces.back()[0])+","+ to_string(pinPlaces.back()[1])+","+to_string(60)+"],[0,1,0,0]])\n").c_str());
 
 pinPlaces.pop_back();
 
@@ -125,12 +126,12 @@ pinPlaces.pop_back();
  void RobotShell::placePin()
  {
             speed(20);
-            moveRelative(00,00,-18);
+            moveRelative(00,00,-20);
             PyRun_SimpleString("R.open_gripper()\n");
-            moveRelative(00,00,10);
-            moveRelative(-5,00);
-            moveRelative(00,00,-8);
+            moveRelative(00,00,15);
+            moveRelative(-10,-5);
+            moveRelative(00,00,-15);
             speed(100);
-            moveRelative(00,00,10);
+            moveRelative(00,00,20);
             PyRun_SimpleString("R.close_gripper()\n");
  }

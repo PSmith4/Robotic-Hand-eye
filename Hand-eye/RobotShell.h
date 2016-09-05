@@ -1,5 +1,7 @@
 #include <Python.h>
-
+#include <vector>
+#include <array>
+using namespace std;
 class RobotShell{
 
 	 public:
@@ -20,6 +22,6 @@ class RobotShell{
         double pos0x;
         double pos0y;
         double pos0z;
-        vector<double[]> pinPlaces();
+        vector<array<double, 2>> pinPlaces;
 
 };
