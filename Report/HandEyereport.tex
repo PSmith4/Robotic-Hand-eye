@@ -1,6 +1,7 @@
 \documentclass[11pt,a4paper]{report}
 \usepackage[latin1]{inputenc}
 \usepackage{amsmath}
+\usepackage{lipsum}
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage{graphicx}
@@ -10,12 +11,15 @@
 \usepackage{gensymb}
 \usepackage{pdflscape}
 \hypersetup{colorlinks=true,allcolors=black}
+\usepackage{tikz}
+\usepackage{tikz-qtree}
 \usepackage{hypcap}
 \usepackage{cleveref}
 \usepackage{amsmath}
 \usepackage[export]{adjustbox}
 \usepackage{tikz}
-\usepackage{tikz-qtree}
+\usepackage{tikz-qtree}\usetikzlibrary{shapes.geometric, arrows}
+
 \usepackage{placeins}
 \usepackage{array}
 \usepackage{subcaption}
@@ -70,10 +74,10 @@ With such small objects being handled, a custom gripper device was developed. Th
 The computer vision of this project uses Open-CV for c++. This library contains many image-based functions for sourcing, manipulating, and presenting visual data. This library has been used for two roles, object detention, and robotic gripper required motion determination. Of these two task, the latter relies on the former. 
 \section{Object detection}
 \subsection{Environment preparation}
-To begin the computer vision process a background image is taken when no objects are present. A keyboard control was added, 'Y', which allows a new background to be set. This was seen to be useful, as a background image taken on start-up, would often be too bright. This was seen to be due to the automated settings of the camera not having finished calibrating.\\
+To begin the computer vision process a background image is taken when no objects are present. A keyboard control was added, 'Y', which allows a new background to be set. This was seen to be useful, as a background image taken on start-up, would often be too bright. This was seen to be due to the automated settings of the camera not having finished calibrating. It was also added that this background was saved to file, so the system could be stopped, and restarted without needed to take a new background. However, it was advisable to take a new background every session, as lighting condition changes would cause issues with the object detection reporting false positives.\\
 With the background set, a psudo-live stream of stills was captured from the camera. Each of these stills was then processed, as follows, before being discarded. 
 \subsection{Object recognition}
-The first step of still processing was to do a raw matrix subtraction of the background. This gave an image of only the objects not in the background image. For this subtraction to function correctly, the background image needed to be free of all free-moving objects, as this subtraction would recognise a lack of object as well. An example of this subtraction is shown in \cref{fig:backgrond}.\\
+The first step of processing was to do a raw matrix subtraction of the background. This gave an image of only the objects not in the background image. For this subtraction to function correctly, the background image needed to be free of all free-moving objects, as this subtraction would recognise a lack of object as well. An example of this subtraction is shown in \cref{fig:backgrond}.
 \begin{figure}
 	\hspace*{-0.1\linewidth}
 	\includegraphics[width=0.6\linewidth]{backgrond} %
@@ -82,7 +86,7 @@ The first step of still processing was to do a raw matrix subtraction of the bac
 			\includegraphics[width=0.6\linewidth]{diff}
 	\caption{ Background image, new capture with objects in place and resulting subtraction }
 	\label{fig:backgrond}
-\end{figure} \
+\end{figure}\ \\
 This image was then converted to a binary matrix, with a threshold of each colour layer, and a a grey scale process, to combine the colour layers. This process is shown in \cref{fig:out2}.\\ 
 \begin{figure}
 	\hspace*{-0.1\linewidth}
@@ -105,20 +109,23 @@ This image was then converted to a binary matrix, with a threshold of each colou
 \end{figure}
 The resulting image was then eroded and dilated by one pixel layer. This erode function turns any white pixel touching to a black pixel into a black pixel, while the dilate function performs the opposite. This resulted in any small imperfections being removed from the image, while only slightly reducing the object recognition quality of the image. This is seen in \cref{fig:out4}.
 
-
-
 A Canny edge detection was then used, which finds object edges by leaving only white pixels that are touching black pixels behind. The resulting image is shown \cref{fig:out3}.
 
+Each group of remaining white pixels was now classified as a contour, via the \textit{findContours} command. This process found any collection of white pixels as a polygon shape. It also listed the contour hierarchy, where contours are set as parents, and any contours inside its pixel range are defined as its children. The main holding box, and the gripper, are both objects not encased in larger objects. Therefore, only contours with no parents were further examined.\\
 
-
-Each group of remaining white pixels was now classified as a contour, via the \textit{findContours} command. This process found any collection of white pixels as a polygon shape. It also listed the contour hierarchy, where contours are set as parents, and any contours inside its pixel range are defined as its children. For the detection of the main holding box, and the gripper, which are at the highest level contour were wanted. Therefore, only contours with no parents were examined.\\
-
-Each contour examined was fitted inside a rectangle with \textit{minAreaRect}. This found the smallest rectangle, of any angular orientation, that could fit the whole contour. The size of this contour was then tested, anything under or over a set threshold was removed.\\
-For each rectangle that was within the size domain, a classification and orientation was attempted as a holding box. If this process failed, the image was oriented as a gripper. If this failed, the object was deemed neither and discarded. From \cref{fig:out3} 3 objects remain, the holding block, the gripper and another part of the gripper of no interest. These first two will identify as expected, with the third being discarded after failing both.   
+Each contour examined was fitted inside a rectangle with \textit{minAreaRect}. This found the smallest rectangle, of any angular orientation, that could fit the whole contour. The size of this rectangle was then tested, anything outside the set threshold was ignored.\\
+For each rectangle that was within the predicted size of the holding box or gripper, a classification and orientation was attempted as if the object were a holding box. If this process failed, the image was oriented as a gripper. If this failed, the object was deemed neither and discarded. From the example process, at the stage in \cref{fig:out3}, three objects remain; the holding box, the gripper and another part of the gripper of no interest.  Respectively, these objects would be assigned as a holding box; fail at being set as a holding box, and be assigned as a gripper, and fail at both assignings.\\
+This process is shown in diagram in \cref{fig:Throwlinek}.
+\begin{figure}
+\centering
+\includegraphics[width=0.25\linewidth]{Throwlinek}
+\caption{Assigning process through try, catch, throw}
+\label{fig:Throwlinek}
+\end{figure}
 
 \subsection{Object orientation}
 
-Both the holding box and gripper are recognised in this process as \mbox{\textit{RotatedRect}s} these are open-cv objects which consist of a size, angle and centre coordinate. However, the four corner points can be extracted from the object. Each of these corners has the surrounding pixels examined, with the corner that has the highest ratio of red being deemed the reference corner. This reference corner is shown in figure \cref{fig:Redest}. To derive the highest red ratio \cref{eq:redest} was used. By referencing the corner with the most red \textit{ratio} rather than highest red mean, a white corner is not incorrectly identified. If a corner of a set red ratio value is not found, the classification as a holding box is aborted, and a gripper is tried, as discussed above.
+Both the holding box and gripper are recognised in this process as \mbox{\textit{RotatedRect}s} these are open-cv objects which consist of a size, angle and centre coordinate. However, the four corner points can be extracted from the object. When orientating as a holding box, each of these corners has the surrounding pixels examined, with the corner that has the highest ratio of red being deemed the reference corner. This reference corner is shown in figure \cref{fig:Redest}. To derive the highest red ratio \cref{eq:redest} was used. By referencing the corner with the most red \textit{ratio} rather than highest red mean, a white corner is not incorrectly identified. If a corner of a set red ratio value is not found, the classification as a holding box is aborted, and a gripper is tried, as discussed above.
 \begin{equation}
 mean(red)/(mean(blue)+mean(green)+mean(red))
 \label{eq:redest}
@@ -127,7 +134,8 @@ mean(red)/(mean(blue)+mean(green)+mean(red))
 	\centering
 	\includegraphics[width=0.5\linewidth]{Redest}
 	\caption{Red detection for reference corner}
-	\label{fig:Redest}\end{figure}
+	\label{fig:Redest}\end{figure}\\
+
 This reference corner was then used to determine the holding box true angle in relation to the camera. This is required as the angle of the RotatedRect is only in the range 0$^{\circ}$ to -90$^{\circ}$. Shown in  \cref{fig:angleissue}, the RotatedRect is initially a short, wide rectangle at -20$^{\circ}$. However, when rotated by -80$^{\circ}$ the RotatedRect becomes a tall, thin rectangle at -10$^{\circ}$. To rectify this, the index of the reference corner from the list of corners returned from the RotatedRect function was examined, and the true angle was found with an addition of 0, 90$^{\circ}$, 180$^{\circ}$ or 270$^{\circ}$. 
 
 \begin{figure}[h]
@@ -140,19 +148,16 @@ This reference corner was then used to determine the holding box true angle in r
 This orientation process is repeated for the gripper arm, but using the blue and green dots on the gripper fingers. 
 	
 \section{Pin detection and PinHole Allocation}
-With the holding block true angle determine, a copy of the image can be rotated and cropped to be only the holding block. This cropping can be seen in \cref{fig:holdingblockwithdata}.
+With the holding box true angle determine, a copy of the image could be rotated and cropped to be only the holding box. This cropping can be seen in \cref{fig:holdingblockwithdata}.
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.4\linewidth]{"holding block with data"}
-	\caption{Holding block image, cropped down to only the block, and with all socket overlay shown}
+	\caption{Holding box image, cropped down to only the box, and with all socket overlay shown}
 	\label{fig:holdingblockwithdata}
 \end{figure}\\
-Data on this holding block can now be used for finding the sockets in the holding block. \footnote{At this point, hard coding has been used, however if several holding blocks are used in future development a bar code system will be introduced for identification and CSV extraction use.} This information defines how large the block is in millimetres, so a pixel per millimetre ratio can be found. The block information also defines were the sockets should be (in millimetres), within the block.\\
-By using the ratio, and the physical displacement of each socket, a socket object can now be made. Each socket object is passed the holding block image, its pixel starting point within this image, expected hight, and file name for CSV file with pin details. The socket starts by cropping a reference matrix of the block image. Using reference copies, or \textit{shallow copies}, has two main advantages: Firstly, the memory used  and copy execution time is reduced, as the socket's stored \textit{Mat} is only a pointer, not a whole new matrix. Secondly, the socket image can be edited for user feedback, and the original holding block image is effected. This allows only a holding box to be presented to the user with all socket information being shown, rather than loading each socket image separately. An example of this is shown in \cref{fig:holdingblockwithdata}. 
-
-
-
-Using its sub-matrix, the socket examines the mean red ratios, as seen for the holding block corner, and determines if a socket is present, or if the socket place is empty, as shown in \cref{fig:fullSock}.
+Data on this holding box could now be used to find the sockets in the holding box.\footnote{At this point, hard coding has been used, however if several holding boxes are used in future development, a bar code system will be introduced for identification and CSV extraction use.} This information defines how large the box is in millimetres, so a pixel per millimetre ratio can be found. The box information also defines where the sockets should be (in millimetres), within the box.\\
+By using the ratio, and the physical displacement of each socket, a \textit{socket} object was made. Each socket object was passed the holding box image, its pixel starting point within this image, expected hight, and file name for CSV file with pin details. The socket started by cropping a reference matrix of the box image to only the useful area. Using reference copies, or \textit{shallow copies}, has two main advantages: Firstly, the memory used  and copy execution time is reduced, as the socket's stored \textit{Mat} is only a pointer, not a whole new matrix. Secondly, the socket image can be edited for user feedback, and the original holding box image is effected. This allows only a holding box to be presented to the user with all socket information being shown, rather than loading each socket image separately. An example of this is shown in \cref{fig:holdingblockwithdata}. \\
+Using its sub-matrix, the socket examined the mean red ratios, as used for the holding box corner, and determines if a socket was present, as shown in \cref{fig:fullSock}.
 \begin{figure}[h]
 \hspace*{-.05\linewidth}
 \includegraphics[width=0.5\linewidth]{fullSock}
@@ -162,7 +167,7 @@ Using its sub-matrix, the socket examines the mean red ratios, as seen for the h
 \label{fig:fullSock}
 \end{figure}\\
 
-Sockets that have been identified as present are then further examined to find the exact area for pin hole mounting. Shown in \cref{fig:sock1} is the original socket image. A threshold function of high red, low green, low blue is then performed, \cref{fig:sock2}. The image is eroded and dilated, \cref{fig:sock3}, and a canny edge detection is conducted, \cref{fig:sock4}. The image is then cropped to fit the resulting contour, \cref{fig:sock5}.\\
+Sockets that have been identified as present are then further examined to find the exact area for pin hole mounting. Shown in \cref{fig:sock1} is the original socket image. A threshold function of high red, low green, low blue is performed, \cref{fig:sock2}. The image is eroded and dilated, \cref{fig:sock3}, and a canny edge detection is conducted, \cref{fig:sock4}. The image is then cropped to fit the resulting contour, \cref{fig:sock5}.\\
 
 \begin{figure}[h]
 	\centering
@@ -209,10 +214,48 @@ Using a CSV dataset, the locations of the pins is then assigned. \note{may be ab
 The newly allocated pin hole is examined to find if a pin is present. To do this, the mean value of all three colour channels is compared with the 3 mean channels of the socket, if it is 25\% greater, a (white) pin is determined to be present.\\
 A second CSV file then provides information on which pin holes should be filled. The resulting pin layout is shown in \cref{fig:sock6}, black pin holes are not filled, and should not be, blue have already been filled, and yellow still need to be filled.
  \FloatBarrier
-\begin{flushright}
-	
-\end{flushright}\section{Path creation}
-workds words words.\\
+
+\section{Path creation}
+\subsection{Gripper to pin path creation}
+With the pin holes assigned, the next available pinhole is requested from the main function. To do this, each layer between the main image and the pin holes are re-framed within their parent.\\
+To begin, the first pinhole that should be filled, but not currently filled (coloured yellow above) reports to its parent socket the location within the socket. The socket then combines this location, and the location of the socket within the holding box, and reports this value to its parent holding box. \\
+The holding box then re-orientates this coordinate to the global frame, and combines it with the holding box's location in the global frame. This final, global position of the pin is then reported to the main function.
+A diagram of this process is shown in figure \cref{fig:aaah}.
+\begin{figure}[h]
+\centering
+\includegraphics[width=1.2\linewidth]{aaah}
+\caption{}
+\label{fig:aaah}
+\end{figure}
+
+The gripper single point coordinate is then determined by taking the half-way point between the green and blue corners of the gripper.\\
+
+With the two singularity points for the gripper and pin identified, a vector is derived between them. This vector is given a magnitude and angle, and displayed to the user, as shown in \cref{fig:vector}.
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.7\linewidth]{vector}
+\caption{Gripper to pin hole vector display}
+\label{fig:vector}
+\end{figure}
+ \FloatBarrier
+
+\subsection{Measurement correction}
+As this application is being deployed under fluorescent lighting, there is some oscillation in lighting of the holing box and gripper. From this, the measurements recorded above cannot be assumed to be completely accurate. The graph shown in \cref{fig:measumrnetflux} shows that if the above \textit{object detection} and \textit{path measurement} process is repeated 30 times, in quick succession, there is a range of values recorded.\\ 
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=1\linewidth]{measumrnetflux}
+\caption{}
+\label{fig:measumrnetflux}
+\end{figure}
+To reduce this lighting issue, the maximum and minimum values observed in this graph are taken, and averaged to derive an error reduced measurement. 
+ 
+\subsection{Path to gripper arm corrdinates}
+Vector converted to gripper coordinates. 
+\lipsum
+
+\section{Pin supply identification}
+Something about looking at exact pin location, determining if pin is present. 
 \chapter{Robotic Arm Control}
 \ \\
 \section{Denavit-Hartenberg Algorithm}
@@ -225,17 +268,68 @@ $\begin{matrix} % I'll change this into a table - Justin
 	5 		& \theta5 	& 0 	& 0 	& -\pi/2 	\\
 	6 		& \theta6 	& 0.065 & 0 	& \pi/2 	\\
 \end{matrix}$
+\lipsum
 \section{Matlab Simulations}
+\lipsum
 \section{Open ABB}
-For this project, a basic parallel port could not be used. As more complex data transfer was required.\\ The parallel port allowed for single bits to be used as flags which triggered the robotic arm to perform action sets. For this project we needed to send specific travel distances. To achieve this, OpenABB $https://github.com/robotics/open_abb$ was used. This system has the robotic controller running a basic TCP server via RAPID code. A python script is used on the computer to connect to this server, and send commands. One such command can move the gripper to any point in the arms \hl{range/ field of operations, something like that} by sending the three axis coordinates.\\
-This command list was extended by the team to  include gripper control and moving about the x and y axis, while leaving the z value constant. 
-An example of the command stack is shown in \cref{fig:comstack1}.
+For this project, a basic parallel port was available for communication between the computer vision and the robotic arm. The parallel port allowed for single bits to be used as flags which triggered the robotic arm to perform action sets. For this project we needed to send specific travel distinations from the computer vision, to the robtic arm, therfore a more advance communication was required. To achieve this, OpenABB \footnote{$https://github.com/robotics/open_abb$} was used. This system has the robotic controller running a basic TCP server via RAPID code. A python script is used on the computer to connect to this server, and send commands. One such command can move the gripper to any point in the arms \hl{range/ field of operations, something like that} by sending the three axis coordinates.\\
+This command list was extended by the team to  include gripper control and moving about the x and y axis, relative to the current position. 
+An example of the command stack is shown in \cref{fig:commstack1}.
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.7\linewidth]{commstack1}
+\caption{Communication layers of OpenABB}
+\label{fig:commstack1}
+\end{figure}
 
-\chapter{Coordination}
-As the computer vision was made in c++, and the openABB c++ code requires a full ROS installation, it was instead chosen to implement a python calling system in c++. This interface called a python run-time, and was sent commands via $PyRun_SimpleString$.\\
-The command stack was thus extended as shown in \cref{fig:comstack2}
+\section{Coordination}
+As the computer vision was made in c++, and the openABB c++ code requires a full ROS installation, it was instead chosen to implement a python calling system in c++. This interface called a python run-time, and sent commands via $PyRun_SimpleString$.\\
+The command stack was thus extended as shown in \cref{fig:commstack2}
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.7\linewidth]{commstack2}
+\caption{Communication stack with added c++}
+\label{fig:commstack2}
+\end{figure}
+
+\chapter{Operation Flow}
+With the system's ability to know where to move to, and the systems ability to move there discussed, the operation flow chart can now be preseented. This is the standard operation for the system to place pins in required pinholes until the supply of pins is expended, or all pinholes are filled. 
+\pagenumbering{gobble}
+\tikzstyle{decision} = [diamond, draw, fill=white!20, 
+text width=4.5em, text badly centered, node distance=3cm, inner sep=0pt]
+\tikzstyle{block} = [rectangle, draw, fill=red!20, text width=5em, text centered, rounded corners, minimum height=4em]
+\tikzstyle{line} = [draw, -latex']
+\tikzstyle{cloud} = [draw, rectangle,fill=blue!20,  text width=5em, text centered, rounded corners, minimum height=4em]
+\tikzstyle{end} = [draw, rectangle,fill=white!20,  text width=5em, text centered, rounded corners, minimum height=4em]
+\begin{figure}
+\vspace*{-3cm}
+\begin{tikzpicture}[node distance=2cm,auto]
+\node [block] (start) {Move to postions 'Zero'};
+\node [cloud, below of=start, node distance=2cm] (image11) {Take image};
+\node [cloud, right of=image11, node distance=3cm] (image12) {Object detection};
+\node [decision, below of=image11, node distance=2.5cm] (decide3) {Is there a pin to place?};
+\node [cloud, below of=decide3, node distance=2.5cm] (image13) {Measure pin distance};
+\node [decision, below of=image13, node distance=3cm] (decide) {Enough measurements made?};
+\node [cloud, below of=decide, node distance=3cm] (image21) {Average measrument};
+\node [cloud, right of=image21, node distance=3cm] (image22) {Dump measurements};
+\node [cloud, right of=image22, node distance=3cm] (image23) {Convert to robotic arm coordinates};
+\node [cloud, right of=image23, node distance=3cm] (image24) {detect pin in supply};
+\node [decision, below of=image21, node distance=3cm] (decide2) {Is a pin ready to be picked?};
+\node [block, below of=decide2, node distance=3cm] (pinget1) {Move to pin supply};
+\node [block, right of=pinget1, node distance=3cm] (pinget2) {Grasp pin};
+\node [block, below of=pinget1, node distance=2.5cm] (pinset1) {Move to pin hole};
+\node [block, right of=pinset1, node distance=3cm] (pinset2) {lower};
+\node [block, right of=pinset2, node distance=3cm] (pinset3) {release pin};
+\node [end, right of=decide2, node distance=12cm] (stop) {Finish} ;
+
+\path [line] (start) -- (image11);
+\path [line] (image11) -- (image12);
+\end{tikzpicture}
+\end{figure}
 
 \appendix
 \chapter{Initial project request}
 \note{get pdf of project request paper}
+
+
 \end{document}
