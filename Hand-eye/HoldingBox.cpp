@@ -28,9 +28,10 @@ using namespace std;
 		warpAffine(_image, image, getRotationMatrix2D(rect.center, trueAngle,1),_image.size());
 		if ((trueAngle>0 && trueAngle<90) || (trueAngle>180 && trueAngle<270))
 			rect.size=Size2f(rect.size.height, rect.size.width);
-
+        try{
 		cv::getRectSubPix(image,rect.size,rect.center,image);
-
+        }
+        catch(cv::Exception e){cout<<"holdingbox submatrix error"<<endl;}
 //This section is harded coded. for later adaption, improve with dynamic box configs, stored in a csv (68,38,8)
         //cout<<rect.size.height<<" "<<rect.size.width<<end;
 		RatioSingleton::GetInstance()->SetRatio(rect.size.height/100.0);

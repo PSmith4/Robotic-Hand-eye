@@ -17,7 +17,8 @@ RobotShell::RobotShell()
 
 	//have config CSV file
 	pos0x=370;
-	pos0y=550;
+	pos0y=370;
+	//pos0y=550;
 	pos0z=115;
 
 
@@ -28,7 +29,7 @@ RobotShell::RobotShell()
 	//stop wire tangle
     //PyRun_SimpleString("R.set_joints([85,65,-19,-86.1,-16,173.5])\n");
    // PyRun_SimpleString("R.open_gripper()\n");
-    //PyRun_SimpleString("R.close_gripper()\n");
+    PyRun_SimpleString("R.close_gripper()\n");
 
     cout<<"Robot setup"<<endl;
 }
@@ -40,15 +41,23 @@ RobotShell::~RobotShell()
 
 }
 
+void RobotShell::movefromZero(float x, float y)
+{
+        PyRun_SimpleString(("R.set_cartesian([["+
+        to_string(pos0x+x) +"," +
+		to_string(pos0y+y) +"," +
+		to_string(pos0z) +
+		//"],[0.05,0.01,0.76,0.65]])\n").c_str());
+        "],[0,1,0,0]])\n").c_str());
+}
 void RobotShell::moveToPosZero()
 {
 	PyRun_SimpleString(("R.set_cartesian([["+
         to_string(pos0x) +"," +
 		to_string(pos0y) +"," +
 		to_string(pos0z) +
-		"],[0.05,0.01,0.76,0.65]])\n").c_str());
-
-
+		//"],[0.05,0.01,0.76,0.65]])\n").c_str());
+        "],[0.00,0.00,0.75,0.75]])\n").c_str());
 }
 
 void RobotShell::moveRelative(float x, float y)

@@ -5,11 +5,14 @@ using namespace std;
 PinHole::PinHole(Point2f _location, Mat& container)
 {
     location=_location;
-    cout<<location.x<<" "<<location.y<<endl;
+    //cout<<location.x<<" "<<location.y<<endl;
    float diam = float(container.size().width)/10;
    location.x= location.x+diam/2.0;
    location.y= location.y+diam/2.0;
+   try{
     image= container(Rect(location.x,location.y,diam, diam));
+	}
+	catch(cv::Exception e){cout<<"pin sub-matirx error"<<endl;}
 	filled=false;
 	requested=false;
 

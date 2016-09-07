@@ -73,6 +73,7 @@ void Gripper::Orientate(Mat& image)
 
 		try{
 			Mat corner;
+
 			getRectSubPix(gripperimage,Size2f(radius,radius),center[i],corner);
 			//gripperimage(Rect(center[i].y-radius, center[i].y+radius),Range(center[i].x-radius, center[i].x+radius));
 		double green_intensity=mean(corner)[1]/(mean(corner)[0]+mean(corner)[2]+mean(corner)[1]);
@@ -90,10 +91,10 @@ void Gripper::Orientate(Mat& image)
 
 		}
 		}
-		catch(cv::Exception e){}
+		catch(cv::Exception e){cout<<"gripper crash"<<endl;}
 	}
 	//cout<<largest_blue<<" "<<largest_green<<endl;
-	if( largest_blue<0.35 && largest_green<0.35)
+	if( largest_blue<0.35 || largest_green<0.35)
 		throw std::invalid_argument("green&blue");
 
 	for(int i =0; i<4; i++)

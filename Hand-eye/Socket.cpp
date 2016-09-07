@@ -24,7 +24,7 @@ Socket::Socket(string _locationsfile, string _config,Point2f _location, Mat& con
 	////namedWindow("1Socket"+std::to_string( ID),CV_WINDOW_FREERATIO);
 	//imshow("1Socket"+std::to_string(ID),image);
 	Mat redThresh = image.clone();
-	inRange(redThresh, cv::Scalar(0, 0, 125), cv::Scalar(125, 125, 255), redThresh);
+	inRange(redThresh, cv::Scalar(0, 0, 120), cv::Scalar(125, 125, 255), redThresh);
 	////namedWindow("2Socket"+std::to_string(long long(ID)),CV_WINDOW_KEEPRATIO);
 	//imshow("2Socket"+std::to_string(long long(ID)),redThresh);
 
@@ -37,8 +37,8 @@ Socket::Socket(string _locationsfile, string _config,Point2f _location, Mat& con
 
 	Mat cannyed;
 	Canny(erroded,cannyed, 20,60); // Maybe use int threshold = 200;    cv::Mat mask = output > threshold;
-		vector<vector<Point> > contours;
-		vector<Vec4i> hierarchy;
+    vector<vector<Point> > contours;
+	vector<Vec4i> hierarchy;
 
 	//namedWindow("4Socket"+std::to_string(long long(ID)),CV_WINDOW_FREERATIO);
 	//imshow("4Socket"+std::to_string(long long(ID)),cannyed);
@@ -48,39 +48,30 @@ Socket::Socket(string _locationsfile, string _config,Point2f _location, Mat& con
 	for (int i = 0; i < contours.size(); i++)
 	{
 
-		RotatedRect PotentialSocket(minAreaRect(contours[i]));
+        Rect2f PotentialSocket= boundingRect(contours[i]);
 		//cout<< PotentialSocket.size.area()<<" "<<image.rows*image.cols *0.25<<endl;
-		if (PotentialSocket.size.area() > (image.rows*image.cols *0.25) ) // check if this rectangle found is at least 1/4 the expected size
+		if (PotentialSocket.area()  > (image.rows*image.cols *0.25) ) // check if this rectangle found is at least 1/4 the expected size
 		{
 			try{
-				static Point2f rect_points[4];
-				PotentialSocket.points( rect_points );
-				Mat temp=image.clone();
-				drawContours(temp,contours,i,cv::Scalar(0,225,255));
-				Point2f topLeft(image.size().width, image.size().height);
-				Point2f botLeft(image.size().width, 0);
-				for(unsigned int j=0; j<4; ++j)
-				{
-					if(rect_points[j].x<topLeft.x && rect_points[j].y<topLeft.y)
-					{
-						topLeft=rect_points[j];
-					}
-					if(rect_points[j].x<botLeft.x && rect_points[j].y>botLeft.y)
-					{
-						botLeft=rect_points[j];
-					}
-					//line(temp, rect_points[j], rect_points[(j+1)%4], cv::Scalar(255,0,0),1);
+				static Point2f rect_points[2];
+				rect_points[0]=Point2f(PotentialSocket.x,PotentialSocket.y);
+				rect_points[1]=Point2f(PotentialSocket.x+PotentialSocket.width,PotentialSocket.y+PotentialSocket.height);
 
-				}
+
+				//Mat temp=image.clone();
+                //drawContours(temp,contours,i,cv::Scalar(0,225,255));
+                //rectangle(temp,rect_points[0],rect_points[1],cv::Scalar(0,255,0));
+
 				//cout<<topLeft.x<<"m"<<topLeft.y<<endl;
-				location=topLeft+location;
-				//namedWindow("5Socket"+std::to_string(long long(ID)),CV_WINDOW_FREERATIO);
-				//imshow("5Socket"+std::to_string(long long(ID)),temp);
+				location=rect_points[0]+location;
+				//namedWindow("5Socket"+std::to_string((ID)),CV_WINDOW_FREERATIO);
+				//imshow("5Socket"+std::to_string((ID)),temp);
                 //cout<<"resizing"<<endl;
-				getRectSubPix(image, PotentialSocket.size, PotentialSocket.center, image);
-				//image =image(cv::Rect_<float>(botLeft.x, botLeft.y, PotentialSocket.size().width, PotentialSocket.size().height);}
+				//getRectSubPix(image, PotentialSocket.size, PotentialSocket.center, image);
+				if(rect_points[1].x<image.size().width && rect_points[1].y<image.size().height)
+				image =image(PotentialSocket);
 
-			} catch(Exception e){}
+			} catch(Exception e){cout<<"socket crash"<<endl;}
 		}
 	}
 
@@ -113,10 +104,10 @@ Socket::Socket(string _locationsfile, string _config,Point2f _location, Mat& con
 			double x=atof(unit.c_str());
 			getline(lineStream,unit,',');
 			double y=atof(unit.c_str());
-            cout<<x<<" "<<y<<endl;
+            //cout<<x<<" "<<y<<endl;
   			x= x*RatioSingleton::GetInstance()->GetRatio();//ratio ;
 			y=y*RatioSingleton::GetInstance()->GetRatio();
-			cout<<x<<" "<<y<<endl;
+			//cout<<x<<" "<<y<<endl;
 			try{pinHoles.push_back(PinHole(Point2f(x,y),image));} catch(cv::Exception e){}
 		}
 
@@ -150,7 +141,7 @@ Point2f Socket::nextRequestedLocation()
 			if(pinHoles.at(i).isRequested() && pinHoles.at(i).isFilled()==false)
 			{
 				Point2f temp= pinHoles.at(i).getLocation();
-				temp.y=temp.y-image.size().height;
+				//temp.y=temp.y-image.size().height;
 				return location+temp;
 
 			}
@@ -174,7 +165,7 @@ vector<Point2f> Socket::allRequestedLocation()
 
 void Socket::draw()
 {
-    std::cout << " " << image.size().width <<" " << image.size().height << std::endl;
+    //std::cout << " " << image.size().width <<" " << image.size().height << std::endl;
 	for (int i=0; i<2; i++)
 			{
 				for (int j=0; j<image.cols; j++)

@@ -58,10 +58,10 @@ namespace {
 		Point2f avg;
 		if (measurments.size() >100)
 		{
-			float max_x=-9^9;
-			float max_y=-9^9;
-			float min_x=9^9;
-			float min_y=9^9;
+			float max_x=numeric_limits<float>::min();
+			float max_y=numeric_limits<float>::min();
+			float min_x=numeric_limits<float>::max();
+			float min_y=numeric_limits<float>::max();
 			for (int i=0; i< measurments.size(); i++)
 			{
 				if (measurments.at(i).x < min_x)
@@ -92,7 +92,7 @@ namespace {
        float image2world  = world_x_distance / pixel_dist;
        float w_x = mag(x_val) * image2world;
        float w_y = mag(y_val) * image2world;
-       cout << "world poi position (" << w_x << ", " << w_y << ")" << endl;
+       //cout << "world poi position (" << w_x << ", " << w_y << ")" << endl;
        out_world_pos.x = w_x;
        out_world_pos.y = w_y;
     }
@@ -144,9 +144,9 @@ namespace {
 			{
 				if (hierarchy[i][3]==-1 && hierarchy[i][2]!=-1 ) //only make parents with children map. as these are our box
 				{
-					if( PotentialHoldingBox.size.area() > 6000 && PotentialHoldingBox.size.area()<8000)
+					if( PotentialHoldingBox.size.area() > 5500 && PotentialHoldingBox.size.area()<7000)
 						holders.push_back( HoldingBox(PotentialHoldingBox,input) );
-					else if( PotentialHoldingBox.size.area() > 1000 && PotentialHoldingBox.size.area()<3000)
+					else if( PotentialHoldingBox.size.area() > 2000 && PotentialHoldingBox.size.area()<3000)
 						grippers.push_back( Gripper(PotentialHoldingBox,input) );
 				}
 			}
@@ -155,7 +155,7 @@ namespace {
 				// if at this point, there was a large block, but it had no red corner.... so its the gripper?
 				try
 				{
-					if( PotentialHoldingBox.size.area() > 1000 && PotentialHoldingBox.size.area()<3000)
+					if( PotentialHoldingBox.size.area() > 2000 && PotentialHoldingBox.size.area()<3000)
 						grippers.push_back( Gripper(PotentialHoldingBox,input) );
 				}
 				catch(std::invalid_argument e){}
@@ -186,13 +186,19 @@ namespace {
 		/*Get pin world position*/
 		Point2f pin_world_pos;
 		ImageToWorld(Vec2f(to.x, to.y),gripper_img_start,gripper_img_end,200.0f,pin_world_pos);
-		std::cout << "pin world position = { " << pin_world_pos.x << " , " << pin_world_pos.y << " }" << endl;
+
+
+		//cout<<"start referent "<< gripper_img_start.val[0]<<" "<<gripper_img_start.val[1]<<endl;
+		//cout<<"from"<<from.x<<", "<<from.y<<endl;
+        //cout<<"end referent "<< gripper_img_end.val[0]<<" "<<gripper_img_end.val[1]<<endl;
+        //cout<<"pin camera point "<< to.x<<", "<<to.y<<endl;
+		//std::cout << "pin world position = { " << pin_world_pos.x << " , " << pin_world_pos.y << " }" << endl;
 		/*----------------------*/
 		return pin_world_pos;
 	}
 
 
-	void  Robot_calabrate(RobotShell Robot,VideoCapture& capture, Mat background)
+	void  Robot_calabrate(RobotShell& Robot,VideoCapture& capture, Mat background)
 	{
 		vector<Point2f> positions;
 		Point2f point;
@@ -200,55 +206,89 @@ namespace {
 
 		cout<<"calabrating camera-arm frames. Please stand by"<<endl;
 		Robot.moveToPosZero();
-		for(int count=0; count<110; count++)
+		capture >> input;
+        imwrite("gripper at home.jpg",input);
+        while(positions.size()<110)
 		{
 			capture >> input;
+
+
 			vector<Gripper> grippers;
 			vector<HoldingBox> temp;
 			Object_Detection(input,background, temp, grippers);
 			for(int j=0; j<grippers.size(); j++ )
+			{
+							grippers.at(j).Draw(input);
+
 				positions.push_back(grippers.at(j).getCenterPoint());
+				//cout<<grippers.at(j).getCenterPoint().x<<", "<<grippers.at(j).getCenterPoint().y<<endl;
+            }
+            //namedWindow("6Socket",CV_WINDOW_FREERATIO);
+            //imshow("6Socket",input);
+            char key = (char)waitKey(3);
 		}
+
 		point = meanMeasurment(positions);
+		//cout<<"mean:   "<<point.x<<", "<<point.y<<endl;
 		gripper_img_start = {point.x, point.y};
 
+        positions.clear();
 		cout<<"Moving to x=200"<<endl;
 		Robot.moveRelative(200,0);
-		for(int count=0; count<100; count++) //Sleeper code
-		{
-			count=count+1;
-			count= count-1;
-		}
-		cout<<"move complete?"<<endl;
 
-		for(int count=0; count<110; count++)
+        char key = (char)waitKey(5000);
+        cout<<"done waiting for movment"<<endl;
+        capture >> input;
+        imwrite("gripper at 200x.jpg",input);
+		while(positions.size()<101)
 		{
+
 			capture >> input;
 			vector<Gripper> grippers;
 			vector<HoldingBox> temp;
 			Object_Detection(input,background, temp, grippers);
 			for(int j=0; j<grippers.size(); j++ )
-				positions.push_back(grippers.at(j).getCenterPoint());
+			{
+							grippers.at(j).Draw(input);
+
+                positions.push_back(grippers.at(j).getCenterPoint());
+                //cout<<grippers.at(j).getCenterPoint().x<<", "<<grippers.at(j).getCenterPoint().y<<endl;
+            }
+           // namedWindow("6Socket",CV_WINDOW_FREERATIO);
+            //imshow("6Socket",input);
+            char key = (char)waitKey(3);
 
 		}
+
 		point = meanMeasurment(positions);
+        //cout<<"mean:   "<<point.x<<", "<<point.y<<endl;
 		gripper_img_end = {point.x, point.y};
+
+        Robot.moveToPosZero();
 
 		ofstream outFile;
 		outFile.open("GripperPositions.csv",fstream::trunc);
 		outFile<<gripper_img_start.val[0]<<","<<gripper_img_start.val[1]<<","<<gripper_img_end.val[0]<<","<<gripper_img_end.val[1]<<","<<endl;
 		outFile.close();
+
+
+        cout<<"calabration done"<<endl;
 	}
 
-	void RoboticMotion(RobotShell Robot,Point2f pinPoint)
+	void RoboticMotion(RobotShell& Robot,Point2f pinPoint)
 	{
-		Robot.pickPin();
-		Robot.moveToPosZero();
+		//Robot.pickPin();
 
-		Robot.moveRelative_0pose(200,00); //change this line
-		//Robot.moveRelative_0pose(pinPoint.x,pinPoint.y);
+		//Robot.moveToPosZero();
 
-		Robot.placePin();
+		//Robot.movefromZero(200,00); //change this line
+		cout<<"moving to" <<pinPoint.x<<","<<pinPoint.y<<"from home"<<endl;
+        if(pinPoint.x*pinPoint.x+pinPoint.y*pinPoint.y < 400000)
+            Robot.movefromZero(pinPoint.x,pinPoint.y);
+        else
+            cout<<"too big"<<endl;
+
+		//Robot.placePin();
 	}
 
 	void read_cords()
@@ -320,6 +360,8 @@ namespace {
 
 					try
 					{
+					//getVector(temp.at(0), grippers.at(j).getCenterPoint(), input);
+					//getVector(temp.at(1), grippers.at(j).getCenterPoint(), input);
 						pinPoints.push_back(getVector(temp.at(2), grippers.at(j).getCenterPoint(), input));
 					}catch(std::out_of_range e){}
 				}
@@ -354,7 +396,7 @@ namespace {
 					{
 						RoboticMotion(Robot, meanMeasurment(pinPoints));
 					}
-					catch(out_of_range e){}
+					catch(out_of_range& e){cout<<e.what()<<endl;}
 					break;
 				case 'c':
 				case 'C':
@@ -378,6 +420,7 @@ int main(int ac, char** av) {
     VideoCapture capture(arg); //try to open string, this will attempt to open it as a video file
     if (!capture.isOpened()) //if this fails, try to open as a video camera, through the use of an integer param
         capture.open(atoi(arg.c_str()));
+
 
 
 
