@@ -238,8 +238,7 @@ namespace {
 
         char key = (char)waitKey(5000);
         cout<<"done waiting for movment"<<endl;
-        capture >> input;
-        imwrite("gripper at 200x.jpg",input);
+
 		while(positions.size()<101)
 		{
 
@@ -259,7 +258,8 @@ namespace {
             char key = (char)waitKey(3);
 
 		}
-
+		capture >> input;
+        imwrite("gripper at 200x.jpg",input);
 		point = meanMeasurment(positions);
         //cout<<"mean:   "<<point.x<<", "<<point.y<<endl;
 		gripper_img_end = {point.x, point.y};
