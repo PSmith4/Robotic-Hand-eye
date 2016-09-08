@@ -56,43 +56,71 @@ namespace {
 	Point2f meanMeasurment(vector<Point2f> measurments)
 	{
 		Point2f avg;
-		if (measurments.size() >100)
+		if (measurments.size() >20)
 		{
+            float mean_x=0;
+            float mean_y=0;
+
+            for (int i=0; i< measurments.size(); i++)
+			{
+                mean_x=mean_x+measurments.at(i).x;
+                mean_y=mean_y+measurments.at(i).y;
+			}
+			mean_x=mean_x/float (measurments.size());
+            mean_y=mean_y/float (measurments.size());
+
+            float dev_x=0;
+            float dev_y=0;
+            for (int i=0; i< measurments.size(); i++)
+            {
+                dev_x+=(measurments.at(i).x-mean_x)*(measurments.at(i).x-mean_x);
+                dev_y+=(measurments.at(i).y-mean_y)*(measurments.at(i).y-mean_y);
+            }
+            dev_x=dev_x/float (measurments.size());
+            dev_y=dev_y/float (measurments.size());
+
+            float sd_x=sqrtf(dev_x);
+            float sd_y=sqrtf(dev_y);
+
 			float max_x=numeric_limits<float>::min();
 			float max_y=numeric_limits<float>::min();
 			float min_x=numeric_limits<float>::max();
 			float min_y=numeric_limits<float>::max();
 			for (int i=0; i< measurments.size(); i++)
 			{
-				if (measurments.at(i).x < min_x)
+				if (measurments.at(i).x < min_x && measurments.at(i).x> (mean_x-sd_x*1.5) )
 					min_x= measurments.at(i).x;
-				if (measurments.at(i).x > max_x)
+				if (measurments.at(i).x > max_x && measurments.at(i).x< (mean_x+sd_x*1.5))
 					max_x= measurments.at(i).x;
-				if (measurments.at(i).y < min_y)
+				if (measurments.at(i).y < min_y && measurments.at(i).y> (mean_y-sd_y*1.5))
 					min_y= measurments.at(i).y;
-				if (measurments.at(i).y > max_y)
+				if (measurments.at(i).y > max_y  && measurments.at(i).y> (mean_y+sd_y*1.5))
 					max_y= measurments.at(i).y;
 			}
 			avg.x = (min_x+max_x)/2.0;
 			avg.y = (min_y+max_y)/2.0;
+            measurments.clear();
 		}
+
 		else
 			throw std::out_of_range("need more readings");
+
+
 		return avg;
 	}
 
-    void ImageToWorld(Vec2f image_point,Vec2f image_x_start, Vec2f image_x_end,
-                      float world_x_distance, Point2f & out_world_pos)
+    void ImageToWorld(Vec2f image_point, float world_x_distance, Point2f & out_world_pos)
     {
-       Vec2f im_poi_delta = image_point - image_x_start;
-       Vec2f im_x_delta = image_x_end - image_x_start;
+     cout<<"camera poi positoin"<< image_point.val[0]<<", "<<image_point.val[1]<<endl;
+       Vec2f im_poi_delta = image_point - gripper_img_start;
+       Vec2f im_x_delta = gripper_img_end - gripper_img_start;
        float pixel_dist = sqrtf(im_x_delta.val[0]*im_x_delta.val[0] + im_x_delta.val[1]*im_x_delta.val[1]);
        Vec2f x_val = (im_x_delta.dot(im_poi_delta) / (pixel_dist*pixel_dist)) * im_x_delta;
        Vec2f y_val = im_poi_delta - x_val;
        float image2world  = world_x_distance / pixel_dist;
        float w_x = mag(x_val) * image2world;
        float w_y = mag(y_val) * image2world;
-       //cout << "world poi position (" << w_x << ", " << w_y << ")" << endl;
+       cout << "world poi position (" << w_x << ", " << w_y << ")" << endl;
        out_world_pos.x = w_x;
        out_world_pos.y = w_y;
     }
@@ -184,9 +212,9 @@ namespace {
 		outFile.close();
 
 		/*Get pin world position*/
-		Point2f pin_world_pos;
-		ImageToWorld(Vec2f(to.x, to.y),gripper_img_start,gripper_img_end,200.0f,pin_world_pos);
-
+		Point2f pinFromGripper;
+		pinFromGripper.x=  to.x-from.x;
+		pinFromGripper.y= abs(from.y-to.y);
 
 		//cout<<"start referent "<< gripper_img_start.val[0]<<" "<<gripper_img_start.val[1]<<endl;
 		//cout<<"from"<<from.x<<", "<<from.y<<endl;
@@ -194,7 +222,7 @@ namespace {
         //cout<<"pin camera point "<< to.x<<", "<<to.y<<endl;
 		//std::cout << "pin world position = { " << pin_world_pos.x << " , " << pin_world_pos.y << " }" << endl;
 		/*----------------------*/
-		return pin_world_pos;
+		return pinFromGripper;
 	}
 
 
@@ -236,7 +264,12 @@ namespace {
 		cout<<"Moving to x=200"<<endl;
 		Robot.moveRelative(200,0);
 
-        char key = (char)waitKey(5000);
+		for (int i=0; i<500; i++)
+		{
+			char key = (char)waitKey(10);
+			capture >> input;
+		}
+
         cout<<"done waiting for movment"<<endl;
 
 		while(positions.size()<101)
@@ -279,16 +312,18 @@ namespace {
 	{
 		//Robot.pickPin();
 
-		//Robot.moveToPosZero();
-
 		//Robot.movefromZero(200,00); //change this line
-		cout<<"moving to" <<pinPoint.x<<","<<pinPoint.y<<"from home"<<endl;
-        if(pinPoint.x*pinPoint.x+pinPoint.y*pinPoint.y < 400000)
+		cout<<"moving to" <<pinPoint.x<<","<<pinPoint.y<<"from home "<<endl;
+        if(pinPoint.x*pinPoint.y < 10000)
+        {
             Robot.movefromZero(pinPoint.x,pinPoint.y);
+             //Robot.moveRelative(pinPoint.x,pinPoint.y); //change this line
+        }
         else
             cout<<"too big"<<endl;
 
-		//Robot.placePin();
+		Robot.placePin();
+		Robot.moveToPosZero();
 	}
 
 	void read_cords()
@@ -310,6 +345,7 @@ namespace {
 	}
 
     int process(VideoCapture& capture) {
+        Point2f griptemp;
         int n = 0;
         char filename[200];
         string window_name = "video | q or esc to quit";
@@ -362,6 +398,7 @@ namespace {
 					{
 					//getVector(temp.at(0), grippers.at(j).getCenterPoint(), input);
 					//getVector(temp.at(1), grippers.at(j).getCenterPoint(), input);
+                        griptemp=grippers.at(j).getCenterPoint();
 						pinPoints.push_back(getVector(temp.at(2), grippers.at(j).getCenterPoint(), input));
 					}catch(std::out_of_range e){}
 				}
@@ -394,10 +431,22 @@ namespace {
 				case 'M':
 					try
 					{
-						RoboticMotion(Robot, meanMeasurment(pinPoints));
+					Point2f pin =meanMeasurment(pinPoints) ;
+					Point2f pin2;
+					pin2.y=griptemp.y-pin.y;
+					pin2.x=pin.x+griptemp.x;
+					circle(input,pin2,3,cv::Scalar(255,0,255),1);
+                    circle(input,pin2,10,cv::Scalar(255,0,255),1);
+                    circle(input,pin2,50,cv::Scalar(255,0,255),1);
+                    imwrite("pinpoint.jpg", input);
+
+                    Point2f pin_world_pos;
+                    ImageToWorld(Vec2f(pin.x, pin.y),200.0f,pin_world_pos);
+                    //RoboticMotion(Robot, pin_world_pos);
 					}
 					catch(out_of_range& e){cout<<e.what()<<endl;}
 					break;
+
 				case 'c':
 				case 'C':
 					Robot_calabrate(Robot, capture, background);

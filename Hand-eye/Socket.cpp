@@ -24,56 +24,65 @@ Socket::Socket(string _locationsfile, string _config,Point2f _location, Mat& con
 	////namedWindow("1Socket"+std::to_string( ID),CV_WINDOW_FREERATIO);
 	//imshow("1Socket"+std::to_string(ID),image);
 	Mat redThresh = image.clone();
-	inRange(redThresh, cv::Scalar(0, 0, 120), cv::Scalar(125, 125, 255), redThresh);
-	////namedWindow("2Socket"+std::to_string(long long(ID)),CV_WINDOW_KEEPRATIO);
-	//imshow("2Socket"+std::to_string(long long(ID)),redThresh);
 
-	Mat erroded = redThresh.clone();
-	cv::erode(erroded, erroded,Mat());
-	cv::dilate(erroded, erroded,Mat());
-	////namedWindow("3Socket"+std::to_string(long long(ID)),CV_WINDOW_KEEPRATIO);
-	//cv::resizeWindow("3Socket"+std::to_string(long long(ID)),200,100);
-	//imshow("3Socket"+std::to_string(long long(ID)),erroded);
+    inRange(redThresh, cv::Scalar(0, 0, mean(redThresh)[2]), cv::Scalar(mean(redThresh)[0], mean(redThresh)[1], 255), redThresh);
+    ////namedWindow("2Socket"+std::to_string(long long(ID)),CV_WINDOW_KEEPRATIO);
+    //imshow("2Socket"+std::to_string(long long(ID)),redThresh);
 
-	Mat cannyed;
-	Canny(erroded,cannyed, 20,60); // Maybe use int threshold = 200;    cv::Mat mask = output > threshold;
+    Mat erroded = redThresh.clone();
+    cv::erode(erroded, erroded,Mat());
+    cv::dilate(erroded, erroded,Mat());
+    ////namedWindow("3Socket"+std::to_string(long long(ID)),CV_WINDOW_KEEPRATIO);
+    //cv::resizeWindow("3Socket"+std::to_string(long long(ID)),200,100);
+    //imshow("3Socket"+std::to_string(long long(ID)),erroded);
+
+    Mat cannyed;
+    Canny(erroded,cannyed, 20,60); // Maybe use int threshold = 200;    cv::Mat mask = output > threshold;
     vector<vector<Point> > contours;
-	vector<Vec4i> hierarchy;
+    vector<Vec4i> hierarchy;
 
-	//namedWindow("4Socket"+std::to_string(long long(ID)),CV_WINDOW_FREERATIO);
-	//imshow("4Socket"+std::to_string(long long(ID)),cannyed);
+    //namedWindow("4Socket"+std::to_string(long long(ID)),CV_WINDOW_FREERATIO);
+    //imshow("4Socket"+std::to_string(long long(ID)),cannyed);
 
 
-	findContours( erroded, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0) );
-	for (int i = 0; i < contours.size(); i++)
-	{
+    findContours( erroded, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0) );
+    for (int i = 0; i < contours.size(); i++)
+    {
 
         Rect2f PotentialSocket= boundingRect(contours[i]);
-		//cout<< PotentialSocket.size.area()<<" "<<image.rows*image.cols *0.25<<endl;
-		if (PotentialSocket.area()  > (image.rows*image.cols *0.25) ) // check if this rectangle found is at least 1/4 the expected size
-		{
-			try{
-				static Point2f rect_points[2];
-				rect_points[0]=Point2f(PotentialSocket.x,PotentialSocket.y);
-				rect_points[1]=Point2f(PotentialSocket.x+PotentialSocket.width,PotentialSocket.y+PotentialSocket.height);
+
+            try{
+                static Point2f rect_points[2];
+                rect_points[0]=Point2f(PotentialSocket.x,PotentialSocket.y);
+                rect_points[1]=Point2f(PotentialSocket.x+PotentialSocket.width,PotentialSocket.y+PotentialSocket.height);
 
 
-				//Mat temp=image.clone();
-                //drawContours(temp,contours,i,cv::Scalar(0,225,255));
-                //rectangle(temp,rect_points[0],rect_points[1],cv::Scalar(0,255,0));
+                Mat temp=image.clone();
+                drawContours(temp,contours,i,cv::Scalar(0,225,255));
 
-				//cout<<topLeft.x<<"m"<<topLeft.y<<endl;
-				location=rect_points[0]+location;
-				//namedWindow("5Socket"+std::to_string((ID)),CV_WINDOW_FREERATIO);
-				//imshow("5Socket"+std::to_string((ID)),temp);
-                //cout<<"resizing"<<endl;
-				//getRectSubPix(image, PotentialSocket.size, PotentialSocket.center, image);
-				if(rect_points[1].x<image.size().width && rect_points[1].y<image.size().height)
-				image =image(PotentialSocket);
+                //cout<<topLeft.x<<"m"<<topLeft.y<<endl;
 
-			} catch(Exception e){cout<<"socket crash"<<endl;}
-		}
-	}
+                 double areaRange=50;
+                //cout<< PotentialSocket.size.area()<<" "<<image.rows*image.cols *0.25<<endl;
+                //cout<<(28*RatioSingleton::GetInstance()->GetRatio()*15*RatioSingleton::GetInstance()->GetRatio())-PotentialSocket.area()<<endl;
+                if (PotentialSocket.area()  < (28*RatioSingleton::GetInstance()->GetRatio()*15*RatioSingleton::GetInstance()->GetRatio())+areaRange &&  PotentialSocket.area()  > (28*RatioSingleton::GetInstance()->GetRatio()*15*RatioSingleton::GetInstance()->GetRatio())-areaRange) // check if this rectangle found is at least 1/4 the expected size
+                {
+                    location=rect_points[0]+location;
+                rectangle(temp,rect_points[0],rect_points[1],cv::Scalar(0,255,0));
+
+                    //cout<<"resizing"<<endl;
+                    //getRectSubPix(image, PotentialSocket.size, PotentialSocket.center, image);
+                    if(rect_points[1].x<image.size().width && rect_points[1].y<image.size().height)
+                        image =image(PotentialSocket);
+                    rectangle(temp,rect_points[0],rect_points[1],cv::Scalar(0,255,0));
+
+                }
+                namedWindow("5Socket"+std::to_string((ID)),CV_WINDOW_FREERATIO);
+                imshow("5Socket"+std::to_string((ID)),temp);
+            } catch(Exception e){cout<<"socket crash"<<endl;}
+
+
+}
 
 	//namedWindow("6Socket"+std::to_string((ID)),CV_WINDOW_FREERATIO);
 	//imshow("6Socket"+std::to_string((ID)),image);

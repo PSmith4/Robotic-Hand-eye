@@ -98,7 +98,7 @@ class Robot:
 		pose[0][0]= pose[0][0]+x
 		pose[0][1]= pose[0][1]+y
 		pose[0][2]= pose[0][2]+z
-		pose[1]=[0,0,1,0]
+		#pose[1]=[0,0,1,0]
 		self.set_cartesian(pose)
 	def set_joints(self, joints):
 		'''
