@@ -259,18 +259,31 @@ Something about looking at exact pin location, determining if pin is present.
 \chapter{Robotic Arm Control}
 \ \\
 \section{Denavit-Hartenberg Algorithm}
-$\begin{matrix} % I'll change this into a table - Justin
-	Links 	& \theta 	& d 	& a 	& \alpha 	\\
-	1 		& \theta1 	& 0 	& 0 	& 0 		\\
-	2 		& \theta2 	& 0 	& 0.07 	& \pi/2 	\\
-	3 		& \theta3 	& 0 	& 0.36 	& 0 		\\
-	4 		& \theta4 	& 0.38 	& 0 	& \pi/2 	\\
-	5 		& \theta5 	& 0 	& 0 	& -\pi/2 	\\
-	6 		& \theta6 	& 0.065 & 0 	& \pi/2 	\\
-\end{matrix}$
+\begin{table}
+	\caption{Denavit-Hartenberg Algorithm}
+	\centering
+	\begin{tabular}{| l | c c c c |}
+		\hline
+		Links & $\theta$ & d & a & $\alpha$ \\ [0.5ex]
+		\hline
+		1 		& $\theta$ & 0 	& 0 	& 0 		\\
+		2 		& $\theta$2 	& 0 	& 0.07 	& $\pi$/2 	\\
+		3 		& $\theta$3 	& 0 	& 0.36 	& 0 		\\
+		4 		& $\theta$4 	& 0.38 	& 0 	& $\pi$/2 	\\
+		5 		& $\theta$5 	& 0 	& 0 	& -$\pi$/2 	\\
+		6 		& $\theta$6 	& 0.065 & 0 	& $\pi$/2 	\\ [1ex]
+		\hline
+	\end{tabular}
+\end{table}
+
+The Denavit-Hartenberg algorithm above gives a close approximation to the movement and joint rotation behaviour of the ABB robot arm. Due to the nature of elbow and wrist rotations, a 'd' offset is given for links 4 and 6, allowing a rotation about the length of a previous link. 
+
+
 \lipsum
 \section{Matlab Simulations}
-\lipsum
+The Matlab Robotic, Vision and Control library (RVC) is useful for mathematically representing configured links on a robot arm using Denavit-Hartenberg notation. When using the algorithm, links can be created by a user and added to a defined Robot object using the SerialLink() function.
+From here, a single position may be mapped using an array of elements equal to the amount of links. Each element represents either joint translation for prismatic joints or rotation for rotary joints. The order in which the joints are represented in the array need to be the same order in which the links were created in the Denavit-Hartenberg algorithm.
+
 \section{Open ABB}
 For this project, a basic parallel port was available for communication between the computer vision and the robotic arm. The parallel port allowed for single bits to be used as flags which triggered the robotic arm to perform action sets. For this project we needed to send specific travel distinations from the computer vision, to the robtic arm, therfore a more advance communication was required. To achieve this, OpenABB \footnote{$https://github.com/robotics/open_abb$} was used. This system has the robotic controller running a basic TCP server via RAPID code. A python script is used on the computer to connect to this server, and send commands. One such command can move the gripper to any point in the arms \hl{range/ field of operations, something like that} by sending the three axis coordinates.\\
 This command list was extended by the team to  include gripper control and moving about the x and y axis, relative to the current position. 

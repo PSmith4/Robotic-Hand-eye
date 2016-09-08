@@ -14,7 +14,7 @@
 \contentsline {chapter}{\numberline {4}Robotic Arm Control}{17}{chapter.4}
 \contentsline {section}{\numberline {4.1}Denavit-Hartenberg Algorithm}{17}{section.4.1}
 \contentsline {section}{\numberline {4.2}Matlab Simulations}{19}{section.4.2}
-\contentsline {section}{\numberline {4.3}Open ABB}{20}{section.4.3}
-\contentsline {section}{\numberline {4.4}Coordination}{21}{section.4.4}
+\contentsline {section}{\numberline {4.3}Open ABB}{19}{section.4.3}
+\contentsline {section}{\numberline {4.4}Coordination}{20}{section.4.4}
 \contentsline {chapter}{\numberline {5}Operation Flow}{}{chapter.5}
 \contentsline {chapter}{\numberline {A}Initial project request}{}{appendix.A}
