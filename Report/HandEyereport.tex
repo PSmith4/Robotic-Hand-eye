@@ -45,11 +45,11 @@
 		\textsc{\Large{RME 40003}\\ \  \\[0.1cm]
 			\huge Robot System Design}\\[1cm]
 		
-		\normalsize\note{enter names and numbers}
+		\normalsize
 		\begin{tabular}{l r}
-			\hline\\ Justin Sargent & 00000 \\[0.25cm]
+			\hline\\ Justin Sargent & 9989900 \\[0.25cm]
 			\\ Phillip Smith & 7191731 \\ [0.25cm]
-			\\ Thomas Rappos & 00000 \\[0.25cm]
+			\\ Thomas Rappos & 6336361 \\[0.25cm]
 			\hline 
 		\end{tabular} 
 	\end{center}
@@ -57,7 +57,13 @@
 \tableofcontents
 \chapter{Project Outline}
 This project explores the use of a robotic arm used for pick-and-place automation tasks. For dynamic operation and task-completion feed-back, computer vision is incorporated via a web-cam mounted in the work area.\\
-More specifically, this project has been completed for an industry client, AME System Pty. Ltd., for automated cavity plug insertion. These plugs are 1.5mm\note{double check size} wide and are placed in cavities between 2 and 4mm apart. As such, a high degree of accuracy and repeatability is required. \note{include image of plug}
+More specifically, this project has been completed for an industry client, AME System Pty. Ltd., for automated cavity plug insertion. These plugs are 3.5mm wide and are placed in cavities between 5 and 9mm apart, as shown in \cref{fig:IMG_20160908_142218}. Due to this small size, a high degree of accuracy and repeatability is required. 
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.5\linewidth]{IMG_20160908_142218}
+\caption{Image of plug and socket}
+\label{fig:IMG_20160908_142218}
+\end{figure}
 \chapter{Gripper Design}
 With such small objects being handled, a custom gripper device was developed. The main gripper mechanism uses a Festo parallel, nematic gripper. While the gripping appendages have been custom made for this operation. Shown in \cref{fig:gripper2} are the open and closed CAD renderings of the gripper. Dark-grey being the Festo gripper, light grey being the main gripper appendage and green being the 3D printed gripper tips, modelled to specify grasp the cavity plugs.\footnote{two cavity plug sizes were initially requested}
 
@@ -251,11 +257,11 @@ As this application is being deployed under fluorescent lighting, there is some 
 To reduce this lighting issue, the maximum and minimum values observed in this graph are taken, and averaged to derive an error reduced measurement. 
  
 \subsection{Path to gripper arm corrdinates}
-Vector converted to gripper coordinates. 
+\note{Vector converted to gripper coordinates.} 
 \lipsum
 
 \section{Pin supply identification}
-Something about looking at exact pin location, determining if pin is present. 
+\note{Something about looking at exact pin location, determining if pin is present.} 
 \chapter{Robotic Arm Control}
 \ \\
 \section{Denavit-Hartenberg Algorithm}
@@ -304,45 +310,116 @@ The command stack was thus extended as shown in \cref{fig:commstack2}
 \caption{Communication stack with added c++}
 \label{fig:commstack2}
 \end{figure}
-
+ 
 \chapter{Operation Flow}
-With the system's ability to know where to move to, and the systems ability to move there discussed, the operation flow chart can now be preseented. This is the standard operation for the system to place pins in required pinholes until the supply of pins is expended, or all pinholes are filled. 
+With the system's ability to know where to move to, and the ability to coordinate these movements, the operation flow charts can now be presented. Figure \ref{mainFlow} shows the standard operation flow, with purple action points being computer vision processes, and pink being robotic arm actions. Figure \ref{calFlow} shows the operation for calibrating the robotic arm frame, and the camera view frame. 
 \pagenumbering{gobble}
 \tikzstyle{decision} = [diamond, draw, fill=white!20, 
 text width=4.5em, text badly centered, node distance=3cm, inner sep=0pt]
+
 \tikzstyle{block} = [rectangle, draw, fill=red!20, text width=5em, text centered, rounded corners, minimum height=4em]
 \tikzstyle{line} = [draw, -latex']
 \tikzstyle{cloud} = [draw, rectangle,fill=blue!20,  text width=5em, text centered, rounded corners, minimum height=4em]
 \tikzstyle{end} = [draw, rectangle,fill=white!20,  text width=5em, text centered, rounded corners, minimum height=4em]
 \begin{figure}
-\vspace*{-3cm}
-\begin{tikzpicture}[node distance=2cm,auto]
-\node [block] (start) {Move to postions 'Zero'};
-\node [cloud, below of=start, node distance=2cm] (image11) {Take image};
+\vspace*{-4cm}
+\hspace*{-3cm}
+\begin{tikzpicture}[node distance=2cm]
+\node [end] (begin){Start};
+\node [block, below of =begin] (start) {Move to postions 'Zero'};
+%\node [block, right of= start, node distance=3cm] (calabrate) {Calabration of camera to gripper frame};
+\node [cloud, below of = start] (image11) {Update image};
 \node [cloud, right of=image11, node distance=3cm] (image12) {Object detection};
 \node [decision, below of=image11, node distance=2.5cm] (decide3) {Is there a pin to place?};
-\node [cloud, below of=decide3, node distance=2.5cm] (image13) {Measure pin distance};
+\node [cloud, below of=decide3, node distance=3.5cm] (image13) {Measure pin distance};
 \node [decision, below of=image13, node distance=3cm] (decide) {Enough measurements made?};
-\node [cloud, below of=decide, node distance=3cm] (image21) {Average measrument};
+\node [cloud, below of=decide, node distance=3.5cm] (image21) {Average measrument};
 \node [cloud, right of=image21, node distance=3cm] (image22) {Dump measurements};
 \node [cloud, right of=image22, node distance=3cm] (image23) {Convert to robotic arm coordinates};
-\node [cloud, right of=image23, node distance=3cm] (image24) {detect pin in supply};
-\node [decision, below of=image21, node distance=3cm] (decide2) {Is a pin ready to be picked?};
-\node [block, below of=decide2, node distance=3cm] (pinget1) {Move to pin supply};
-\node [block, right of=pinget1, node distance=3cm] (pinget2) {Grasp pin};
+\node [cloud, right of=image23, node distance=3cm] (image24) {Detect pin in supply};
+\node [decision, below of=image21, node distance=3cm] (decide2) {Is a pin available to be picked?};
+\node [block, below of=decide2, node distance=3.5cm] (pinget1) {Move to pin supply};
+\node [block, right of=pinget1, node distance=3cm] (pinget2) {Close gripper};
 \node [block, below of=pinget1, node distance=2.5cm] (pinset1) {Move to pin hole};
-\node [block, right of=pinset1, node distance=3cm] (pinset2) {lower};
-\node [block, right of=pinset2, node distance=3cm] (pinset3) {release pin};
-\node [end, right of=decide2, node distance=12cm] (stop) {Finish} ;
+\node [block, right of=pinset1, node distance=3cm] (pinset2) {Lower gripper};
+\node [block, right of=pinset2, node distance=3cm] (pinset3) {Open gripper};
+\node [block, right of=pinset3, node distance=3cm] (pinset4) {Raise gripper};
+\node [block, right of=pinset4, node distance=3cm] (pinset5) {Move flat section over pin-head};
+\node [block, right of=pinset5, node distance=3cm] (pinset6) {Lower gripper (4mm less)};
+\node [end, right of=decide2, node distance=12cm] (Finish) {Finish} ;
 
+\path [line] (begin) -- (start);
 \path [line] (start) -- (image11);
 \path [line] (image11) -- (image12);
+\path [line] (image12) |- (decide3.north);
+
+\path [line] (decide3) -- node [left]{yes} (image13);
+\path [line] (decide3) -| node [above] {no} (Finish);
+
+\path [line] (image13) -- (decide);
+\path [line] (decide.west) -| ++(-0.5,6) node [right] {no} |- (image11.west);
+\path [line] (decide) -- node [left] {yes} (image21);
+\path [line] (image21) -- (image22);
+\path [line] (image22) -- (image23);
+\path [line] (image23) -- (image24);
+\path [line] (image24) |- (decide2.north);
+\path [line] (decide2) -- node [below]{no} (Finish);
+\path [line] (decide2) -- node [left]{yes} (pinget1);
+\path [line] (pinget1) --  (pinget2);
+\path [line] (pinget2) |- ++(-1,-1.25) -| (pinset1.north);
+\path [line] (pinset1) --  (pinset2);
+\path [line] (pinset2) --  (pinset3);
+\path [line] (pinset3) --  (pinset4);
+\path [line] (pinset4) --  (pinset5);
+\path [line] (pinset5) --  (pinset6);
+\path [line] (pinset6.south) |- ++(-18,-0.1) |- (start);
 \end{tikzpicture}
+
+\caption{Main Process} \label{mainFlow}
 \end{figure}
 
-\appendix
-\chapter{Initial project request}
-\note{get pdf of project request paper}
+\begin{figure}
+	\begin{tikzpicture}
+	\node [end] (begin){Start};
+\node [block, below of =begin, node distance=2cm] (start) {Move to postions 'Zero'};
+	\node [cloud, right of= start, node distance=3cm] (calabrate1) {Update image};
+	\node [cloud, right of= calabrate1, node distance=3cm] (calabrate2) {Object detection};
+	\node [cloud, right of= calabrate2, node distance=3cm] (calabrate22) {Measure gripper location in camera};
+	\node [decision, right of=calabrate22, node distance=4cm] (decide) {Enough measurements made?};
+	\node [cloud, below of=start, node distance=3cm] (image1) {Average measrument};
+	\node [cloud, right of=image1, node distance=3cm] (image12) {Dump measrument};
+		
+	\node [block, below of= image1, node distance=3cm] (calabrate3) {Move 200 along X-axis};
+	\node [cloud, right of= calabrate3, node distance=3cm] (calabrate4) {Update image};
+	\node [cloud, right of= calabrate4, node distance=3cm] (calabrate5) {Object detection};
+		\node [cloud, right of= calabrate5, node distance=3cm] (calabrate52) {Measure gripper location in camera};
+	\node [decision, right of=calabrate52, node distance=4cm] (decide2) {Enough measurements made?};
+	\node [cloud, below of=calabrate3, node distance=3cm] (image2) {Average measrument};
+	\node [cloud, right of=image2, node distance=3cm] (image22) {Dump measrument};
+	\node [end, below of=image2, node distance=2.5cm] (Finish) {Finish} ;
+	
+	\path [line] (begin) -- (start);
+	\path [line] (begin) -- (start);
+	\path [line] (start) -- (calabrate1);
+	\path [line] (calabrate1) -- (calabrate2);
+		\path [line] (calabrate2) -- (calabrate22);
+	\path [line] (calabrate22) -- (decide);
+	\path [line] (decide.south) node[below]{yes} -| (image1.north);
+	\path [line] (decide.north) node[above]{no}  -|  (calabrate1.north);
+	\path [line] (image1) -- (image12);
+	\path [line] (image12.south) -- ++(0,-0.2)-| (calabrate3.north);
+	\path [line] (calabrate3) -- (calabrate4);
+	\path [line] (calabrate4) -- (calabrate5);
+		\path [line] (calabrate5) -- (calabrate52);
+		\path [line] (calabrate52) -- (decide2);
+
+			\path [line] (decide2.south) node[below]{yes} -| (image2.north);
+			\path [line] (decide2.north) node[above]{no}  -|  (calabrate4.north);
+		\path [line] (image2) -- (image22);
+		\path [line] (image22.south) -- ++(0,-0.2)-| (Finish.north);
+	\end{tikzpicture}
+\caption{Calibration} \label{calFlow}
+\end{figure}
 
 
 \end{document}
