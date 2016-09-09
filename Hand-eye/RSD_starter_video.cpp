@@ -81,24 +81,27 @@ namespace {
 
             float sd_x=sqrtf(dev_x);
             float sd_y=sqrtf(dev_y);
-
+            cout<<"Mean"<<mean_x<<","<<mean_y<<","<<dev_x<<","<<dev_y<<","<<sd_x<<","<<sd_y<<endl;
 			float max_x=numeric_limits<float>::min();
 			float max_y=numeric_limits<float>::min();
 			float min_x=numeric_limits<float>::max();
 			float min_y=numeric_limits<float>::max();
 			for (int i=0; i< measurments.size(); i++)
 			{
-				if (measurments.at(i).x < min_x && measurments.at(i).x> (mean_x-sd_x*1.5) )
+				if (measurments.at(i).x < min_x && measurments.at(i).x>= (mean_x-sd_x*1.5) )
 					min_x= measurments.at(i).x;
-				if (measurments.at(i).x > max_x && measurments.at(i).x< (mean_x+sd_x*1.5))
+				if (measurments.at(i).x > max_x && measurments.at(i).x<= (mean_x+sd_x*1.5))
 					max_x= measurments.at(i).x;
-				if (measurments.at(i).y < min_y && measurments.at(i).y> (mean_y-sd_y*1.5))
+				if (measurments.at(i).y < min_y && measurments.at(i).y>= (mean_y-sd_y*1.5))
 					min_y= measurments.at(i).y;
-				if (measurments.at(i).y > max_y  && measurments.at(i).y> (mean_y+sd_y*1.5))
+				if (measurments.at(i).y > max_y  && measurments.at(i).y<= (mean_y+sd_y*1.5))
 					max_y= measurments.at(i).y;
 			}
 			avg.x = (min_x+max_x)/2.0;
 			avg.y = (min_y+max_y)/2.0;
+			cout<<"x"<<min_x<<","<<max_x<<"="<<avg.x<<endl;
+			cout<<"y"<<min_y<<","<<max_y<<"="<<avg.y<<endl;
+
             measurments.clear();
 		}
 
@@ -108,6 +111,10 @@ namespace {
 
 		return avg;
 	}
+
+
+
+//this gives the exact same answer as the previous code, but now the signs are correct for negative co-ordinates (didn't see that bug :/)
 
     void ImageToWorld(Vec2f image_point, float world_x_distance, Point2f & out_world_pos)
     {
@@ -222,7 +229,7 @@ namespace {
         //cout<<"pin camera point "<< to.x<<", "<<to.y<<endl;
 		//std::cout << "pin world position = { " << pin_world_pos.x << " , " << pin_world_pos.y << " }" << endl;
 		/*----------------------*/
-		return pinFromGripper;
+		return to;
 	}
 
 
@@ -236,7 +243,7 @@ namespace {
 		Robot.moveToPosZero();
 		capture >> input;
         imwrite("gripper at home.jpg",input);
-        while(positions.size()<110)
+        while(positions.size()<20)
 		{
 			capture >> input;
 
@@ -272,7 +279,7 @@ namespace {
 
         cout<<"done waiting for movment"<<endl;
 
-		while(positions.size()<101)
+		while(positions.size()<20)
 		{
 
 			capture >> input;
@@ -286,8 +293,8 @@ namespace {
                 positions.push_back(grippers.at(j).getCenterPoint());
                 //cout<<grippers.at(j).getCenterPoint().x<<", "<<grippers.at(j).getCenterPoint().y<<endl;
             }
-           // namedWindow("6Socket",CV_WINDOW_FREERATIO);
-            //imshow("6Socket",input);
+            namedWindow("6Socket",CV_WINDOW_FREERATIO);
+            imshow("6Socket",input);
             char key = (char)waitKey(3);
 
 		}
@@ -310,20 +317,22 @@ namespace {
 
 	void RoboticMotion(RobotShell& Robot,Point2f pinPoint)
 	{
-		//Robot.pickPin();
+
 
 		//Robot.movefromZero(200,00); //change this line
 		cout<<"moving to" <<pinPoint.x<<","<<pinPoint.y<<"from home "<<endl;
-        if(pinPoint.x*pinPoint.y < 10000)
+        if(sqrt((pinPoint.x*pinPoint.x)+(pinPoint.y*pinPoint.y)) < 350)
         {
+            Robot.pickPin();
             Robot.movefromZero(pinPoint.x,pinPoint.y);
+            Robot.placePin();
+            Robot.moveToPosZero();
              //Robot.moveRelative(pinPoint.x,pinPoint.y); //change this line
         }
         else
             cout<<"too big"<<endl;
 
-		Robot.placePin();
-		Robot.moveToPosZero();
+
 	}
 
 	void read_cords()
@@ -342,6 +351,14 @@ namespace {
 		gripper_img_end.val[0]=atof(unit.c_str());
 		getline(lineStream,unit,',');
 		gripper_img_end.val[1]=atof(unit.c_str());
+
+		float x =gripper_img_end.val[0]-gripper_img_start.val[0];
+		float y= gripper_img_end.val[1]-gripper_img_start.val[1];
+
+		float ratio_=sqrtf((x*x)+(y*y));
+        RatioSingleton::GetInstance()->SetRatio(ratio_/200.0f);
+        //cout<<ratio_<<endl;
+
 	}
 
     int process(VideoCapture& capture) {
@@ -433,16 +450,21 @@ namespace {
 					{
 					Point2f pin =meanMeasurment(pinPoints) ;
 					Point2f pin2;
-					pin2.y=griptemp.y-pin.y;
-					pin2.x=pin.x+griptemp.x;
-					circle(input,pin2,3,cv::Scalar(255,0,255),1);
-                    circle(input,pin2,10,cv::Scalar(255,0,255),1);
-                    circle(input,pin2,50,cv::Scalar(255,0,255),1);
+					//pin2.y=griptemp.y-pin.y;
+					//pin2.x=pin.x+griptemp.x;
+					circle(input,pin,3,cv::Scalar(255,0,255),1);
+                    circle(input,pin,10,cv::Scalar(255,0,255),1);
+                    circle(input,pin,50,cv::Scalar(255,0,255),1);
+
+                    circle(input,Point2f(gripper_img_start.val[0],gripper_img_start.val[1]),3,cv::Scalar(255,0,255),3);
+                    circle(input,Point2f(gripper_img_end.val[0],gripper_img_end.val[1]),3,cv::Scalar(255,0,255),3);
+
                     imwrite("pinpoint.jpg", input);
 
                     Point2f pin_world_pos;
+                    //Point2f test(445,397);
                     ImageToWorld(Vec2f(pin.x, pin.y),200.0f,pin_world_pos);
-                    //RoboticMotion(Robot, pin_world_pos);
+                    RoboticMotion(Robot, pin_world_pos);
 					}
 					catch(out_of_range& e){cout<<e.what()<<endl;}
 					break;

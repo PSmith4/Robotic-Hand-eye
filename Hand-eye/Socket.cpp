@@ -68,7 +68,7 @@ Socket::Socket(string _locationsfile, string _config,Point2f _location, Mat& con
                 if (PotentialSocket.area()  < (28*RatioSingleton::GetInstance()->GetRatio()*15*RatioSingleton::GetInstance()->GetRatio())+areaRange &&  PotentialSocket.area()  > (28*RatioSingleton::GetInstance()->GetRatio()*15*RatioSingleton::GetInstance()->GetRatio())-areaRange) // check if this rectangle found is at least 1/4 the expected size
                 {
                     location=rect_points[0]+location;
-                rectangle(temp,rect_points[0],rect_points[1],cv::Scalar(0,255,0));
+                    rectangle(temp,rect_points[0],rect_points[1],cv::Scalar(0,255,0));
 
                     //cout<<"resizing"<<endl;
                     //getRectSubPix(image, PotentialSocket.size, PotentialSocket.center, image);

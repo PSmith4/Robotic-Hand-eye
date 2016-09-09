@@ -20,9 +20,9 @@ class RobotShell{
         void placePin();
         void speed(float speed);
     private:
-        double pos0x;
-        double pos0y;
-        double pos0z;
+        float pos0x;
+        float pos0y;
+        float pos0z;
         vector<array<double, 2>> pinPlaces;
 
 };
