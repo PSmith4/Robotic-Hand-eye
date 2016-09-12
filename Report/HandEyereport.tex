@@ -27,6 +27,12 @@
 \usepackage{color,soul}
 \newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
 \newcommand{\note}[1]{\marginpar{\tiny{ \hl{#1 } } }  }
+
+\usepackage{titlesec}
+\titleformat{\chapter}[display]   
+{\normalfont\huge\bfseries}{\chaptertitlename\ \thechapter}{20pt}{\Huge}   
+\titlespacing*{\chapter}{0pt}{-50pt}{5pt}
+
 \begin{document}
 
 \begin{titlepage}
@@ -57,23 +63,30 @@
 \tableofcontents
 \chapter{Project Outline}
 This project explores the use of a robotic arm used for pick-and-place automation tasks. For dynamic operation and task-completion feed-back, computer vision is incorporated via a web-cam mounted in the work area.\\
-More specifically, this project has been completed for an industry client, AME System Pty. Ltd., for automated cavity plug insertion. These plugs are 3.5mm wide and are placed in cavities between 5 and 9mm apart, as shown in \cref{fig:IMG_20160908_142218}. Due to this small size, a high degree of accuracy and repeatability is required. 
+More specifically, this project has been completed for an industry client, AME System Pty. Ltd., for automated cavity pin insertion. These pins are 3.5mm wide and are placed in holes between 5 and 9mm apart on a rubber socket, as shown in \cref{fig:IMG_20160908_142218}(a) Due to this small size, a high degree of accuracy and repeatability is required.\\
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.5\linewidth]{IMG_20160908_142218}
-\caption{Image of plug and socket}
+\includegraphics[width=0.25\linewidth]{IMG_20160908_142218} %
+\includegraphics[width=0.45\linewidth]{IMG_20160912_135721}
+\caption{Image of pin and socket, and socket in holding box}
 \label{fig:IMG_20160908_142218}
 \end{figure}
-\chapter{Gripper Design}
-With such small objects being handled, a custom gripper device was developed. The main gripper mechanism uses a Festo parallel, nematic gripper. While the gripping appendages have been custom made for this operation. Shown in \cref{fig:gripper2} are the open and closed CAD renderings of the gripper. Dark-grey being the Festo gripper, light grey being the main gripper appendage and green being the 3D printed gripper tips, modelled to specify grasp the cavity plugs.\footnote{two cavity plug sizes were initially requested}
+To hold the socket in place, and determine the orientation, a holding box has been produced which slots the sockets into a fixed position, shown in \cref{fig:IMG_20160908_142218}(b). For this project, these boxes are not themselves placed in a fixed location within the work space. As such the main objective of this project is using the computer vision to determine the global position of the pin holes, via the fixed position of the socket in the box, and the global position and orientation of the box in the work space.\\
 
-\begin{figure}[h]
-\centering
-\includegraphics[width=0.4\linewidth]{gripper2}\ %
-\includegraphics[width=0.4\linewidth]{gripper1}
-\caption{CAD rendering of plug gripper}
-\label{fig:gripper2}
-\end{figure}
+
+For this project, the confirmation of pins being ready in the supply is not being explored. This is due to the industry application being intended to use a vibrating bowl feed, and thus the assumption can be made pins will always be available. For this proof of concept, a rack of three pins is made, with the gripper positions being hard coded.\\    
+
+%\chapter{Gripper Design}
+%With such small objects being handled, a custom gripper device was developed. The main gripper mechanism uses a Festo parallel, nematic gripper. While the gripping appendages have been custom made for this operation. Shown in \cref{fig:gripper2} are the open and closed CAD renderings of the gripper. Dark-grey being the Festo gripper, light grey being the main gripper appendage and green being the 3D printed gripper tips, modelled to specify grasp the cavity plugs.\footnote{two cavity plug sizes were initially requested}
+
+%
+%\begin{figure}[h]
+%\centering
+%\includegraphics[width=0.4\linewidth]{gripper2}\ %
+%\includegraphics[width=0.4\linewidth]{gripper1}
+%\caption{CAD rendering of plug gripper}
+%\label{fig:gripper2}
+%\end{figure}
 
 
 \chapter{Computer Vision}
@@ -85,46 +98,40 @@ With the background set, a psudo-live stream of stills was captured from the cam
 \subsection{Object recognition}
 The first step of processing was to do a raw matrix subtraction of the background. This gave an image of only the objects not in the background image. For this subtraction to function correctly, the background image needed to be free of all free-moving objects, as this subtraction would recognise a lack of object as well. An example of this subtraction is shown in \cref{fig:backgrond}.
 \begin{figure}
-	\hspace*{-0.1\linewidth}
-	\includegraphics[width=0.6\linewidth]{backgrond} %
-		\includegraphics[width=0.6\linewidth]{base}\\
-		\hspace*{0.2\linewidth}
-			\includegraphics[width=0.6\linewidth]{diff}
+	\centering
+	\includegraphics[width=0.3\linewidth]{backgrond} %
+		\includegraphics[width=0.3\linewidth]{base} %	
+			\includegraphics[width=0.3\linewidth]{diff}
 	\caption{ Background image, new capture with objects in place and resulting subtraction }
 	\label{fig:backgrond}
 \end{figure}\ \\
 This image was then converted to a binary matrix, with a threshold of each colour layer, and a a grey scale process, to combine the colour layers. This process is shown in \cref{fig:out2}.\\ 
-\begin{figure}
-	\hspace*{-0.1\linewidth}
-\includegraphics[width=0.6\linewidth]{out1} %
-\includegraphics[width=0.6\linewidth]{out2}
+\begin{figure}\centering
+\includegraphics[width=0.3\linewidth]{out1} %
+\includegraphics[width=0.3\linewidth]{out2}
 \caption{Threshold of each colour, and combining of colour layers to make single layer binary}
 \label{fig:out2}
 \end{figure}
 \begin{figure}
 	\centering
-	\includegraphics[width=0.6\linewidth]{out4}
-	\caption{Erode and Dilate removes static from image}
+	\includegraphics[width=0.3\linewidth]{out4}
+	\includegraphics[width=0.3\linewidth]{out3}
+	\caption{Erode and Dilate removes static from image, and Canny edge detection leaves only the outline of the objects }
 	\label{fig:out4}
 \end{figure}
-\begin{figure}
-	\centering
-	\includegraphics[width=0.6\linewidth]{out3}
-	\caption{Canny edge detection leaves only the outline of the objects}
-	\label{fig:out3}
-\end{figure}
-The resulting image was then eroded and dilated by one pixel layer. This erode function turns any white pixel touching to a black pixel into a black pixel, while the dilate function performs the opposite. This resulted in any small imperfections being removed from the image, while only slightly reducing the object recognition quality of the image. This is seen in \cref{fig:out4}.
 
-A Canny edge detection was then used, which finds object edges by leaving only white pixels that are touching black pixels behind. The resulting image is shown \cref{fig:out3}.
+The resulting image was then eroded and dilated by one pixel layer. This erode function turns any white pixel touching to a black pixel into a black pixel, while the dilate function performs the opposite. This resulted in any small imperfections being removed from the image, while only slightly reducing the object recognition quality of the image. This is seen in \cref{fig:out4}(a).
+
+A Canny edge detection was then used, which finds object edges by leaving only white pixels that are touching black pixels behind. The resulting image is shown \cref{fig:out4}(b).
 
 Each group of remaining white pixels was now classified as a contour, via the \textit{findContours} command. This process found any collection of white pixels as a polygon shape. It also listed the contour hierarchy, where contours are set as parents, and any contours inside its pixel range are defined as its children. The main holding box, and the gripper, are both objects not encased in larger objects. Therefore, only contours with no parents were further examined.\\
 
 Each contour examined was fitted inside a rectangle with \textit{minAreaRect}. This found the smallest rectangle, of any angular orientation, that could fit the whole contour. The size of this rectangle was then tested, anything outside the set threshold was ignored.\\
-For each rectangle that was within the predicted size of the holding box or gripper, a classification and orientation was attempted as if the object were a holding box. If this process failed, the image was oriented as a gripper. If this failed, the object was deemed neither and discarded. From the example process, at the stage in \cref{fig:out3}, three objects remain; the holding box, the gripper and another part of the gripper of no interest.  Respectively, these objects would be assigned as a holding box; fail at being set as a holding box, and be assigned as a gripper, and fail at both assignings.\\
+For each rectangle that was within the predicted size of the holding box or gripper, a classification and orientation was attempted as if the object were a holding box. If this process failed, the image was oriented as a gripper. If this failed, the object was deemed neither and discarded. From the example process, at the stage in \cref{fig:out4}(b), three objects remain; the holding box, the gripper and another part of the gripper of no interest.  Respectively, these objects would be assigned as a holding box; fail at being set as a holding box, and be assigned as a gripper, and fail at both assignings.\\
 This process is shown in diagram in \cref{fig:Throwlinek}.
-\begin{figure}
+\begin{figure}[h]
 \centering
-\includegraphics[width=0.25\linewidth]{Throwlinek}
+\includegraphics[width=0.2\linewidth]{Throwlinek}
 \caption{Assigning process through try, catch, throw}
 \label{fig:Throwlinek}
 \end{figure}
@@ -138,7 +145,7 @@ mean(red)/(mean(blue)+mean(green)+mean(red))
 \end{equation}
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.5\linewidth]{Redest}
+	\includegraphics[width=0.3\linewidth]{Redest}
 	\caption{Red detection for reference corner}
 	\label{fig:Redest}\end{figure}\\
 
@@ -157,7 +164,7 @@ This orientation process is repeated for the gripper arm, but using the blue and
 With the holding box true angle determine, a copy of the image could be rotated and cropped to be only the holding box. This cropping can be seen in \cref{fig:holdingblockwithdata}.
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.4\linewidth]{"holding_block_with_data"}
+	\includegraphics[width=0.3\linewidth]{"holding_block_with_data"}
 	\caption{Holding box image, cropped down to only the box, and with all socket overlay shown}
 	\label{fig:holdingblockwithdata}
 \end{figure}\\
@@ -165,10 +172,9 @@ Data on this holding box could now be used to find the sockets in the holding bo
 By using the ratio, and the physical displacement of each socket, a \textit{socket} object was made. Each socket object was passed the holding box image, its pixel starting point within this image, expected hight, and file name for CSV file with pin details. The socket started by cropping a reference matrix of the box image to only the useful area. Using reference copies, or \textit{shallow copies}, has two main advantages: Firstly, the memory used  and copy execution time is reduced, as the socket's stored \textit{Mat} is only a pointer, not a whole new matrix. Secondly, the socket image can be edited for user feedback, and the original holding box image is effected. This allows only a holding box to be presented to the user with all socket information being shown, rather than loading each socket image separately. An example of this is shown in \cref{fig:holdingblockwithdata}. \\
 Using its sub-matrix, the socket examined the mean red ratios, as used for the holding box corner, and determines if a socket was present, as shown in \cref{fig:fullSock}.
 \begin{figure}[h]
-\hspace*{-.05\linewidth}
-\includegraphics[width=0.5\linewidth]{fullSock}
-\hspace*{0.05\linewidth}
-\includegraphics[width=0.5\linewidth]{emptySock}
+\centering
+\includegraphics[width=0.4\linewidth]{fullSock} %
+\includegraphics[width=0.4\linewidth]{emptySock}
 \caption{Active and empty socket place identified and presented with, respectively, green or red bar above}
 \label{fig:fullSock}
 \end{figure}\\
@@ -177,37 +183,37 @@ Sockets that have been identified as present are then further examined to find t
 
 \begin{figure}[h]
 	\centering
-	\begin{subfigure}{0.4\linewidth}
+	\begin{subfigure}{0.3\linewidth}
 		\centering
 		\includegraphics[width=\linewidth]{sock1}
 		\subcaption{original sub-matrix}
 		\label{fig:sock1}
-	\end{subfigure} \hspace{0.1\linewidth}
-	\begin{subfigure}{0.4\linewidth}
+	\end{subfigure} \hspace{0.2\linewidth}
+	\begin{subfigure}{0.3\linewidth}
 		\centering
 		\includegraphics[width=\linewidth]{sock2}
 		\subcaption{Post-threshold}
 		\label{fig:sock2}
 	\end{subfigure}
-	\begin{subfigure}{0.4\linewidth}
+	\begin{subfigure}{0.3\linewidth}
 		\centering
 		\includegraphics[width=\linewidth]{sock3}
 		\subcaption{Small specs removed}
 		\label{fig:sock3}
-	\end{subfigure}\hspace{0.1\linewidth}
-	\begin{subfigure}{0.4\linewidth}
+	\end{subfigure}\hspace{0.2\linewidth}
+	\begin{subfigure}{0.3\linewidth}
 		\centering
 		\includegraphics[width=\linewidth]{sock4}
 		\subcaption{Edge detection}
 		\label{fig:sock4}
 	\end{subfigure}
-	\begin{subfigure}{0.4\linewidth}
+	\begin{subfigure}{0.3\linewidth}
 		\centering
 		\includegraphics[width=\linewidth]{sock5}
 		\subcaption{Matrix refit to edge of red area}
 		\label{fig:sock5}
-	\end{subfigure}\hspace{0.1\linewidth}
-	\begin{subfigure}{0.4\linewidth}
+	\end{subfigure}\hspace{0.2\linewidth}
+	\begin{subfigure}{0.3\linewidth}
 		\centering
 		\includegraphics[width=\linewidth]{sock6}
 		\subcaption{Pins identifed}
@@ -229,8 +235,8 @@ The holding box then re-orientates this coordinate to the global frame, and comb
 A diagram of this process is shown in figure \cref{fig:aaah}.
 \begin{figure}[h]
 \centering
-\includegraphics[width=1.2\linewidth]{aaah}
-\caption{}
+\includegraphics[width=\linewidth]{aaah}
+\caption{Local position, cascading to parent to find global pin position}
 \label{fig:aaah}
 \end{figure}
 
@@ -239,7 +245,7 @@ The gripper single point coordinate is then determined by taking the half-way po
 With the two singularity points for the gripper and pin identified, a vector is derived between them. This vector is given a magnitude and angle, and displayed to the user, as shown in \cref{fig:vector}.
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.7\linewidth]{vector}
+\includegraphics[width=0.5\linewidth]{vector}
 \caption{Gripper to pin hole vector display}
 \label{fig:vector}
 \end{figure}
@@ -250,18 +256,16 @@ As this application is being deployed under fluorescent lighting, there is some 
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=1\linewidth]{measumrnetflux}
-\caption{}
+\includegraphics[width=0.7\linewidth]{measumrnetflux}
+\caption{Vector magnitude and angle change over 30 records in close precession}
 \label{fig:measumrnetflux}
 \end{figure}
 To reduce this lighting issue, the maximum and minimum values observed in this graph are taken, and averaged to derive an error reduced measurement. 
  
 \subsection{Path to gripper arm corrdinates}
 \note{Vector converted to gripper coordinates.} 
-\lipsum
 
-\section{Pin supply identification}
-\note{Something about looking at exact pin location, determining if pin is present.} 
+
 \chapter{Robotic Arm Control}
 \begin{table}
 	\caption{Denavit-Hartenberg Algorithm}
@@ -309,7 +313,7 @@ The command stack was thus extended as shown in \cref{fig:commstack2}
  
 \chapter{Operation Flow}
 With the system's ability to know where to move to, and the ability to coordinate these movements, the operation flow charts can now be presented. Figure \ref{mainFlow} shows the standard operation flow, with purple action points being computer vision processes, and pink being robotic arm actions. Figure \ref{calFlow} shows the operation for calibrating the robotic arm frame, and the camera view frame. 
-\pagenumbering{gobble}
+%\pagenumbering{gobble}
 \tikzstyle{decision} = [diamond, draw, fill=white!20, 
 text width=4.5em, text badly centered, node distance=3cm, inner sep=0pt]
 
@@ -332,9 +336,7 @@ text width=4.5em, text badly centered, node distance=3cm, inner sep=0pt]
 \node [cloud, below of=decide, node distance=3.5cm] (image21) {Average measrument};
 \node [cloud, right of=image21, node distance=3cm] (image22) {Dump measurements};
 \node [cloud, right of=image22, node distance=3cm] (image23) {Convert to robotic arm coordinates};
-\node [cloud, right of=image23, node distance=3cm] (image24) {Detect pin in supply};
-\node [decision, below of=image21, node distance=3cm] (decide2) {Is a pin available to be picked?};
-\node [block, below of=decide2, node distance=3.5cm] (pinget1) {Move to pin supply};
+\node [block, below of=image21, node distance=2.5cm] (pinget1) {Move to pin supply};
 \node [block, right of=pinget1, node distance=3cm] (pinget2) {Close gripper};
 \node [block, below of=pinget1, node distance=2.5cm] (pinset1) {Move to pin hole};
 \node [block, right of=pinset1, node distance=3cm] (pinset2) {Lower gripper};
@@ -342,7 +344,7 @@ text width=4.5em, text badly centered, node distance=3cm, inner sep=0pt]
 \node [block, right of=pinset3, node distance=3cm] (pinset4) {Raise gripper};
 \node [block, right of=pinset4, node distance=3cm] (pinset5) {Move flat section over pin-head};
 \node [block, right of=pinset5, node distance=3cm] (pinset6) {Lower gripper (4mm less)};
-\node [end, right of=decide2, node distance=12cm] (Finish) {Finish} ;
+\node [end, right of=decide3, node distance=5cm] (Finish) {Finish} ;
 
 \path [line] (begin) -- (start);
 \path [line] (start) -- (image11);
@@ -350,17 +352,15 @@ text width=4.5em, text badly centered, node distance=3cm, inner sep=0pt]
 \path [line] (image12) |- (decide3.north);
 
 \path [line] (decide3) -- node [left]{yes} (image13);
-\path [line] (decide3) -| node [above] {no} (Finish);
+\path [line] (decide3) -- node [above] {no} (Finish);
 
 \path [line] (image13) -- (decide);
 \path [line] (decide.west) -| ++(-0.5,6) node [right] {no} |- (image11.west);
 \path [line] (decide) -- node [left] {yes} (image21);
 \path [line] (image21) -- (image22);
 \path [line] (image22) -- (image23);
-\path [line] (image23) -- (image24);
-\path [line] (image24) |- (decide2.north);
-\path [line] (decide2) -- node [below]{no} (Finish);
-\path [line] (decide2) -- node [left]{yes} (pinget1);
+\path [line] (image23.south) -- ++(0,-0.5) -|  (pinget1);
+
 \path [line] (pinget1) --  (pinget2);
 \path [line] (pinget2) |- ++(-1,-1.25) -| (pinset1.north);
 \path [line] (pinset1) --  (pinset2);
@@ -368,7 +368,7 @@ text width=4.5em, text badly centered, node distance=3cm, inner sep=0pt]
 \path [line] (pinset3) --  (pinset4);
 \path [line] (pinset4) --  (pinset5);
 \path [line] (pinset5) --  (pinset6);
-\path [line] (pinset6.south) |- ++(-18,-0.1) |- (start);
+\path [line] (pinset6.south) |- ++(-18,-0.5) |- (start);
 \end{tikzpicture}
 
 \caption{Main Process} \label{mainFlow}
