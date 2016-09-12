@@ -2,6 +2,8 @@
 \usepackage[latin1]{inputenc}
 \usepackage{amsmath}
 \usepackage{lipsum}
+\usepackage{color}
+\usepackage{listings, textcomp}
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage{graphicx}
@@ -270,25 +272,29 @@ To reduce this lighting issue, the maximum and minimum values observed in this g
 \begin{table}
 	\caption{Denavit-Hartenberg Algorithm}
 	\centering
-	\begin{tabular}{| l | c c c c |}
+	\begin{tabular}{| l | c c c c c |}
 		\hline
-		Links & $\theta$ & d & a & $\alpha$ \\ [0.5ex]
+		Links 	& $\theta$ 		& d 	& a 	& $\alpha$	& Physical	\\ [0.5ex]
 		\hline
-		1 		& $\theta$ & 0 	& 0 	& 0 		\\
-		2 		& $\theta$2 	& 0 	& 0.07 	& $\pi$/2 	\\
-		3 		& $\theta$3 	& 0 	& 0.36 	& 0 		\\
-		4 		& $\theta$4 	& 0.38 	& 0 	& $\pi$/2 	\\
-		5 		& $\theta$5 	& 0 	& 0 	& -$\pi$/2 	\\
-		6 		& $\theta$6 	& 0.065 & 0 	& $\pi$/2 	\\ [1ex]
+		1 		& $\theta$ 		& 0 	& 0 	& 0 		& Base 		\\
+		2 		& $\theta$2 	& 0 	& 0.07 	& $\pi$/2 	& Shoulder	\\
+		3 		& $\theta$3 	& 0 	& 0.36 	& 0 		& Elbow		\\
+		4 		& $\theta$4 	& 0.38 	& 0 	& $\pi$/2 	& Twist-1	\\
+		5 		& $\theta$5 	& 0 	& 0 	& -$\pi$/2 	& Wrist		\\
+		6 		& $\theta$6 	& 0.108 & 0 	& $\pi$/2 	& Twist-2	\\ [1ex]
 		\hline
 	\end{tabular}
 \end{table}
 
-The Denavit-Hartenberg algorithm above gives a close approximation to the movement and joint rotation behaviour of the ABB robot arm. Due to the nature of elbow and wrist rotations, a 'd' offset is given for links 4 and 6, allowing a rotation about the length of a previous link. 
+The Denavit-Hartenberg algorithm above gives a close approximation to the movement and joint rotation behaviour of the ABB robot arm. Due to the nature of elbow and wrist rotations, a 'd' offset is given for joints 4 and 6, allowing a rotation about the length of a previous link.\\
+Assumptions are made with the position of joints 4 and 6, where joint 4 is located roughly in the middle of joints 3 and 5 on the physical robot, however since it's rotation is about the link axis it does not matter where this joint is located so long as it is somewhere along the length of link axis. If this link is rotated by a joint at any point along its length, the rotational behaviour of the robot arm past that point will always be the same. Due to this behaviour joint 4 can be simulated to one end of the robot's forearm, instead of at its physical location on the robot's forearm.\\
+A problem occurs when attempting to set a joint which rotates about the link axis. When the Matlab link configuration has an 'a' or 'd' offset after any joint which rotates about a link axis, Matlab cannot construct the robot arm model correctly in the simulation. This is due to the 'a' and 'd' offset lengths both being perpendicular to the link axis. In order to fix this problem and simplify the Denavit-Hartenberg algorithm, it is easier to set the distance between joints 4 and 5 to zero then rotate joint 5 into the correct orientation.\\
+It was also assumed that joint 6 can be located at the end-effector in order to benefit the simulation so that movements and translations will include that distance in calculations. This means that the link between joints 5 and 6 will simulate the end-effector.\\
+Regardless of alterations made in order to simplify the algorithm notation or fix errors produced in a Matlab simulation, the motion characteristics are equivalent to the physical movements of the ABB robot.
 
 \section{Matlab Simulations}
-The Matlab Robotic, Vision and Control library (RVC) is useful for mathematically representing configured links on a robot arm using Denavit-Hartenberg notation. When using the algorithm, links can be created by a user and added to a defined Robot object using the SerialLink() function.
-From here, a single position may be mapped using an array of elements equal to the amount of links. Each element represents either joint translation for prismatic joints or rotation for rotary joints. The order in which the joints are represented in the array need to be the same order in which the links were created in the Denavit-Hartenberg algorithm.
+The Matlab Robotic, Vision and Control library (RVC) is useful for mathematically representing configured links on a robot arm using Denavit-Hartenberg notation. When using the algorithm, links can be created by a user and added to a defined Robot object using the SerialLink() function.\\
+A single position may be mapped using an array of elements equal to the amount of links. Each element represents either joint translation for prismatic joints or rotation for rotary joints. The order in which the joints are represented in the array need to be the same order in which the links were created in the Denavit-Hartenberg algorithm. For the ABB robot, only rotational joints are present. 
 
 \section{Open ABB}
 For this project, a basic parallel port was available for communication between the computer vision and the robotic arm. The parallel port allowed for single bits to be used as flags which triggered the robotic arm to perform action sets. For this project we needed to send specific travel distinations from the computer vision, to the robtic arm, therfore a more advance communication was required. To achieve this, OpenABB \footnote{$https://github.com/robotics/open_abb$} was used. This system has the robotic controller running a basic TCP server via RAPID code. A python script is used on the computer to connect to this server, and send commands. One such command can move the gripper to any point in the arms \hl{range/ field of operations, something like that} by sending the three axis coordinates.\\
@@ -417,5 +423,307 @@ text width=4.5em, text badly centered, node distance=3cm, inner sep=0pt]
 \caption{Calibration} \label{calFlow}
 \end{figure}
 
+\appendix
+\chapter{Matlab Code}
+\label{Matlab}
+\lstset{numbers = left}
+
+\begin{lstlisting}
+% Simple example of using the Matlab Robot toolbox v9.9 for RME40003 Robot 
+
+% Systems Design, 2014.
+
+%
+
+% The example is for a three-link RPR manipulator that was covered in the 
+
+% lectures and the tutorials.
+
+%
+
+% Example developed by M. Dunn, 2014, Swinburne University of Technology,
+
+% Melbourne, Australia
+
+%
+
+% References::
+
+% - Robotics, Vision & Control, Chap 7
+
+%   P. Corke, Springer 2011.
+
+
+clear L
+
+
+%% Define the link parameters for the manipulator
+
+% Set the fifth parameter as 0 for a rotary joint, 1 for a prismatic joint
+
+% Set the "modified" flag to true (we are using the modified
+
+% Denavit-Hartenberg convention in RME40003)
+
+sF = 1.0;
+
+%             theta   d      a       alpha   R(0)/P(1)
+
+L(1) = Link([ 0       0      0       0       0], 'modified');
+
+L(2) = Link([ 0       0      0.07    -pi/2   0], 'modified');
+
+L(3) = Link([ 0       0      0.36    0       0], 'modified');
+
+L(4) = Link([ 0       0.38   0       -pi/2   0], 'modified');
+
+L(5) = Link([ 0       0      0       pi/2    0], 'modified');
+
+L(6) = Link([ 0       0.108  0       -pi/2   0], 'modified');
+
+
+%% Set up the manipulator
+
+robot = SerialLink(L, 'name', 'RME40003 Project');
+
+
+%% Define some poses
+
+
+%start pose
+
+q0 = [     0, -pi/4, -pi/4,     0,     0,     0]; 
+
+%    [     1,     2,     3,     4,     5,     6];
+
+% 1:Base-rot
+
+% 2:shoulder-rot
+
+% 3:elbow-rot
+
+% 4:elbow-twist
+
+% 5:wrist-pivot
+
+% 6:wrist-twist
+
+
+%% Raw position and rotation data for each point
+
+
+%point1
+
+x1 = 0.273/sF;
+
+y1 = -0.740/sF;
+
+z1 = 0.02/sF;
+
+%radians
+
+rotx1 = pi;
+
+roty1 = 0;
+
+rotz1 = 0;
+
+%point2
+
+x2 = 0.273/sF; 
+
+y2 = -0.740/sF;
+
+z2 = -0.1/sF;
+
+%radians
+
+rotx2 = pi;
+
+roty2 = 0;
+
+rotz2 = 0;
+
+%point3
+
+x3 = 0.273/sF;
+
+y3 = -0.740/sF;
+
+z3 = 0.02/sF;
+
+%radians
+
+rotx3 = pi;
+
+roty3 = 0;
+
+rotz3 = 0;
+
+%point4
+
+x4 = 0.4/sF;
+
+y4 = -0.4/sF;
+
+z4 = 0.02/sF;
+
+%radians
+
+rotx4 = pi;
+
+roty4 = 0;
+
+rotz4 = 0;
+
+%point5
+
+x5 = 0.4/sF;
+
+y5 = -0.4/sF;
+
+z5 = -0.1/sF;
+
+%radians
+
+rotx5 = pi;
+
+roty5 = 0;
+
+rotz5 = 0;
+
+%point6
+
+x6 = 0.4/sF;
+
+y6 = -0.4/sF;
+
+z6 = 0.02/sF;
+
+%radians
+
+rotx6 = pi;
+
+roty6 = 0;
+
+rotz6 = 0;
+
+
+%% Point translation homogeneous matrixes
+
+
+T1 = transl(x1,y1,z1)*rpy2tr(rotx1,roty1,rotz1);
+
+T2 = transl(x2,y2,z2)*rpy2tr(rotx2,roty2,rotz2);
+
+T3 = transl(x3,y3,z3)*rpy2tr(rotx3,roty3,rotz3);
+
+T4 = transl(x4,y4,z4)*rpy2tr(rotx4,roty4,rotz4);
+
+T5 = transl(x5,y5,z5)*rpy2tr(rotx5,roty5,rotz5);
+
+T6 = transl(x6,y6,z6)*rpy2tr(rotx6,roty6,rotz6);
+
+
+%% Find the forward kinematics of the pose
+
+fk_q0 = robot.fkine(q0);
+
+
+%% Find the inverse kinematics for fk_qs and fk_qe
+
+
+% Set a mask for the degrees of freedom
+
+M = [1, 1, 1, 1, 1, 1];
+
+
+% Point set for forced convergence
+
+qi = [0,-pi/4,-pi/4,0,pi/2,-pi/2];
+
+
+% Calculate the inverse kinematics of each point
+
+ik_q0 = robot.ikine(fk_q0,qi,M); %fk of initial angles, initial position estimation, DOF settings
+
+ik_q1 = robot.ikine(T1,qi,M);
+
+ik_q2 = robot.ikine(T2,qi,M);
+
+ik_q3 = robot.ikine(T3,qi,M);
+
+ik_q4 = robot.ikine(T4,qi,M);
+
+ik_q5 = robot.ikine(T5,qi,M);
+
+ik_q6 = robot.ikine(T6,qi,M);
+
+
+
+%% Find the joint trajectory for ten steps between the two poses
+
+
+% Set the number of points
+
+num_points = 10;
+
+
+% Moving from point to point
+
+jt0_1 = jtraj(ik_q0,ik_q1,num_points);
+
+jt1_2 = jtraj(ik_q1,ik_q2,num_points);
+
+jt2_3 = jtraj(ik_q2,ik_q3,num_points);
+
+jt3_4 = jtraj(ik_q3,ik_q4,num_points);
+
+jt4_5 = jtraj(ik_q4,ik_q5,num_points);
+
+jt5_6 = jtraj(ik_q5,ik_q6,num_points);
+
+jt6_0 = jtraj(ik_q6,ik_q0,num_points);
+
+
+% Set the workspace of the robot
+
+robot.plotopt = {'workspace',[-1, 1, -1, 1, -1, 1]};
+
+
+% Plot the animations
+
+while 1
+
+robot.plot(jt0_1);
+
+pause(1);
+
+robot.plot(jt1_2);
+
+pause(1);
+
+robot.plot(jt2_3);
+
+pause(1);
+
+robot.plot(jt3_4);
+
+pause(1);
+
+robot.plot(jt4_5);
+
+pause(1);
+
+robot.plot(jt5_6);
+
+pause(1);
+
+robot.plot(jt6_0);
+
+pause(1);
+
+end
+\end{lstlisting}
 
 \end{document}
