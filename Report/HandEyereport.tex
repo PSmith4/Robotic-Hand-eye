@@ -269,8 +269,8 @@ To reduce this lighting issue, the maximum and minimum values observed in this g
 
 
 \chapter{Robotic Arm Control}
-\begin{table}
-	\caption{Denavit-Hartenberg Algorithm}
+\begin{table}[h]
+
 	\centering
 	\begin{tabular}{| l | c c c c c |}
 		\hline
@@ -283,12 +283,14 @@ To reduce this lighting issue, the maximum and minimum values observed in this g
 		5 		& $\theta$5 	& 0 	& 0 	& -$\pi$/2 	& Wrist		\\
 		6 		& $\theta$6 	& 0.108 & 0 	& $\pi$/2 	& Twist-2	\\ [1ex]
 		\hline
+		
 	\end{tabular}
+		\caption{Denavit-Hartenberg Algorithm}
 \end{table}
 
-The Denavit-Hartenberg algorithm above gives a close approximation to the movement and joint rotation behaviour of the ABB robot arm. Due to the nature of elbow and wrist rotations, a 'd' offset is given for joints 4 and 6, allowing a rotation about the length of a previous link.\\
-Assumptions are made with the position of joints 4 and 6, where joint 4 is located roughly in the middle of joints 3 and 5 on the physical robot, however since it's rotation is about the link axis it does not matter where this joint is located so long as it is somewhere along the length of link axis. If this link is rotated by a joint at any point along its length, the rotational behaviour of the robot arm past that point will always be the same. Due to this behaviour joint 4 can be simulated to one end of the robot's forearm, instead of at its physical location on the robot's forearm.\\
-A problem occurs when attempting to set a joint which rotates about the link axis. When the Matlab link configuration has an 'a' or 'd' offset after any joint which rotates about a link axis, Matlab cannot construct the robot arm model correctly in the simulation. This is due to the 'a' and 'd' offset lengths both being perpendicular to the link axis. In order to fix this problem and simplify the Denavit-Hartenberg algorithm, it is easier to set the distance between joints 4 and 5 to zero then rotate joint 5 into the correct orientation.\\
+The Denavit-Hartenberg matrix above gives a close approximation to the movement and joint rotation behaviour of the ABB robot arm. Due to the nature of elbow and wrist rotations, a `d' offset is given for joints 4 and 6, allowing a rotation about the length of a previous link.\\
+Assumptions are made with the position of joints 4 and 6, where joint 4 is located roughly in the middle of joints 3 and 5 on the physical robot, however since it's rotation is about the link axis it is irrelevant where this joint is located, so long as it is within the linkage length. That is to say, if this link is rotated by a joint at any point along its length, the rotational behaviour of further joints will be the same. Due to this behaviour, joint 4 can be simulated at one end of the robot's forearm, instead of at its physical location on the robot's forearm.\\
+A problem occurs when attempting to set a joint which rotates about the link axis. When the Matlab link configuration has an `a' or `d' offset after any joint which rotates about a link axis, Matlab cannot construct the robot arm model correctly in the simulation. This is due to the `a' and `d' offset lengths both being perpendicular to the link axis. In order to fix this problem and simplify the Denavit-Hartenberg algorithm, it is easier to set the distance between joints 4 and 5 to zero then rotate joint 5 into the correct orientation.\\
 It was also assumed that joint 6 can be located at the end-effector in order to benefit the simulation so that movements and translations will include that distance in calculations. This means that the link between joints 5 and 6 will simulate the end-effector.\\
 Regardless of alterations made in order to simplify the algorithm notation or fix errors produced in a Matlab simulation, the motion characteristics are equivalent to the physical movements of the ABB robot.
 
