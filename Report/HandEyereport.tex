@@ -73,8 +73,13 @@ More specifically, this project has been completed for an industry client, AME S
 \caption{Image of pin and socket, and socket in holding box}
 \label{fig:IMG_20160908_142218}
 \end{figure}
-To hold the socket in place, and determine the orientation, a holding box has been produced which slots the sockets into a fixed position, shown in \cref{fig:IMG_20160908_142218}(b). For this project, these boxes are not themselves placed in a fixed location within the work space. As such the main objective of this project is using the computer vision to determine the global position of the pin holes, via the fixed position of the socket in the box, and the global position and orientation of the box in the work space.\\
-
+To hold the socket in place, and determine the orientation, a holding box has been produced which slots the sockets into a fixed position, shown in \cref{fig:IMG_20160908_142218}(b). For this project, these boxes are not themselves placed in a fixed location within the work space. As such the first objective of this project is using the computer vision to determine the global position of the pin holes, via the fixed position of the socket in the box, and the global position and orientation of the box in the work space.\\
+The secondary objective is having the robotic arm collect a pin, and place it in the pin hole by converting the pinhole location in the camera frame to the required position in the robotic arm frame. The process for placing the pin with the robotic arm will then be as follows:
+\begin{itemize}
+\item Lower pin halfway into hole
+\item Release pin
+\item Drive pin remaining distance into hole.
+\end{itemize}
 
 For this project, the confirmation of pins being ready in the supply is not being explored. This is due to the industry application being intended to use a vibrating bowl feed, and thus the assumption can be made pins will always be available. For this proof of concept, a rack of three pins is made, with the gripper positions being hard coded.\\    
 
@@ -232,7 +237,7 @@ A second CSV file then provides information on which pin holes should be filled.
 \section{Path creation}
 \subsection{Gripper to pin path creation}
 With the pin holes assigned, the next available pinhole is requested from the main function. To do this, each layer between the main image and the pin holes are re-framed within their parent.\\
-To begin, the first pinhole that should be filled, but not currently filled (coloured yellow above) reports to its parent socket the location within the socket. The socket then combines this location, and the location of the socket within the holding box, and reports this value to its parent holding box. \\
+To begin, the first unfilled pinhole (coloured yellow above) reports to its parent socket the location within the socket. The socket then combines this location, and the location of the socket within the parent holding box, and reports this value to its parent holding box. \\
 The holding box then re-orientates this coordinate to the global frame, and combines it with the holding box's location in the global frame. This final, global position of the pin is then reported to the main function.
 A diagram of this process is shown in figure \cref{fig:aaah}.
 \begin{figure}[h]
@@ -292,7 +297,7 @@ The command stack was thus extended as shown in \cref{fig:commstack2}
 \end{figure}
  
 \chapter{Operation Flow}
-With the system's ability to know where to move to, and the ability to coordinate these movements, the operation flow charts can now be presented. Figure \ref{mainFlow} shows the standard operation flow, with purple action points being computer vision processes, and pink being robotic arm actions. Figure \ref{calFlow} shows the operation for calibrating the robotic arm frame, and the camera view frame. 
+With the system's ability to know where to move to, and the ability to coordinate these movements, the operation flow charts can now be presented. Figure \ref{mainFlow} shows the standard operation flow, with purple action points being computer vision processes, and pink being robotic arm actions. Figure \ref{calFlow} shows the operation for calibrating the difference between robotic arm frame, and the camera frame. 
 %\pagenumbering{gobble}
 \tikzstyle{decision} = [diamond, draw, fill=white!20, 
 text width=4.5em, text badly centered, node distance=3cm, inner sep=0pt]
@@ -432,303 +437,178 @@ A single position may be mapped using an array of elements equal to the amount o
 \appendix
 \chapter{Matlab Code}
 \label{Matlab}
-\lstset{numbers = left}
+\lstset{numbers = left,
+numbersep=5pt}
 
 \begin{lstlisting}
 % Simple example of using the Matlab Robot toolbox v9.9 for RME40003 Robot 
-
 % Systems Design, 2014.
-
 %
-
 % The example is for a three-link RPR manipulator that was covered in the 
-
 % lectures and the tutorials.
-
 %
-
 % Example developed by M. Dunn, 2014, Swinburne University of Technology,
-
 % Melbourne, Australia
-
 %
-
 % References::
-
 % - Robotics, Vision & Control, Chap 7
-
 %   P. Corke, Springer 2011.
-
 
 clear L
 
-
 %% Define the link parameters for the manipulator
-
 % Set the fifth parameter as 0 for a rotary joint, 1 for a prismatic joint
-
 % Set the "modified" flag to true (we are using the modified
-
 % Denavit-Hartenberg convention in RME40003)
 
 sF = 1.0;
-
 %             theta   d      a       alpha   R(0)/P(1)
-
 L(1) = Link([ 0       0      0       0       0], 'modified');
-
 L(2) = Link([ 0       0      0.07    -pi/2   0], 'modified');
-
 L(3) = Link([ 0       0      0.36    0       0], 'modified');
-
 L(4) = Link([ 0       0.38   0       -pi/2   0], 'modified');
-
 L(5) = Link([ 0       0      0       pi/2    0], 'modified');
-
 L(6) = Link([ 0       0.108  0       -pi/2   0], 'modified');
 
-
 %% Set up the manipulator
-
 robot = SerialLink(L, 'name', 'RME40003 Project');
 
-
 %% Define some poses
-
-
 %start pose
-
 q0 = [     0, -pi/4, -pi/4,     0,     0,     0]; 
 
-%    [     1,     2,     3,     4,     5,     6];
-
 % 1:Base-rot
-
 % 2:shoulder-rot
-
 % 3:elbow-rot
-
 % 4:elbow-twist
-
 % 5:wrist-pivot
-
 % 6:wrist-twist
 
 
 %% Raw position and rotation data for each point
-
-
 %point1
 
 x1 = 0.273/sF;
-
 y1 = -0.740/sF;
-
 z1 = 0.02/sF;
 
 %radians
-
 rotx1 = pi;
-
 roty1 = 0;
-
 rotz1 = 0;
 
 %point2
-
 x2 = 0.273/sF; 
-
 y2 = -0.740/sF;
-
 z2 = -0.1/sF;
 
 %radians
-
 rotx2 = pi;
-
 roty2 = 0;
-
 rotz2 = 0;
 
 %point3
-
 x3 = 0.273/sF;
-
 y3 = -0.740/sF;
-
 z3 = 0.02/sF;
 
 %radians
-
 rotx3 = pi;
-
 roty3 = 0;
-
 rotz3 = 0;
 
 %point4
-
 x4 = 0.4/sF;
-
 y4 = -0.4/sF;
-
 z4 = 0.02/sF;
 
 %radians
-
 rotx4 = pi;
-
 roty4 = 0;
-
 rotz4 = 0;
 
 %point5
-
 x5 = 0.4/sF;
-
 y5 = -0.4/sF;
-
 z5 = -0.1/sF;
 
 %radians
-
 rotx5 = pi;
-
 roty5 = 0;
-
 rotz5 = 0;
 
 %point6
-
 x6 = 0.4/sF;
-
 y6 = -0.4/sF;
-
 z6 = 0.02/sF;
 
 %radians
-
 rotx6 = pi;
-
 roty6 = 0;
-
 rotz6 = 0;
 
 
 %% Point translation homogeneous matrixes
-
-
 T1 = transl(x1,y1,z1)*rpy2tr(rotx1,roty1,rotz1);
-
 T2 = transl(x2,y2,z2)*rpy2tr(rotx2,roty2,rotz2);
-
 T3 = transl(x3,y3,z3)*rpy2tr(rotx3,roty3,rotz3);
-
 T4 = transl(x4,y4,z4)*rpy2tr(rotx4,roty4,rotz4);
-
 T5 = transl(x5,y5,z5)*rpy2tr(rotx5,roty5,rotz5);
-
 T6 = transl(x6,y6,z6)*rpy2tr(rotx6,roty6,rotz6);
 
 
 %% Find the forward kinematics of the pose
-
 fk_q0 = robot.fkine(q0);
 
 
 %% Find the inverse kinematics for fk_qs and fk_qe
-
-
 % Set a mask for the degrees of freedom
-
 M = [1, 1, 1, 1, 1, 1];
 
-
 % Point set for forced convergence
-
 qi = [0,-pi/4,-pi/4,0,pi/2,-pi/2];
 
-
 % Calculate the inverse kinematics of each point
-
 ik_q0 = robot.ikine(fk_q0,qi,M); %fk of initial angles, initial position estimation, DOF settings
-
 ik_q1 = robot.ikine(T1,qi,M);
-
 ik_q2 = robot.ikine(T2,qi,M);
-
 ik_q3 = robot.ikine(T3,qi,M);
-
 ik_q4 = robot.ikine(T4,qi,M);
-
 ik_q5 = robot.ikine(T5,qi,M);
-
 ik_q6 = robot.ikine(T6,qi,M);
 
-
-
 %% Find the joint trajectory for ten steps between the two poses
-
-
 % Set the number of points
-
 num_points = 10;
 
-
 % Moving from point to point
-
 jt0_1 = jtraj(ik_q0,ik_q1,num_points);
-
 jt1_2 = jtraj(ik_q1,ik_q2,num_points);
-
 jt2_3 = jtraj(ik_q2,ik_q3,num_points);
-
 jt3_4 = jtraj(ik_q3,ik_q4,num_points);
-
 jt4_5 = jtraj(ik_q4,ik_q5,num_points);
-
 jt5_6 = jtraj(ik_q5,ik_q6,num_points);
-
 jt6_0 = jtraj(ik_q6,ik_q0,num_points);
 
-
 % Set the workspace of the robot
-
 robot.plotopt = {'workspace',[-1, 1, -1, 1, -1, 1]};
 
-
 % Plot the animations
-
 while 1
-
-robot.plot(jt0_1);
-
-pause(1);
-
-robot.plot(jt1_2);
-
-pause(1);
-
-robot.plot(jt2_3);
-
-pause(1);
-
-robot.plot(jt3_4);
-
-pause(1);
-
-robot.plot(jt4_5);
-
-pause(1);
-
-robot.plot(jt5_6);
-
-pause(1);
-
-robot.plot(jt6_0);
-
-pause(1);
-
+	robot.plot(jt0_1);
+	pause(1);
+	robot.plot(jt1_2);
+	pause(1);
+	robot.plot(jt2_3);
+	pause(1);
+	robot.plot(jt3_4);
+	pause(1);
+	robot.plot(jt4_5);
+	pause(1);
+	robot.plot(jt5_6);
+	pause(1);
+	robot.plot(jt6_0);
+	pause(1);
 end
 \end{lstlisting}
 
