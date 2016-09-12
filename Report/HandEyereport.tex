@@ -269,8 +269,31 @@ As this application is being deployed under fluorescent lighting, there is some 
 \end{figure}
 To reduce this lighting issue, the maximum and minimum values observed in this graph are taken, and averaged to derive an error reduced measurement. 
  
-\subsection{Path to gripper arm corrdinates}
-\note{Vector converted to gripper coordinates.} 
+\subsection{Path to gripper arm co-ordinates}
+\note{Vector converted to gripper co-ordinates.} 
+
+To move the gripper towards its target pin-hole destination for placement, the robot-space position of the pin hole must be known. To find this, the camera-space pixel position of the pin hole is broken down into perpendicular component vectors (aligned to world axis) and then transformed into robot-space.
+
+The following assumptions about the camera and workspace were made to simplify the design of the pixel to robot-space conversion.
+\begin{itemize}
+	\item No camera distortion is present
+	\item The effects of field-of-view and perspective can ignored due to the heads-down and mainly depth-agnostic nature of the workspace
+	\item The z-position of target pin-hole is constant and known
+\end{itemize}
+
+A vector Xc aligned to x-axis of the robot-space is found in terms of camera-space. This is done by taking a photo of the robot gripper and noting the vector between its image position at x,y,z = (0,0,0) and at x,y,z = (200mm,0,0) during the calibration phase of the program. This allows for decomposition of the gripper-to-pin-hole vector Pc into terms of perpendicular vectors Xc and Yc (y axis). To find these Pc components the following equations are used. 
+
+\begin{equation}
+Pcx*Xc = (Xc.Pc)/(|Xc||Xc|)Xc
+\label{eq:redest}
+\end{equation}
+
+\begin{equation}
+Pcy*Yc = Pc - Pcx*Xc
+\label{eq:redest}
+\end{equation}
+
+These vectors are the pixel space components aligned to world-space axis. To obtain the world-space scaled vector of the pin-hole Pw, the constants Pcx and Pcy are multiplied by the pixel to world scaling factor (200mm / the magnitude of Xc (pixels)). The gripper can now be commanded to move the transformed world pin-hole position Pw for placement of pin.
 
 
 \chapter{Robotic Arm Control}
