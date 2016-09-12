@@ -12,6 +12,8 @@ class RobotShell{
         void moveRelative_0pose(float x, float y);
 
         void movefromZero(float x, float y);
+        void movefromZeroWithDebug(float x, float y);
+
         void moveRelative(float x, float y, float z);
         void moveTo(float x, float y, float z);
         void moveTo(float x, float y);

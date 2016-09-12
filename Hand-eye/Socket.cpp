@@ -62,7 +62,7 @@ Socket::Socket(string _locationsfile, string _config,Point2f _location, Mat& con
 
                 //cout<<topLeft.x<<"m"<<topLeft.y<<endl;
 
-                 double areaRange=50;
+                 double areaRange=90;
                 //cout<< PotentialSocket.size.area()<<" "<<image.rows*image.cols *0.25<<endl;
                 //cout<<(28*RatioSingleton::GetInstance()->GetRatio()*15*RatioSingleton::GetInstance()->GetRatio())-PotentialSocket.area()<<endl;
                 if (PotentialSocket.area()  < (28*RatioSingleton::GetInstance()->GetRatio()*15*RatioSingleton::GetInstance()->GetRatio())+areaRange &&  PotentialSocket.area()  > (28*RatioSingleton::GetInstance()->GetRatio()*15*RatioSingleton::GetInstance()->GetRatio())-areaRange) // check if this rectangle found is at least 1/4 the expected size

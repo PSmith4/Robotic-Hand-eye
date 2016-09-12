@@ -75,7 +75,6 @@ using namespace std;
 				}
 			}
 		}
-
 		if (largest_red<0.35)
 			throw std::invalid_argument("red");
 

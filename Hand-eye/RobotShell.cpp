@@ -2,18 +2,22 @@
 #include <Python.h>
 #include <string>
 #include <iostream>
+#include "opencv2/highgui/highgui.hpp"
 
 using namespace std;
+using namespace cv;
 RobotShell::RobotShell()
 {
     Py_SetProgramName(0);
 	Py_Initialize();
+	float yOffset=2;
+	float xOffset=-7;
 	PyRun_SimpleString("import sys\n");
 	PyRun_SimpleString("sys.path.append('/home/phil/Robotic-Hand-eye/Hand-eye')\n");
 	PyRun_SimpleString("import abb\n");
 
 	PyRun_SimpleString("R= abb.Robot(ip='192.168.125.1')\n");
-    PyRun_SimpleString("R.set_tool([[0,2,108], [1,0,0,0]])\n");
+    PyRun_SimpleString(("R.set_tool([[" + to_string(xOffset) + "," + to_string(yOffset) + ",105], [1,0,0,0]])\n").c_str());
     //moveToPosZero();
     //PyRun_SimpleString("R.set_joints([32.4,66.6,17.1,-57.7,-86.9, 94.7])\n");
 
@@ -24,9 +28,9 @@ RobotShell::RobotShell()
 	pos0z=90;
 
 
-	pinPlaces.push_back( {273, 740} );
-    pinPlaces.push_back( {273, 732} );
-	pinPlaces.push_back( {273, 723} );
+	pinPlaces.push_back( {273+xOffset, 740-yOffset} );
+    pinPlaces.push_back( {273+xOffset, 732-yOffset} );
+	pinPlaces.push_back( {273+xOffset, 723-yOffset} );
 
 	//stop wire tangle
     //PyRun_SimpleString("R.set_joints([85,65,-19,-86.1,-16,173.5])\n");
@@ -43,19 +47,49 @@ RobotShell::~RobotShell()
 
 }
 
+
 void RobotShell::movefromZero(float x, float y)
 {
-string s="R.set_cartesian([["+
+    string s="R.set_cartesian([["+
         to_string(pos0x+x) +"," +
 		to_string(pos0y+y) +"," +
 		to_string(pos0z) +
 		//"],[0.05,0.01,0.76,0.65]])\n").c_str());
         "],[0,1,0,0]])\n";
-        cout<<s;
-        PyRun_SimpleString(s.c_str());
+    PyRun_SimpleString(s.c_str());
+
+}
+
+
+void RobotShell::movefromZeroWithDebug(float x, float y)
+{
+    string ok="n";
+    string yOffset;
+    string xOffset;
+
+    while(ok=="n"){
+    //float yOffset=5.0;
+    cin>>yOffset;
+    cin>>xOffset;
+
+    PyRun_SimpleString(("R.set_tool([["+xOffset +"," + yOffset + ",105], [1,0,0,0]])\n").c_str());
+
+
+    string s="R.set_cartesian([["+
+        to_string(pos0x+x) +"," +
+		to_string(pos0y+y) +"," +
+		to_string(pos0z) +
+		//"],[0.05,0.01,0.76,0.65]])\n").c_str());
+        "],[0,1,0,0]])\n";
+    PyRun_SimpleString(s.c_str());
+        cin>>ok;
+    }
+
+
 }
 void RobotShell::moveToPosZero()
 {
+
 	PyRun_SimpleString(("R.set_cartesian([["+
         to_string(pos0x) +"," +
 		to_string(pos0y) +"," +
@@ -136,10 +170,10 @@ speed(100);
 PyRun_SimpleString(("R.set_cartesian([["+to_string(pinPlaces.back()[0])+","+ to_string(pinPlaces.back()[1])+","+to_string(60)+"],[0,1,0,0]])\n").c_str());
 PyRun_SimpleString("R.open_gripper()\n");
 speed(50);
-PyRun_SimpleString(("R.set_cartesian([["+to_string(pinPlaces.back()[0])+","+ to_string(pinPlaces.back()[1])+","+to_string(17)+"],[0,1,0,0]])\n").c_str());
+PyRun_SimpleString(("R.set_cartesian([["+to_string(pinPlaces.back()[0])+","+ to_string(pinPlaces.back()[1])+","+to_string(19)+"],[0,1,0,0]])\n").c_str());
 PyRun_SimpleString("R.close_gripper()\n");
 speed(100);
-PyRun_SimpleString(("R.set_cartesian([["+to_string(pinPlaces.back()[0])+","+ to_string(pinPlaces.back()[1])+","+to_string(60)+"],[0,1,0,0]])\n").c_str());
+PyRun_SimpleString(("R.set_cartesian([["+to_string(pinPlaces.back()[0])+","+ to_string(pinPlaces.back()[1])+","+to_string(55)+"],[0,1,0,0]])\n").c_str());
 
 pinPlaces.pop_back();
 
@@ -148,10 +182,10 @@ pinPlaces.pop_back();
  void RobotShell::placePin()
  {
             speed(20);
-            moveRelative(00,00,-27);
+            moveRelative(00,00,-25);
             PyRun_SimpleString("R.open_gripper()\n");
             moveRelative(00,00,15);
-            moveRelative(-10,-5);
+            moveRelative(10,0);
             moveRelative(00,00,-12);
             speed(100);
             moveRelative(00,00,20);

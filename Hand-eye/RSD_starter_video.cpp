@@ -53,7 +53,7 @@ namespace {
         out_world_pos: the resultant position in world horizontal plane
     */
 
-	Point2f meanMeasurment(vector<Point2f> measurments)
+	Point2f meanMeasurment(vector<Point2f>& measurments)
 	{
 		Point2f avg;
 		if (measurments.size() >20)
@@ -144,7 +144,7 @@ namespace {
             << endl;
     }
 
-	void Object_Detection(Mat input, Mat background, vector<HoldingBox> &holders,vector<Gripper> &grippers )
+	void Object_Detection(Mat& input, Mat background, vector<HoldingBox> &holders,vector<Gripper> &grippers )
 	{
 		//namedWindow("out1",CV_WINDOW_KEEPRATIO);
 		//namedWindow("out2",CV_WINDOW_KEEPRATIO);
@@ -154,18 +154,18 @@ namespace {
 		Mat output2;
 		Mat output3;
 		int Cannythresh=20;
-		int MainThresh=10;
+		int MainThresh=50;
 
 		output1=input-background;
 
-		threshold(output1,output1,10,255,0);
+		threshold(output1,output1,MainThresh,255,0);
 		cvtColor(output1,output2,CV_BGR2GRAY,0);
 
 		//blur( output2, output2, Size(3,3) );
 		erode(output2,output2,Mat());
 		dilate(output2,output2,Mat());
 		//dilate(output2,output2,Mat());
-		Canny(output2,output3, 20,60); // Maybe use int threshold = 200;    cv::Mat mask = output > threshold;
+		Canny(output2,output3, Cannythresh,Cannythresh*3); // Maybe use int threshold = 200;    cv::Mat mask = output > threshold;
 		dilate(output3,output3,Mat());
 
 		vector<vector<Point> > contours;
@@ -174,13 +174,17 @@ namespace {
 		for (int i = 0; i < contours.size(); i++)
 		{
 			RotatedRect PotentialHoldingBox(minAreaRect(contours[i]));
-			//cout<<PotentialHoldingBox.size.area()<<endl;
+
 			try
 			{
 				if (hierarchy[i][3]==-1 && hierarchy[i][2]!=-1 ) //only make parents with children map. as these are our box
 				{
-					if( PotentialHoldingBox.size.area() > 5500 && PotentialHoldingBox.size.area()<7000)
+                    //cout<<PotentialHoldingBox.size.area()<<endl;
+					if( PotentialHoldingBox.size.area() > 5000 && PotentialHoldingBox.size.area()<6000)
+					{
 						holders.push_back( HoldingBox(PotentialHoldingBox,input) );
+                        //drawContours(input,contours,i,cv::Scalar(255,0,255));
+                    }
 					else if( PotentialHoldingBox.size.area() > 2000 && PotentialHoldingBox.size.area()<3000)
 						grippers.push_back( Gripper(PotentialHoldingBox,input) );
 				}
@@ -195,7 +199,7 @@ namespace {
 				}
 				catch(std::invalid_argument e){}
 			}
-			//cv::drawContours(output4,contours,i,cv::Scalar(0,225,255));
+
 		}
 
 	}
@@ -419,6 +423,14 @@ namespace {
 						pinPoints.push_back(getVector(temp.at(2), grippers.at(j).getCenterPoint(), input));
 					}catch(std::out_of_range e){}
 				}
+				///
+                    vector<Point2f> temp= holders.at(i).getNextPoint();
+                    try
+					{
+                        pinPoints.push_back(getVector(temp.at(2), Point2f(gripper_img_start.val[0],gripper_img_start.val[1]), input));
+                    }catch(std::out_of_range e){}
+				///
+
 			}
 
 			/****************** End of Swinburne modifications ****************/
