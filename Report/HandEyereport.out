@@ -6,11 +6,14 @@
 \BOOKMARK [2][-]{subsection.2.1.3}{Object orientation}{section.2.1}% 6
 \BOOKMARK [1][-]{section.2.2}{Pin detection and PinHole Allocation}{chapter.2}% 7
 \BOOKMARK [1][-]{section.2.3}{Path creation}{chapter.2}% 8
-\BOOKMARK [2][-]{subsection.2.3.1}{Gripper to pin path creation}{section.2.3}% 9
+\BOOKMARK [2][-]{subsection.2.3.1}{Pinhole and gripper location}{section.2.3}% 9
 \BOOKMARK [2][-]{subsection.2.3.2}{Measurement correction}{section.2.3}% 10
-\BOOKMARK [2][-]{subsection.2.3.3}{Path to gripper arm corrdinates}{section.2.3}% 11
+\BOOKMARK [2][-]{subsection.2.3.3}{Path to gripper arm co-ordinates}{section.2.3}% 11
 \BOOKMARK [0][-]{chapter.3}{Robotic Arm Control}{}% 12
-\BOOKMARK [1][-]{section.3.1}{Matlab Simulations}{chapter.3}% 13
-\BOOKMARK [1][-]{section.3.2}{Open ABB}{chapter.3}% 14
-\BOOKMARK [1][-]{section.3.3}{Coordination}{chapter.3}% 15
-\BOOKMARK [0][-]{chapter.4}{Operation Flow}{}% 16
+\BOOKMARK [1][-]{section.3.1}{Open ABB}{chapter.3}% 13
+\BOOKMARK [1][-]{section.3.2}{Coordination}{chapter.3}% 14
+\BOOKMARK [0][-]{chapter.4}{Operation Flow}{}% 15
+\BOOKMARK [0][-]{chapter.5}{Matlab Simulation}{}% 16
+\BOOKMARK [1][-]{section.5.1}{Denavit-Hartenberg Algorithm}{chapter.5}% 17
+\BOOKMARK [1][-]{section.5.2}{Matlab implementation}{chapter.5}% 18
+\BOOKMARK [0][-]{appendix.A}{Matlab Code}{}% 19

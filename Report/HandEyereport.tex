@@ -33,7 +33,7 @@
 \usepackage{titlesec}
 \titleformat{\chapter}[display]   
 {\normalfont\huge\bfseries}{\chaptertitlename\ \thechapter}{20pt}{\Huge}   
-\titlespacing*{\chapter}{0pt}{-50pt}{5pt}
+\titlespacing*{\chapter}{0pt}{-55pt}{5pt}
 
 \begin{document}
 
@@ -68,14 +68,14 @@ This project explores the use of a robotic arm used for pick-and-place automatio
 More specifically, this project has been completed for an industry client, AME System Pty. Ltd., for automated cavity pin insertion. These pins are 3.5mm wide and are placed in holes between 5 and 9mm apart on a rubber socket, as shown in \cref{fig:IMG_20160908_142218}(a) Due to this small size, a high degree of accuracy and repeatability is required.\\
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.25\linewidth]{IMG_20160908_142218} %
-\includegraphics[width=0.45\linewidth]{IMG_20160912_135721}
+\includegraphics[width=0.2\linewidth]{IMG_20160908_142218} %
+\includegraphics[width=0.38\linewidth]{IMG_20160912_135721}
 \caption{Image of pin and socket, and socket in holding box}
 \label{fig:IMG_20160908_142218}
 \end{figure}
 To hold the socket in place, and determine the orientation, a holding box has been produced which slots the sockets into a fixed position, shown in \cref{fig:IMG_20160908_142218}(b). For this project, these boxes are not themselves placed in a fixed location within the work space. As such the first objective of this project is using the computer vision to determine the global position of the pin holes, via the fixed position of the socket in the box, and the global position and orientation of the box in the work space.\\
 The secondary objective is having the robotic arm collect a pin, and place it in the pin hole by converting the pinhole location in the camera frame to the required position in the robotic arm frame. The process for placing the pin with the robotic arm will then be as follows:
-\begin{itemize}
+\begin{itemize}  \setlength\itemsep{1pt}
 \item Lower pin halfway into hole
 \item Release pin
 \item Drive pin remaining distance into hole.
@@ -235,10 +235,9 @@ A second CSV file then provides information on which pin holes should be filled.
  \FloatBarrier
 
 \section{Path creation}
-\subsection{Gripper to pin path creation}
+\subsection{Pinhole and gripper location}
 With the pin holes assigned, the next available pinhole is requested from the main function. To do this, each layer between the main image and the pin holes are re-framed within their parent.\\
-To begin, the first unfilled pinhole (coloured yellow above) reports to its parent socket the location within the socket. The socket then combines this location, and the location of the socket within the parent holding box, and reports this value to its parent holding box. \\
-The holding box then re-orientates this coordinate to the global frame, and combines it with the holding box's location in the global frame. This final, global position of the pin is then reported to the main function.
+To begin, the first unfilled pinhole (coloured yellow above) reports to its parent socket the centre pixel location in the pin, combined with the location of the pin within the socket. The socket then combines this location, and the location of the socket within the parent holding box, and reports this value to its parent.The holding box then re-orientates this coordinate to the global frame, and combines it with the holding box's location in the global frame. This final, global position of the pin is then reported to the main function.
 A diagram of this process is shown in figure \cref{fig:aaah}.
 \begin{figure}[h]
 \centering
@@ -247,9 +246,6 @@ A diagram of this process is shown in figure \cref{fig:aaah}.
 \label{fig:aaah}
 \end{figure}
 
-The gripper single point coordinate is then determined by taking the half-way point between the green and blue corners of the gripper.\\
-
-With the two singularity points for the gripper and pin identified, a vector is derived between them. This vector is given a magnitude and angle, and displayed to the user, as shown in \cref{fig:vector}.
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.5\linewidth]{vector}
@@ -257,9 +253,12 @@ With the two singularity points for the gripper and pin identified, a vector is 
 \label{fig:vector}
 \end{figure}
  \FloatBarrier
+ 
+To find a pixel singularity representation of the gripper, the half-way point between the blue and green corners, along the shared edge of the RotatedRect is reported to the main function.\\
 
-\subsection{Measurement correction}
-As this application is being deployed under fluorescent lighting, there is some oscillation in lighting of the holing box and gripper. From this, the measurements recorded above cannot be assumed to be completely accurate. The graph shown in \cref{fig:measumrnetflux} shows that if the above \textit{object detection} and \textit{path measurement} process is repeated 30 times, in quick succession, there is a range of values recorded.\\ 
+
+\subsection{Measurement correction} \label{mean}
+As this application is being deployed under fluorescent lighting, there is some oscillation in recordings of the holing box and gripper. From this, the measurements recorded above cannot be assumed to be completely accurate. The graph shown in \cref{fig:measumrnetflux} shows that if the above object detection process is repeated 30 times, in quick succession, and a vector is made from gripper pixel to pin-hole centre pixel for each recording, there is a range of values found.\\ 
 
 \begin{figure}[h]
 \centering
@@ -267,21 +266,20 @@ As this application is being deployed under fluorescent lighting, there is some 
 \caption{Vector magnitude and angle change over 30 records in close precession}
 \label{fig:measumrnetflux}
 \end{figure}
-To reduce this lighting issue, the maximum and minimum values observed in this graph are taken, and averaged to derive an error reduced measurement. 
+To reduce this lighting issue, a collection of 30 location recordings are made. The maximum and minimum values of these records are then averaged to derive a value with some error tolerance. 
  
 \subsection{Path to gripper arm co-ordinates}
-\note{Vector converted to gripper co-ordinates.} 
 
-To move the gripper towards its target pin-hole destination for placement, the robot-space position of the pin hole must be known. To find this, the camera-space pixel position of the pin hole is broken down into perpendicular component vectors (aligned to world axis) and then transformed into robot-space.
+To move the gripper towards its target pin-hole destination for placement, the robot-frame position of the pin hole must be known. To find this, the vector from gripper to pin hole in the camera frame,  found above, is broken down into Cartesian components and transformed into robot-space.
 
-The following assumptions about the camera and workspace were made to simplify the design of the pixel to robot-space conversion.
+The following assumptions about the camera and workspace were made to simplify the design of the pixel to robot-frame conversion.
 \begin{itemize}
 	\item No camera distortion is present
-	\item The effects of field-of-view and perspective can ignored due to the heads-down and mainly depth-agnostic nature of the workspace
+	\item The effects of field-of-view and perspective are ignored due to the heads-down and mainly depth-agnostic nature of the workspace
 	\item The z-position of target pin-hole is constant and known
 \end{itemize}
 
-A vector Xc aligned to x-axis of the robot-space is found in terms of camera-space. This is done by taking a photo of the robot gripper and noting the vector between its image position at x,y,z = (0,0,0) and at x,y,z = (200mm,0,0) during the calibration phase of the program. This allows for decomposition of the gripper-to-pin-hole vector Pc into terms of perpendicular vectors Xc and Yc (y axis). To find these Pc components the following equations are used. 
+Before the conversion can be made, a configuration measurement must be preformed to create a vector Xc, aligned to the x-axis of the robot-frame, within the camera-frame. This is done by recording the camera-frame location of the gripper at the robot home position, and after moving the gripper 200mm along the x-axis of the robot-frame, using the measurement correction method of \cref{mean}. This allows for decomposition of the gripper-to-pin-hole vector Pc into terms of perpendicular vectors Xc and Yc (y axis). To find these Pc components the following equations are used. 
 
 \begin{equation}
 Pcx*Xc = (Xc.Pc)/(|Xc||Xc|)Xc
@@ -293,14 +291,14 @@ Pcy*Yc = Pc - Pcx*Xc
 \label{eq:redest}
 \end{equation}
 
-These vectors are the pixel space components aligned to world-space axis. To obtain the world-space scaled vector of the pin-hole Pw, the constants Pcx and Pcy are multiplied by the pixel to world scaling factor (200mm / the magnitude of Xc (pixels)). The gripper can now be commanded to move the transformed world pin-hole position Pw for placement of pin.
+These vectors are the pixel space components aligned to world-space axis. To obtain the world-space scaled vector of the pin-hole Pw, the constants Pcx and Pcy are multiplied by the pixel to world scaling factor (200mm / the magnitude of Xc (pixels)). The gripper can now be commanded to move the transformed world pin-hole vector, Pw, for placement of the pin.
 
 
 \chapter{Robotic Arm Control}
 
 \section{Open ABB}
-For this project, a basic parallel port was available for communication between the computer vision and the robotic arm. The parallel port allowed for single bits to be used as flags which triggered the robotic arm to perform action sets. For this project we needed to send specific travel distinations from the computer vision, to the robtic arm, therfore a more advance communication was required. To achieve this, OpenABB \footnote{$https://github.com/robotics/open_abb$} was used. This system has the robotic controller running a basic TCP server via RAPID code. A python script is used on the computer to connect to this server, and send commands. One such command can move the gripper to any point in the arms \hl{range/ field of operations, something like that} by sending the three axis coordinates.\\
-This command list was extended by the team to  include gripper control and moving about the x and y axis, relative to the current position. 
+For this project, a basic parallel port was available for communication between the computer vision and the robotic arm. The parallel port allowed for single bits to be used as flags which triggered the robotic arm to perform action sets. For this project we needed to send specific travel destinations from the computer vision, to the robotic arm, therefore a more advance communication was required. To achieve this, OpenABB \footnote{$https://github.com/robotics/open_abb$} was used. This system has the robotic controller running a basic TCP server via RAPID code. A python script is used on the computer to connect to this server, and send commands. One such command can move the gripper to any point in the arm's reachable workspace, by sending the three axis coordinates.\\
+This command list was extended by the team to  include gripper control and moving about the x and y axis, relative to the current position, while holding the z axis value. 
 An example of the command stack is shown in \cref{fig:commstack1}.
 \begin{figure}[h]
 \centering
