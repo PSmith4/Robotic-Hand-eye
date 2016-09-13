@@ -179,14 +179,20 @@ namespace {
 			{
 				if (hierarchy[i][3]==-1 && hierarchy[i][2]!=-1 ) //only make parents with children map. as these are our box
 				{
-
-					if( PotentialHoldingBox.size.area() > 2000 && PotentialHoldingBox.size.area()<5000)
+					if( PotentialHoldingBox.size.area() > 15000 &&
+                        PotentialHoldingBox.size.area()<18000 &&
+                        PotentialHoldingBox.size.width>80 &&
+                        PotentialHoldingBox.size.width<120)
 					{
-                       //drawContours(input,contours,i,cv::Scalar(255,0,255));
+                        //drawContours(input,contours,i,cv::Scalar(255,0,255));
+
                         holders.push_back( HoldingBox(PotentialHoldingBox,input) );
 
                     }
-					else if( PotentialHoldingBox.size.area() > 500 && PotentialHoldingBox.size.area()<2000)
+					else if(PotentialHoldingBox.size.area() > 4000 &&
+                            PotentialHoldingBox.size.area()<6000 &&
+                            PotentialHoldingBox.size.width >60 &&
+                            PotentialHoldingBox.size.width<100)
 						grippers.push_back( Gripper(PotentialHoldingBox,input) );
 				}
 			}
@@ -195,7 +201,10 @@ namespace {
 				// if at this point, there was a large block, but it had no red corner.... so its the gripper?
 				try
 				{
-					if( PotentialHoldingBox.size.area() > 1500 && PotentialHoldingBox.size.area()<2000)
+					if(PotentialHoldingBox.size.area() > 4000 &&
+                            PotentialHoldingBox.size.area()<6000 &&
+                            PotentialHoldingBox.size.width >60 &&
+                            PotentialHoldingBox.size.width<100)
 						grippers.push_back( Gripper(PotentialHoldingBox,input) );
 				}
 				catch(std::invalid_argument e){}
@@ -362,7 +371,7 @@ namespace {
 
 		float ratio_=sqrtf((x*x)+(y*y));
         RatioSingleton::GetInstance()->SetRatio(ratio_/200.0f);
-        //cout<<ratio_<<endl;
+        //cout<<ratio_/200.0f<<endl;
 
 	}
 
@@ -392,8 +401,8 @@ namespace {
 
         for (;;)
 		{
-			capture >> input;
-            //input=imread("gripper at 200x.jpg");
+			//capture >> input;
+            input=imread("gripper at 200x.jpg");
             if (input.empty())
                 break;
 

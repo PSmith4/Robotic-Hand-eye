@@ -13,38 +13,38 @@ using namespace cv;
 //extern float ratio; //holdingbox defined variabl, pixels per mm
 Socket::Socket(string _locationsfile, string _config,Point2f _location, Mat& container, float height, int _ID)
 {
-cout<<"1"<<endl;
+//cout<<"1"<<endl;
 	ID=_ID;
     location=_location;
-cout<<"2"<<endl;
+//cout<<"2"<<endl;
 
-    cout<<location.x<<" "<<location.y<<" "<<container.size().width<<" "<<height<<endl;
+   //cout<<location.x<<" "<<location.y<<" "<<container.size().width<<" "<<container.size().height<<" "<<height<<endl;
 	try{    image =container(cv::Rect_<float>(location.x, location.y,container.size().width-(location.x*2.0) ,height));}
-	catch(Exception e){cout<<"socket creation crashed"<<endl; image=container.clone();}
-cout<<"3"<<endl;
+	catch(Exception e){cout<<"socket failed to be cropped"<<endl;}
+//cout<<"3"<<endl;
 
 	////namedWindow("1Socket"+std::to_string( ID),CV_WINDOW_FREERATIO);
 	//imshow("1Socket"+std::to_string(ID),image);
 	Mat redThresh = image.clone();
-cout<<"4"<<endl;
-    inRange(redThresh, cv::Scalar(0, 0, 100), cv::Scalar(mean(redThresh)[0], mean(redThresh)[1], 255), redThresh);
+//cout<<"4"<<endl;
+    inRange(redThresh, cv::Scalar(0, 0, mean(redThresh)[2]), cv::Scalar(mean(redThresh)[0], mean(redThresh)[1], 255), redThresh);
     ////namedWindow("2Socket"+std::to_string(long long(ID)),CV_WINDOW_KEEPRATIO);
     //imshow("2Socket"+std::to_string(long long(ID)),redThresh);
 
     Mat erroded = redThresh.clone();
     cv::erode(erroded, erroded,Mat());
     cv::dilate(erroded, erroded,Mat());
-    ////namedWindow("3Socket"+std::to_string(long long(ID)),CV_WINDOW_KEEPRATIO);
+    //namedWindow("3Socket"+std::to_string(ID),CV_WINDOW_KEEPRATIO);
     //cv::resizeWindow("3Socket"+std::to_string(long long(ID)),200,100);
-    //imshow("3Socket"+std::to_string(long long(ID)),erroded);
+    //imshow("3Socket"+std::to_string((ID)),erroded);
 
     Mat cannyed;
     Canny(erroded,cannyed, 20,60); // Maybe use int threshold = 200;    cv::Mat mask = output > threshold;
     vector<vector<Point> > contours;
     vector<Vec4i> hierarchy;
 
-    //namedWindow("4Socket"+std::to_string(long long(ID)),CV_WINDOW_FREERATIO);
-    //imshow("4Socket"+std::to_string(long long(ID)),cannyed);
+    //namedWindow("4Socket"+std::to_string(ID),CV_WINDOW_FREERATIO);
+    //imshow("4Socket"+std::to_string(ID),cannyed);
 
 
     findContours( erroded, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0) );
@@ -78,9 +78,11 @@ cout<<"4"<<endl;
                         image =image(PotentialSocket);
                     rectangle(temp,rect_points[0],rect_points[1],cv::Scalar(0,255,0));
 
+
                 }
-                //namedWindow("5Socket"+std::to_string((ID)),CV_WINDOW_FREERATIO);
-                //imshow("5Socket"+std::to_string((ID)),temp);
+                namedWindow("5Socket"+std::to_string((ID)),CV_WINDOW_FREERATIO);
+                imshow("5Socket"+std::to_string((ID)),temp );
+
             } catch(Exception e){cout<<"socket crash"<<endl;}
 
 

@@ -34,8 +34,8 @@ using namespace std;
         catch(cv::Exception e){cout<<"holdingbox submatrix error"<<endl;}
 //This section is harded coded. for later adaption, improve with dynamic box configs, stored in a csv (68,38,8)
         //cout<<rect.size.height<<" "<<rect.size.width<<end;
-		//ratio= rect.size.height/100; //num pixesl per mm
-
+        //ratio= rect.size.height/100; //num pixesl per mm
+//cout<<"rect ratio"<<rect.size.height/100.0f<<endl;
 		sockets.push_back(Socket("Socket_Type1.csv", "Socket_Type1_configA.csv",Point2f(10.0*RatioSingleton::GetInstance()->GetRatio(),10.0*RatioSingleton::GetInstance()->GetRatio()), image, 25.0*RatioSingleton::GetInstance()->GetRatio(), sockets.size()+1));
 		sockets.push_back(Socket("Socket_Type1.csv", "Socket_Type1_configA.csv",Point2f(10.0*RatioSingleton::GetInstance()->GetRatio(),40.0*RatioSingleton::GetInstance()->GetRatio()), image, 25.0*RatioSingleton::GetInstance()->GetRatio(), sockets.size()+1));
 		sockets.push_back(Socket("Socket_Type1.csv", "Socket_Type1_configA.csv",Point2f(10.0*RatioSingleton::GetInstance()->GetRatio(),70.0*RatioSingleton::GetInstance()->GetRatio()), image, 25.0*RatioSingleton::GetInstance()->GetRatio(), sockets.size()+1));
@@ -159,7 +159,7 @@ using namespace std;
 			//for(unsigned int j=2; j<4; ++j)
 				//line(input, rect_points[j], rect_points[(j+1)%4], cv::Scalar(0,255,0),2);
 			for(unsigned int j=0; j<2; ++j)
-				line(input, rect_points[j], rect_points[(j+1)%4], cv::Scalar(0,0,255),1);
+				line(input, rect_points[j], rect_points[(j+1)%4], cv::Scalar(0,0,255),2);
 	}
 
 	Point2f HoldingBox::getReferenceCorner()
