@@ -56,7 +56,7 @@ namespace {
 	Point2f meanMeasurment(vector<Point2f>& measurments)
 	{
 		Point2f avg;
-		if (measurments.size() >20)
+		if (measurments.size() >30)
 		{
             float mean_x=0;
             float mean_y=0;
@@ -88,13 +88,13 @@ namespace {
 			float min_y=numeric_limits<float>::max();
 			for (int i=0; i< measurments.size(); i++)
 			{
-				if (measurments.at(i).x < min_x && measurments.at(i).x>= (mean_x-sd_x*1.5) )
+				if (measurments.at(i).x < min_x && measurments.at(i).x>= (mean_x-sd_x*2.0) )
 					min_x= measurments.at(i).x;
-				if (measurments.at(i).x > max_x && measurments.at(i).x<= (mean_x+sd_x*1.5))
+				if (measurments.at(i).x > max_x && measurments.at(i).x<= (mean_x+sd_x*2.0))
 					max_x= measurments.at(i).x;
-				if (measurments.at(i).y < min_y && measurments.at(i).y>= (mean_y-sd_y*1.5))
+				if (measurments.at(i).y < min_y && measurments.at(i).y>= (mean_y-sd_y*2.0))
 					min_y= measurments.at(i).y;
-				if (measurments.at(i).y > max_y  && measurments.at(i).y<= (mean_y+sd_y*1.5))
+				if (measurments.at(i).y > max_y  && measurments.at(i).y<= (mean_y+sd_y*2.0))
 					max_y= measurments.at(i).y;
 			}
 			avg.x = (min_x+max_x)/2.0;
@@ -118,8 +118,8 @@ namespace {
 
     void ImageToWorld(Point2f to, Point2f from, Point2f & out_world_pos)
     {
-     cout<<"camera poi positoin"<< image_point.val[0]<<", "<<image_point.val[1]<<endl;
-       Vec2f im_poi_delta = image_point - from;
+     //cout<<"camera poi positoin"<< image_point.val[0]<<", "<<image_point.val[1]<<endl;
+       Vec2f im_poi_delta = to - from;
        Vec2f im_x_delta = gripper_img_end - gripper_img_start;
        float pixel_dist = sqrtf(im_x_delta.val[0]*im_x_delta.val[0] + im_x_delta.val[1]*im_x_delta.val[1]);
        Vec2f x_val = (im_x_delta.dot(im_poi_delta) / (pixel_dist*pixel_dist)) * im_x_delta;
@@ -154,7 +154,7 @@ namespace {
 		Mat output2;
 		Mat output3;
 		int Cannythresh=20;
-		int MainThresh=50;
+		int MainThresh=10;
 
 		output1=input-background;
 
@@ -185,7 +185,7 @@ namespace {
 						holders.push_back( HoldingBox(PotentialHoldingBox,input) );
                         //drawContours(input,contours,i,cv::Scalar(255,0,255));
                     }
-					else if( PotentialHoldingBox.size.area() > 2000 && PotentialHoldingBox.size.area()<3000)
+					else if( PotentialHoldingBox.size.area() > 1500 && PotentialHoldingBox.size.area()<2000)
 						grippers.push_back( Gripper(PotentialHoldingBox,input) );
 				}
 			}
@@ -194,7 +194,7 @@ namespace {
 				// if at this point, there was a large block, but it had no red corner.... so its the gripper?
 				try
 				{
-					if( PotentialHoldingBox.size.area() > 2000 && PotentialHoldingBox.size.area()<3000)
+					if( PotentialHoldingBox.size.area() > 1500 && PotentialHoldingBox.size.area()<2000)
 						grippers.push_back( Gripper(PotentialHoldingBox,input) );
 				}
 				catch(std::invalid_argument e){}
@@ -207,6 +207,7 @@ namespace {
 	Point2f getVector(Point2f to, Point2f from, Mat &drawMat)
 	{
 		//Astetic overlay
+		try{
 		Point2f midLine=(from+to);
 		midLine.y=midLine.y/2.0;
 		midLine.x=midLine.x/2.0;
@@ -216,12 +217,15 @@ namespace {
 		putText(drawMat, to_string(double(angle*180.0/M_PI))+" deg", midLine+Point2f(0,20*RatioSingleton::GetInstance()->GetRatio()),FONT_HERSHEY_PLAIN,2,cv::Scalar(0,255,0));
 		line(drawMat, from, to,cv::Scalar(255,0,255),1);
 
-		//fileSave for debug
-		ofstream outFile;
+        ofstream outFile;
 		outFile.open("distanceOutput.csv",fstream::app);
 		outFile<<dist<<","<<angle<<endl;
 		outFile.close();
-		
+    }
+    catch(cv::Exception e){cout<<"failed to draw vector"<<endl;}
+		//fileSave for debug
+
+
 		Point2f pin_world_pos;
 		ImageToWorld(to, from ,pin_world_pos);
 		return pin_world_pos;
@@ -239,7 +243,7 @@ namespace {
 		Robot.moveToPosZero();
 		capture >> input;
         imwrite("gripper at home.jpg",input);
-        while(positions.size()<20)
+        while(positions.size()<31)
 		{
 			capture >> input;
 
@@ -267,7 +271,7 @@ namespace {
 		cout<<"Moving to x=200"<<endl;
 		Robot.moveRelative(world_x_distance,0);
 
-		for (int i=0; i<500; i++)
+		for (int i=0; i<100; i++)
 		{
 			char key = (char)waitKey(10);
 			capture >> input;
@@ -275,7 +279,7 @@ namespace {
 
         cout<<"done waiting for movment"<<endl;
 
-		while(positions.size()<20)
+		while(positions.size()<31)
 		{
 
 			capture >> input;
@@ -320,6 +324,9 @@ namespace {
         if(sqrt((pinPoint.x*pinPoint.x)+(pinPoint.y*pinPoint.y)) < 350)
         {
             Robot.pickPin();
+            //Robot.pickPin();
+            //Robot.pickPin();
+            Robot.moveToPosZero();
             Robot.movefromZero(pinPoint.x,pinPoint.y);
             Robot.placePin();
             Robot.moveToPosZero();
@@ -390,7 +397,10 @@ namespace {
 
 			vector<HoldingBox> holders;
 			vector<Gripper> grippers;
+			try{
 			Object_Detection(input,background, holders, grippers);
+			}
+			catch(cv:: Exception e){cout<<e.what()<<endl;}
 
 			for(int j=0; j<grippers.size(); j++ )
 			{
@@ -406,8 +416,8 @@ namespace {
 				vector<Point2f> temp= holders.at(i).getNextPoint();
 				for(int j=0; j<grippers.size(); j++ )
 				{
-					
 
+                    try{
 					try
 					{
 					//getVector(temp.at(0), grippers.at(j).getCenterPoint(), input);
@@ -415,6 +425,7 @@ namespace {
                         //griptemp=grippers.at(j).getCenterPoint();
 						pinPoints.push_back(getVector(temp.at(2), grippers.at(j).getCenterPoint(), input));
 					}catch(std::out_of_range e){}
+					}catch(cv:: Exception e){cout<<e.what()<<endl;}
 				}
 				///
                 ///    vector<Point2f> temp= holders.at(i).getNextPoint();
@@ -444,10 +455,15 @@ namespace {
 					break;
 				case 'y':
 				case 'Y':
-					capture >> background;
+                    Robot.movefromZero(-400,200);
+                    for(int i=0; i<200; i++)
+                    {
+                        waitKey(10); //delay N millis, usually long enough to display and capture input
+                        capture >> background;
+					}
 					imwrite("background.jpg", background);
-					//threshold(background,background,MainThresh,255,0);
-					//cvtColor(background,background,CV_BGR2GRAY,0);
+					cout<<"background saved"<<endl;
+					Robot.moveToPosZero();
 					break;
 				case 'm':
 				case 'M':
@@ -479,6 +495,7 @@ namespace {
 				case 'c':
 				case 'C':
 					Robot_calabrate(Robot, capture, background);
+					break;
 				default:
 					break;
 			}

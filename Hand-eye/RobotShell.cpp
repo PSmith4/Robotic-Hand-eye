@@ -10,8 +10,8 @@ RobotShell::RobotShell()
 {
     Py_SetProgramName(0);
 	Py_Initialize();
-	float yOffset=2;
-	float xOffset=-7;
+	float yOffset=0;
+	float xOffset=0;
 	PyRun_SimpleString("import sys\n");
 	PyRun_SimpleString("sys.path.append('/home/phil/Robotic-Hand-eye/Hand-eye')\n");
 	PyRun_SimpleString("import abb\n");
@@ -28,9 +28,9 @@ RobotShell::RobotShell()
 	pos0z=90;
 
 
-	pinPlaces.push_back( {273+xOffset, 740-yOffset} );
-    pinPlaces.push_back( {273+xOffset, 732-yOffset} );
-	pinPlaces.push_back( {273+xOffset, 723-yOffset} );
+	pinPlaces.push_back( {271-abs(xOffset), 734-abs(yOffset)} );
+    pinPlaces.push_back( {271-abs(xOffset), 728-abs(yOffset)} );
+	pinPlaces.push_back( {271-abs(xOffset), 720-abs(yOffset)} );
 
 	//stop wire tangle
     //PyRun_SimpleString("R.set_joints([85,65,-19,-86.1,-16,173.5])\n");
@@ -50,12 +50,13 @@ RobotShell::~RobotShell()
 
 void RobotShell::movefromZero(float x, float y)
 {
+float hardyChange=4.25;
     string s="R.set_cartesian([["+
         to_string(pos0x+x) +"," +
-		to_string(pos0y+y) +"," +
+		to_string(pos0y+y*1.025) +"," +
 		to_string(pos0z) +
 		//"],[0.05,0.01,0.76,0.65]])\n").c_str());
-        "],[0,1,0,0]])\n";
+        "],[0,0,1,0]])\n";
     PyRun_SimpleString(s.c_str());
 
 }
@@ -80,7 +81,7 @@ void RobotShell::movefromZeroWithDebug(float x, float y)
 		to_string(pos0y+y) +"," +
 		to_string(pos0z) +
 		//"],[0.05,0.01,0.76,0.65]])\n").c_str());
-        "],[0,1,0,0]])\n";
+        "],[0,0,1,0]])\n";
     PyRun_SimpleString(s.c_str());
         cin>>ok;
     }
@@ -97,7 +98,7 @@ void RobotShell::moveToPosZero()
 		//"],[0.05,0.01,0.76,0.65]])\n").c_str());
         "],[0.00,0.00,0.75,0.75]])\n").c_str());
 
-    PyRun_SimpleString("R.set_joints([31.5,71.8,14.9,-58.5,-88.3,93.8])\n");
+    PyRun_SimpleString("R.set_joints([31.9,71.0,15.2,-58.2,-88.0,93.2])\n");
 
     PyRun_SimpleString(("R.set_cartesian([["+
         to_string(pos0x) +"," +
@@ -167,13 +168,13 @@ void RobotShell::flipGripper()
  {
 
 speed(100);
-PyRun_SimpleString(("R.set_cartesian([["+to_string(pinPlaces.back()[0])+","+ to_string(pinPlaces.back()[1])+","+to_string(60)+"],[0,1,0,0]])\n").c_str());
+PyRun_SimpleString(("R.set_cartesian([["+to_string(pinPlaces.back()[0])+","+ to_string(pinPlaces.back()[1])+","+to_string(60)+"],[0,0,1,0]])\n").c_str());
 PyRun_SimpleString("R.open_gripper()\n");
 speed(50);
-PyRun_SimpleString(("R.set_cartesian([["+to_string(pinPlaces.back()[0])+","+ to_string(pinPlaces.back()[1])+","+to_string(19)+"],[0,1,0,0]])\n").c_str());
+PyRun_SimpleString(("R.set_cartesian([["+to_string(pinPlaces.back()[0])+","+ to_string(pinPlaces.back()[1])+","+to_string(18)+"],[0,0,1,0]])\n").c_str());
 PyRun_SimpleString("R.close_gripper()\n");
 speed(100);
-PyRun_SimpleString(("R.set_cartesian([["+to_string(pinPlaces.back()[0])+","+ to_string(pinPlaces.back()[1])+","+to_string(55)+"],[0,1,0,0]])\n").c_str());
+PyRun_SimpleString(("R.set_cartesian([["+to_string(pinPlaces.back()[0])+","+ to_string(pinPlaces.back()[1])+","+to_string(55)+"],[0,0,1,0]])\n").c_str());
 
 pinPlaces.pop_back();
 
@@ -185,7 +186,7 @@ pinPlaces.pop_back();
             moveRelative(00,00,-25);
             PyRun_SimpleString("R.open_gripper()\n");
             moveRelative(00,00,15);
-            moveRelative(10,0);
+            moveRelative(-10,0);
             moveRelative(00,00,-12);
             speed(100);
             moveRelative(00,00,20);
