@@ -16,6 +16,7 @@ class PinHole{
 		void draw();
 	private:
 		bool filled;
+		float diam ;
 		bool requested;
 		Point2f location;
 		Mat image;

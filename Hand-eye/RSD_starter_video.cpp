@@ -326,7 +326,8 @@ namespace {
             Robot.pickPin();
             //Robot.pickPin();
             //Robot.pickPin();
-            Robot.moveToPosZero();
+            //
+            //Robot.moveToPosZero();
             Robot.movefromZero(pinPoint.x,pinPoint.y);
             Robot.placePin();
             Robot.moveToPosZero();

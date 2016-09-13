@@ -191,6 +191,8 @@ void Socket::draw()
 	for(int i =0; i< pinHoles.size(); i++)
 	{
 		pinHoles.at(i).draw();
+        //line(image,pinHoles.at(i).getLocation(),pinHoles.at(i).getLocation(),cv::Scalar(255,225,255),1);
+
 	}
 	if(active)
 		imshow("Socket"+std::to_string(ID),image);

@@ -1,12 +1,17 @@
 #include "PinHole.h"
+#include "opencv2/highgui/highgui.hpp"
+#include <opencv2/imgproc/imgproc.hpp>
+
 #include <iostream>
 using namespace cv;
 using namespace std;
+
 PinHole::PinHole(Point2f _location, Mat& container)
 {
     location=_location;
+
     //cout<<location.x<<" "<<location.y<<endl;
-   float diam = float(container.size().width)/10;
+    diam = float(container.size().width)/7.5;
    location.x= location.x+diam/2.0;
    location.y= location.y+diam/2.0;
    try{
@@ -24,6 +29,7 @@ PinHole::PinHole(Point2f _location, Mat& container)
 
 void PinHole::draw()
 {
+
 		for (int i=0; i<image.rows; i++)
 			{
 				for (int j=0; j<image.cols; j++)
@@ -41,6 +47,7 @@ void PinHole::draw()
 						image.at<Vec3b>(i,j)[0] = 0;
 						image.at<Vec3b>(i,j)[2] = 255;
 						image.at<Vec3b>(i,j)[1] = 255;
+						//line(image,Point2f(diam/2.0,diam/2.0),Point2f(diam/2.0,diam/2.0),cv::Scalar(255,225,255),1);
 					}
 					else
 					{
