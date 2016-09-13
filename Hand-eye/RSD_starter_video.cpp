@@ -182,8 +182,8 @@ namespace {
 
 					if( PotentialHoldingBox.size.area() > 2000 && PotentialHoldingBox.size.area()<5000)
 					{
-                       drawContours(input,contours,i,cv::Scalar(255,0,255));
-                        //holders.push_back( HoldingBox(PotentialHoldingBox,input) );
+                       //drawContours(input,contours,i,cv::Scalar(255,0,255));
+                        holders.push_back( HoldingBox(PotentialHoldingBox,input) );
 
                     }
 					else if( PotentialHoldingBox.size.area() > 500 && PotentialHoldingBox.size.area()<2000)
@@ -393,7 +393,7 @@ namespace {
         for (;;)
 		{
 			capture >> input;
-
+            //input=imread("gripper at 200x.jpg");
             if (input.empty())
                 break;
 
@@ -514,10 +514,14 @@ int main(int ac, char** av) {
     }
 
     std::string arg = av[1];
-   // VideoCapture capture(arg); //try to open string, this will attempt to open it as a video file
+   VideoCapture capture(arg); //try to open string, this will attempt to open it as a video file
 
-    VideoCapture capture;
-    capture.open("http://10.1.63.192:4747/mjpegfeed");
+
+    //VideoCapture capture;
+    capture.open("http://192.168.1.3:8080/video?x.mjpeg");
+    //capture.open("http://10.1.63.192:4747/mjpegfeed");
+  //capture.set(CV_CAP_PROP_FRAME_WIDTH,480*3);
+    //capture.set(CV_CAP_PROP_FRAME_HEIGHT,640*3);
     if (!capture.isOpened()) //if this fails, try to open as a video camera, through the use of an integer param
         capture.open(atoi(arg.c_str()));
 

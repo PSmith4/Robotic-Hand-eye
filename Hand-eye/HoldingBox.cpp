@@ -35,6 +35,7 @@ using namespace std;
 //This section is harded coded. for later adaption, improve with dynamic box configs, stored in a csv (68,38,8)
         //cout<<rect.size.height<<" "<<rect.size.width<<end;
 		//ratio= rect.size.height/100; //num pixesl per mm
+
 		sockets.push_back(Socket("Socket_Type1.csv", "Socket_Type1_configA.csv",Point2f(10.0*RatioSingleton::GetInstance()->GetRatio(),10.0*RatioSingleton::GetInstance()->GetRatio()), image, 25.0*RatioSingleton::GetInstance()->GetRatio(), sockets.size()+1));
 		sockets.push_back(Socket("Socket_Type1.csv", "Socket_Type1_configA.csv",Point2f(10.0*RatioSingleton::GetInstance()->GetRatio(),40.0*RatioSingleton::GetInstance()->GetRatio()), image, 25.0*RatioSingleton::GetInstance()->GetRatio(), sockets.size()+1));
 		sockets.push_back(Socket("Socket_Type1.csv", "Socket_Type1_configA.csv",Point2f(10.0*RatioSingleton::GetInstance()->GetRatio(),70.0*RatioSingleton::GetInstance()->GetRatio()), image, 25.0*RatioSingleton::GetInstance()->GetRatio(), sockets.size()+1));
