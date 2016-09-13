@@ -179,13 +179,14 @@ namespace {
 			{
 				if (hierarchy[i][3]==-1 && hierarchy[i][2]!=-1 ) //only make parents with children map. as these are our box
 				{
-                    //cout<<PotentialHoldingBox.size.area()<<endl;
-					if( PotentialHoldingBox.size.area() > 5000 && PotentialHoldingBox.size.area()<6000)
+
+					if( PotentialHoldingBox.size.area() > 2000 && PotentialHoldingBox.size.area()<5000)
 					{
-						holders.push_back( HoldingBox(PotentialHoldingBox,input) );
-                        //drawContours(input,contours,i,cv::Scalar(255,0,255));
+                       drawContours(input,contours,i,cv::Scalar(255,0,255));
+                        //holders.push_back( HoldingBox(PotentialHoldingBox,input) );
+
                     }
-					else if( PotentialHoldingBox.size.area() > 1500 && PotentialHoldingBox.size.area()<2000)
+					else if( PotentialHoldingBox.size.area() > 500 && PotentialHoldingBox.size.area()<2000)
 						grippers.push_back( Gripper(PotentialHoldingBox,input) );
 				}
 			}
@@ -513,7 +514,10 @@ int main(int ac, char** av) {
     }
 
     std::string arg = av[1];
-    VideoCapture capture(arg); //try to open string, this will attempt to open it as a video file
+   // VideoCapture capture(arg); //try to open string, this will attempt to open it as a video file
+
+    VideoCapture capture;
+    capture.open("http://10.1.63.192:4747/mjpegfeed");
     if (!capture.isOpened()) //if this fails, try to open as a video camera, through the use of an integer param
         capture.open(atoi(arg.c_str()));
 
