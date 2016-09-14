@@ -20,7 +20,7 @@ Socket::Socket(string _locationsfile, string _config,Point2f _location, Mat& con
 
    //cout<<location.x<<" "<<location.y<<" "<<container.size().width<<" "<<container.size().height<<" "<<height<<endl;
 	try{    image =container(cv::Rect_<float>(location.x, location.y,container.size().width-(location.x*2.0) ,height));}
-	catch(Exception e){cout<<"socket failed to be cropped"<<endl;}
+	catch(Exception e){cout<<"socket failed to be cropped"<<endl; throw std::out_of_range("Bad image");}
 //cout<<"3"<<endl;
 
 	////namedWindow("1Socket"+std::to_string( ID),CV_WINDOW_FREERATIO);
@@ -64,7 +64,7 @@ Socket::Socket(string _locationsfile, string _config,Point2f _location, Mat& con
 
                 //cout<<topLeft.x<<"m"<<topLeft.y<<endl;
 
-                 double areaRange=90;
+                 double areaRange=500;
                 //cout<< PotentialSocket.size.area()<<" "<<image.rows*image.cols *0.25<<endl;
                 //cout<<(28*RatioSingleton::GetInstance()->GetRatio()*15*RatioSingleton::GetInstance()->GetRatio())-PotentialSocket.area()<<endl;
                 if (PotentialSocket.area()  < (28*RatioSingleton::GetInstance()->GetRatio()*15*RatioSingleton::GetInstance()->GetRatio())+areaRange &&  PotentialSocket.area()  > (28*RatioSingleton::GetInstance()->GetRatio()*15*RatioSingleton::GetInstance()->GetRatio())-areaRange) // check if this rectangle found is at least 1/4 the expected size
@@ -154,8 +154,11 @@ Point2f Socket::nextRequestedLocation()
 			if(pinHoles.at(i).isRequested() && pinHoles.at(i).isFilled()==false)
 			{
 				Point2f temp= pinHoles.at(i).getLocation();
+				temp=temp+location;
+				//cout<<temp.x<<" "<<temp.y<<endl;
+
 				//temp.y=temp.y-image.size().height;
-				return location+temp;
+				return temp;
 
 			}
 		}
@@ -178,6 +181,7 @@ vector<Point2f> Socket::allRequestedLocation()
 
 void Socket::draw()
 {
+
     //std::cout << " " << image.size().width <<" " << image.size().height << std::endl;
 	for (int i=0; i<2; i++)
 			{
@@ -198,6 +202,22 @@ void Socket::draw()
         //line(image,pinHoles.at(i).getLocation(),pinHoles.at(i).getLocation(),cv::Scalar(255,225,255),1);
 
 	}
+	/*if( active==true)
+	{
+		for(int i =0; i< pinHoles.size(); i++)
+		{
+			//cout<<i<<" "<< pinHoles.at(i).isRequested()<< pinHoles.at(i).isFilled()<<endl;
+			if(pinHoles.at(i).isRequested() && pinHoles.at(i).isFilled()==false)
+			{
+				Point2f temp= pinHoles.at(i).getLocation();
+				temp=temp;
+                image.at<Vec3b>(temp)[0] = 0;
+                image.at<Vec3b>(temp)[1] = 0;
+                image.at<Vec3b>(temp)[2] = 0;
+			}
+		}
+	}
+*/
 	if(active)
 		imshow("Socket"+std::to_string(ID),image);
 }

@@ -174,26 +174,46 @@ namespace {
 		for (int i = 0; i < contours.size(); i++)
 		{
 			RotatedRect PotentialHoldingBox(minAreaRect(contours[i]));
-
+ //drawContours(input,contours,i,cv::Scalar(255,0,255));
 			try
 			{
+
+
 				if (hierarchy[i][3]==-1 && hierarchy[i][2]!=-1 ) //only make parents with children map. as these are our box
 				{
-					if( PotentialHoldingBox.size.area() > 15000 &&
-                        PotentialHoldingBox.size.area()<18000 &&
-                        PotentialHoldingBox.size.width>80 &&
-                        PotentialHoldingBox.size.width<120)
-					{
-                        //drawContours(input,contours,i,cv::Scalar(255,0,255));
 
-                        holders.push_back( HoldingBox(PotentialHoldingBox,input) );
+					if( PotentialHoldingBox.size.area() > 20000 &&
+                        PotentialHoldingBox.size.area() < 40000)
+					{
+					drawContours(input,contours,i,cv::Scalar(255,0,255),2);
+
+                         if((PotentialHoldingBox.size.width/PotentialHoldingBox.size.height >0.4 &&
+                            PotentialHoldingBox.size.width/PotentialHoldingBox.size.height <0.8 ) ||
+                           (PotentialHoldingBox.size.width/PotentialHoldingBox.size.height >1.3 &&
+                            PotentialHoldingBox.size.width/PotentialHoldingBox.size.height <1.8))
+                            {
+                                try{holders.push_back( HoldingBox(PotentialHoldingBox,input) );}
+                                catch(...){cout<<"that floating thing in holidng box"<<endl;}
+                            }
+
 
                     }
-					else if(PotentialHoldingBox.size.area() > 4000 &&
-                            PotentialHoldingBox.size.area()<6000 &&
-                            PotentialHoldingBox.size.width >60 &&
-                            PotentialHoldingBox.size.width<100)
-						grippers.push_back( Gripper(PotentialHoldingBox,input) );
+					else if(PotentialHoldingBox.size.area() > 5000 &&
+                            PotentialHoldingBox.size.area()<10000 )
+                    {
+                                           //
+                    					//cout<<PotentialHoldingBox.size.area()<<endl;
+
+
+                        if((PotentialHoldingBox.size.width/PotentialHoldingBox.size.height >1.0 &&
+                            PotentialHoldingBox.size.width/PotentialHoldingBox.size.height <1.2 ) ||
+                           (PotentialHoldingBox.size.width/PotentialHoldingBox.size.height >0.8 &&
+                            PotentialHoldingBox.size.width/PotentialHoldingBox.size.height <1.0))
+                                {
+                                    grippers.push_back( Gripper(PotentialHoldingBox,input) );
+                                }
+                    }
+
 				}
 			}
 			catch(std::invalid_argument e)
@@ -201,13 +221,25 @@ namespace {
 				// if at this point, there was a large block, but it had no red corner.... so its the gripper?
 				try
 				{
-					if(PotentialHoldingBox.size.area() > 4000 &&
-                            PotentialHoldingBox.size.area()<6000 &&
-                            PotentialHoldingBox.size.width >60 &&
-                            PotentialHoldingBox.size.width<100)
-						grippers.push_back( Gripper(PotentialHoldingBox,input) );
-				}
-				catch(std::invalid_argument e){}
+					if(PotentialHoldingBox.size.area() > 5000 &&
+                            PotentialHoldingBox.size.area()<10000 )
+                    {
+                              //  drawContours(input,contours,i,cv::Scalar(255,0,255),2);
+
+                    					//cout<<PotentialHoldingBox.size.area()<<endl;
+
+                        if((PotentialHoldingBox.size.width/PotentialHoldingBox.size.height >1.0 &&
+                            PotentialHoldingBox.size.width/PotentialHoldingBox.size.height <1.2 ) ||
+                           (PotentialHoldingBox.size.width/PotentialHoldingBox.size.height >0.8 &&
+                            PotentialHoldingBox.size.width/PotentialHoldingBox.size.height <1.0))
+                                {
+                                    grippers.push_back( Gripper(PotentialHoldingBox,input) );
+                                }
+                    }
+
+                }
+                			catch(std::invalid_argument e){}
+
 			}
 
 		}
@@ -281,9 +313,9 @@ namespace {
 		cout<<"Moving to x=200"<<endl;
 		Robot.moveRelative(world_x_distance,0);
 
-		for (int i=0; i<100; i++)
+		for (int i=0; i<10; i++)
 		{
-			char key = (char)waitKey(10);
+			char key = (char)waitKey(3);
 			capture >> input;
 		}
 
@@ -341,6 +373,8 @@ namespace {
             Robot.movefromZero(pinPoint.x,pinPoint.y);
             Robot.placePin();
             Robot.moveToPosZero();
+
+
              //Robot.moveRelative(pinPoint.x,pinPoint.y); //change this line
         }
         else
@@ -401,8 +435,9 @@ namespace {
 
         for (;;)
 		{
-			//capture >> input;
-            input=imread("gripper at 200x.jpg");
+            capture >> input;
+
+           //input=imread("gripper at 200x.jpg");
             if (input.empty())
                 break;
 
@@ -448,6 +483,19 @@ namespace {
 
 			}
 
+			try
+					{
+
+					RoboticMotion(Robot, meanMeasurment(pinPoints));
+					 for(int i=0; i<10; i++)
+                    {
+                        waitKey(3); //delay N millis, usually long enough to display and capture input
+                        capture >> input;
+					}
+					}
+					catch(out_of_range& e){cout<<e.what()<<endl;}
+
+
 			/****************** End of Swinburne modifications ****************/
 
             imshow(window_name, input);
@@ -467,9 +515,9 @@ namespace {
 				case 'y':
 				case 'Y':
                     Robot.movefromZero(-400,200);
-                    for(int i=0; i<200; i++)
+                    for(int i=0; i<10; i++)
                     {
-                        waitKey(10); //delay N millis, usually long enough to display and capture input
+                        waitKey(3); //delay N millis, usually long enough to display and capture input
                         capture >> background;
 					}
 					imwrite("background.jpg", background);
@@ -499,6 +547,11 @@ namespace {
                     RoboticMotion(Robot, pin_world_pos);
 					*/
 					RoboticMotion(Robot, meanMeasurment(pinPoints));
+					 for(int i=0; i<10; i++)
+                    {
+                        waitKey(3); //delay N millis, usually long enough to display and capture input
+                        capture >> input;
+					}
 					}
 					catch(out_of_range& e){cout<<e.what()<<endl;}
 					break;
@@ -507,6 +560,14 @@ namespace {
 				case 'C':
 					Robot_calabrate(Robot, capture, background);
 					break;
+
+                case 'p':
+                 Robot.moveToPosZero();
+
+                    Robot.pickPin();
+                    Robot.movefromZero(140,150);
+                    Robot.moveRelative(0,00,-10);
+                break;
 				default:
 					break;
 			}
@@ -525,10 +586,10 @@ int main(int ac, char** av) {
     std::string arg = av[1];
    VideoCapture capture(arg); //try to open string, this will attempt to open it as a video file
 
-
+cout<<"is opt"<<cv::useOptimized()<<endl;
     //VideoCapture capture;
-    capture.open("http://192.168.1.3:8080/video?x.mjpeg");
-    //capture.open("http://10.1.63.192:4747/mjpegfeed");
+    //capture.open("http://192.168.43.1:8080/video?x.mjpeg");
+    capture.open("http://10.1.63.192:8080/video?x.mjpeg");
   //capture.set(CV_CAP_PROP_FRAME_WIDTH,480*3);
     //capture.set(CV_CAP_PROP_FRAME_HEIGHT,640*3);
     if (!capture.isOpened()) //if this fails, try to open as a video camera, through the use of an integer param

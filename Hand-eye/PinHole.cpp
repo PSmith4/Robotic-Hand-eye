@@ -43,7 +43,7 @@ PinHole::PinHole(Point2f _location, Mat& container)
 				}
             }
     try{
-    location=darkestPoint;
+    location=darkestPoint+location;
     image= image(Rect(darkestPoint.x-1,darkestPoint.y-1,3,3));
 	}
 	catch(cv::Exception e){cout<<"pin sub-matirx error"<<endl;}

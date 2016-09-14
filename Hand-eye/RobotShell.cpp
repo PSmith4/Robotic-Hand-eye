@@ -53,8 +53,8 @@ void RobotShell::movefromZero(float x, float y)
 float hardyChange=5.5;
 //cout<<"Hard error fix "<<y*1.0245<<endl;
     string s="R.set_cartesian([["+
-        to_string(pos0x+x*1.0245) +"," +
-		to_string(pos0y+y*1.0245) +"," +
+        to_string(pos0x+x) +"," +
+		to_string(pos0y+y) +"," +
 		to_string(pos0z) +
 		//"],[0.05,0.01,0.76,0.65]])\n").c_str());
         "],[0,0,1,0]])\n";
@@ -66,20 +66,20 @@ float hardyChange=5.5;
 void RobotShell::movefromZeroWithDebug(float x, float y)
 {
     string ok="n";
-    string yOffset;
-    string xOffset;
+    float yOffset;
+    float xOffset;
 
     while(ok=="n"){
     //float yOffset=5.0;
     cin>>yOffset;
     cin>>xOffset;
 
-    PyRun_SimpleString(("R.set_tool([["+xOffset +"," + yOffset + ",105], [1,0,0,0]])\n").c_str());
+    //PyRun_SimpleString(("R.set_tool([["+xOffset +"," + yOffset + ",105], [1,0,0,0]])\n").c_str());
 
 
     string s="R.set_cartesian([["+
-        to_string(pos0x+x) +"," +
-		to_string(pos0y+y) +"," +
+        to_string(pos0x+x+xOffset) +"," +
+		to_string(pos0y+y+yOffset) +"," +
 		to_string(pos0z) +
 		//"],[0.05,0.01,0.76,0.65]])\n").c_str());
         "],[0,0,1,0]])\n";

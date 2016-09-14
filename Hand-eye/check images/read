@@ -1,0 +1,10 @@
+For each of these images, a hard position for the robot arm has been set. and the block has been maunally moved to have the UPPER RIGHT hole in the required position.
+Using the conversion program im then getting the following results
+
+Should be | Output of conversion
+100,100		102.4,101.7 
+100,200		99.7, 202.7
+95,200		100,198 (second pin on 100x200)
+150,150		151.5,149
+145,150		146.7,149
+140,150		143,149

@@ -36,9 +36,15 @@ using namespace std;
         //cout<<rect.size.height<<" "<<rect.size.width<<end;
         //ratio= rect.size.height/100; //num pixesl per mm
 //cout<<"rect ratio"<<rect.size.height/100.0f<<endl;
-		sockets.push_back(Socket("Socket_Type1.csv", "Socket_Type1_configA.csv",Point2f(10.0*RatioSingleton::GetInstance()->GetRatio(),10.0*RatioSingleton::GetInstance()->GetRatio()), image, 25.0*RatioSingleton::GetInstance()->GetRatio(), sockets.size()+1));
-		sockets.push_back(Socket("Socket_Type1.csv", "Socket_Type1_configA.csv",Point2f(10.0*RatioSingleton::GetInstance()->GetRatio(),40.0*RatioSingleton::GetInstance()->GetRatio()), image, 25.0*RatioSingleton::GetInstance()->GetRatio(), sockets.size()+1));
-		sockets.push_back(Socket("Socket_Type1.csv", "Socket_Type1_configA.csv",Point2f(10.0*RatioSingleton::GetInstance()->GetRatio(),70.0*RatioSingleton::GetInstance()->GetRatio()), image, 25.0*RatioSingleton::GetInstance()->GetRatio(), sockets.size()+1));
+		try{
+            sockets.push_back(Socket("Socket_Type1.csv", "Socket_Type1_configA.csv",Point2f(10.0*RatioSingleton::GetInstance()->GetRatio(),10.0*RatioSingleton::GetInstance()->GetRatio()), image, 25.0*RatioSingleton::GetInstance()->GetRatio(), sockets.size()+1));
+		}catch(...){cout<<"That floating point thing"<<endl;}
+		try{
+            sockets.push_back(Socket("Socket_Type1.csv", "Socket_Type1_configA.csv",Point2f(10.0*RatioSingleton::GetInstance()->GetRatio(),40.0*RatioSingleton::GetInstance()->GetRatio()), image, 25.0*RatioSingleton::GetInstance()->GetRatio(), sockets.size()+1));
+        }catch(...){cout<<"That floating point thing"<<endl;}
+        try{
+            sockets.push_back(Socket("Socket_Type1.csv", "Socket_Type1_configA.csv",Point2f(10.0*RatioSingleton::GetInstance()->GetRatio(),70.0*RatioSingleton::GetInstance()->GetRatio()), image, 25.0*RatioSingleton::GetInstance()->GetRatio(), sockets.size()+1));
+		}catch(...){cout<<"That floating point thing"<<endl;}
 	}
 
 	void HoldingBox::Orientate(Mat& image)
