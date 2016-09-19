@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014/W32TeX) (preloaded format=pdflatex 2015.5.29)  12 SEP 2016 21:19
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014/W32TeX) (preloaded format=pdflatex 2015.5.29)  19 SEP 2016 23:43
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -24,14 +24,6 @@ File: size11.clo 2014/09/29 v1.4h Standard LaTeX file (size option)
 \belowcaptionskip=\skip42
 \bibindent=\dimen102
 )
-(e:/texlive/2014/texmf-dist/tex/latex/base/inputenc.sty
-Package: inputenc 2014/04/30 v1.2b Input encoding file
-\inpenc@prehook=\toks14
-\inpenc@posthook=\toks15
-
-(e:/texlive/2014/texmf-dist/tex/latex/base/latin1.def
-File: latin1.def 2014/04/30 v1.2b Input encoding file
-))
 (e:/texlive/2014/texmf-dist/tex/latex/amsmath/amsmath.sty
 Package: amsmath 2013/01/14 v2.14 AMS math features
 \@mathmargin=\skip43
@@ -42,7 +34,7 @@ Package: amstext 2000/06/29 v2.01
 
 (e:/texlive/2014/texmf-dist/tex/latex/amsmath/amsgen.sty
 File: amsgen.sty 1999/11/30 v2.0
-\@emptytoks=\toks16
+\@emptytoks=\toks14
 \ex@=\dimen103
 ))
 (e:/texlive/2014/texmf-dist/tex/latex/amsmath/amsbsy.sty
@@ -72,21 +64,21 @@ LaTeX Font Info:    Redeclaring font encoding OMS on input line 567.
 \dotsspace@=\muskip10
 \c@parentequation=\count95
 \dspbrk@lvl=\count96
-\tag@help=\toks17
+\tag@help=\toks15
 \row@=\count97
 \column@=\count98
 \maxfields@=\count99
-\andhelp@=\toks18
+\andhelp@=\toks16
 \eqnshift@=\dimen106
 \alignsep@=\dimen107
 \tagshift@=\dimen108
 \tagwidth@=\dimen109
 \totwidth@=\dimen110
 \lineht@=\dimen111
-\@envbody=\toks19
+\@envbody=\toks17
 \multlinegap=\skip44
 \multlinetaggap=\skip45
-\mathdisplay@stack=\toks20
+\mathdisplay@stack=\toks18
 LaTeX Info: Redefining \[ on input line 2665.
 LaTeX Info: Redefining \] on input line 2666.
 )
@@ -116,11 +108,11 @@ Package: ltxcmds 2011/11/09 v1.22 LaTeX kernel commands for general use (HO)
 (e:/texlive/2014/texmf-dist/tex/latex/listings/listings.sty
 (e:/texlive/2014/texmf-dist/tex/latex/graphics/keyval.sty
 Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
-\KV@toks@=\toks21
+\KV@toks@=\toks19
 )
 \lst@mode=\count102
 \lst@gtempboxa=\box28
-\lst@token=\toks22
+\lst@token=\toks20
 \lst@length=\count103
 \lst@currlwidth=\dimen112
 \lst@column=\count104
@@ -266,7 +258,7 @@ Package: longtable 2014/10/28 v4.11 Multi-page Table package (DPC)
 \LT@rows=\count112
 \c@LT@tables=\count113
 \c@LT@chunks=\count114
-\LT@p@ftn=\toks23
+\LT@p@ftn=\toks21
 )
 (e:/texlive/2014/texmf-dist/tex/latex/multirow/multirow.sty
 \bigstrutjot=\dimen119
@@ -397,13 +389,13 @@ Package: lscape 2000/10/22 v3.01 Landscape Pages (DPC)
 )
 Package pdflscape Info: Auto-detected driver: pdftex on input line 80.
 )
-Package hyperref Info: Option `colorlinks' set `true' on input line 15.
+Package hyperref Info: Option `colorlinks' set `true' on input line 14.
 
 (e:/texlive/2014/texmf-dist/tex/latex/pgf/frontendlayer/tikz.sty
 (e:/texlive/2014/texmf-dist/tex/latex/pgf/basiclayer/pgf.sty
 (e:/texlive/2014/texmf-dist/tex/latex/pgf/utilities/pgfrcs.sty
 (e:/texlive/2014/texmf-dist/tex/generic/pgf/utilities/pgfutil-common.tex
-\pgfutil@everybye=\toks24
+\pgfutil@everybye=\toks22
 \pgfutil@tempdima=\dimen124
 \pgfutil@tempdimb=\dimen125
 
@@ -425,11 +417,11 @@ Package: pgf 2013/12/18 v3.0.0 (rcs-revision 1.14)
 Package: pgfsys 2013/11/30 v3.0.0 (rcs-revision 1.47)
 
 (e:/texlive/2014/texmf-dist/tex/generic/pgf/utilities/pgfkeys.code.tex
-\pgfkeys@pathtoks=\toks25
-\pgfkeys@temptoks=\toks26
+\pgfkeys@pathtoks=\toks23
+\pgfkeys@temptoks=\toks24
 
 (e:/texlive/2014/texmf-dist/tex/generic/pgf/utilities/pgfkeysfiltered.code.tex
-\pgfkeys@tmptoks=\toks27
+\pgfkeys@tmptoks=\toks25
 ))
 \pgf@x=\dimen126
 \pgf@y=\dimen127
@@ -445,9 +437,9 @@ Package: pgfsys 2013/11/30 v3.0.0 (rcs-revision 1.47)
 \c@pgf@countb=\count126
 \c@pgf@countc=\count127
 \c@pgf@countd=\count128
-\t@pgf@toka=\toks28
-\t@pgf@tokb=\toks29
-\t@pgf@tokc=\toks30
+\t@pgf@toka=\toks26
+\t@pgf@tokb=\toks27
+\t@pgf@tokc=\toks28
  (e:/texlive/2014/texmf-dist/tex/generic/pgf/systemlayer/pgf.cfg
 File: pgf.cfg 2008/05/14  (rcs-revision 1.7)
 )
@@ -494,9 +486,9 @@ Package: pgfcore 2010/04/11 v3.0.0 (rcs-revision 1.7)
 \pgfmath@dimen=\dimen134
 \pgfmath@count=\count131
 \pgfmath@box=\box35
-\pgfmath@toks=\toks31
-\pgfmath@stack@operand=\toks32
-\pgfmath@stack@operation=\toks33
+\pgfmath@toks=\toks29
+\pgfmath@stack@operand=\toks30
+\pgfmath@stack@operation=\toks31
 )
 (e:/texlive/2014/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.code.tex
 (e:/texlive/2014/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.basic.code.te
@@ -629,8 +621,8 @@ Package: pgffor 2013/12/13 v3.0.0 (rcs-revision 1.25)
 (e:/texlive/2014/texmf-dist/tex/generic/pgf/math/pgfmath.code.tex)
 \pgffor@iter=\dimen161
 \pgffor@skip=\dimen162
-\pgffor@stack=\toks34
-\pgffor@toks=\toks35
+\pgffor@stack=\toks32
+\pgffor@toks=\toks33
 ))
 (e:/texlive/2014/texmf-dist/tex/generic/pgf/frontendlayer/tikz/tikz.code.tex
 Package: tikz 2013/12/13 v3.0.0 (rcs-revision 1.142)
@@ -701,9 +693,9 @@ File: tikzlibrarytopaths.code.tex 2008/06/17 v3.0.0 (rcs-revision 1.2)
 \pgftree@lastchildy=\dimen190
 ))
 (e:/texlive/2014/texmf-dist/tex/latex/tikz-qtree/tikz-qtree.tex
-\@result=\toks36
-\child@list=\toks37
-\root@node=\toks38
+\@result=\toks34
+\child@list=\toks35
+\root@node=\toks36
 ))
 (e:/texlive/2014/texmf-dist/tex/latex/oberdiek/hypcap.sty
 Package: hypcap 2011/02/16 v1.11 Adjusting the anchors of captions (HO)
@@ -731,8 +723,8 @@ Package: xkeyval 2014/12/03 v2.7a package option processing (HA)
 
 (e:/texlive/2014/texmf-dist/tex/generic/xkeyval/xkeyval.tex
 (e:/texlive/2014/texmf-dist/tex/generic/xkeyval/xkvutils.tex
-\XKV@toks=\toks39
-\XKV@tempa@toks=\toks40
+\XKV@toks=\toks37
+\XKV@tempa@toks=\toks38
 )
 \XKV@depth=\count147
 File: xkeyval.tex 2014/12/03 v2.7a key=value parser (HA)
@@ -789,14 +781,29 @@ File: tikzlibraryarrows.code.tex 2008/01/09 v3.0.0 (rcs-revision 1.1)
 (e:/texlive/2014/texmf-dist/tex/generic/pgf/libraries/pgflibraryarrows.code.tex
 File: pgflibraryarrows.code.tex 2013/09/23 v3.0.0 (rcs-revision 1.16)
 \arrowsize=\dimen201
-)) (e:/texlive/2014/texmf-dist/tex/latex/placeins/placeins.sty
+)) (e:/texlive/2014/texmf-dist/tex/latex/geometry/geometry.sty
+Package: geometry 2010/09/12 v5.6 Page Geometry
+\Gm@cnth=\count150
+\Gm@cntv=\count151
+\c@Gm@tempcnt=\count152
+\Gm@bindingoffset=\dimen202
+\Gm@wd@mp=\dimen203
+\Gm@odd@mp=\dimen204
+\Gm@even@mp=\dimen205
+\Gm@layoutwidth=\dimen206
+\Gm@layoutheight=\dimen207
+\Gm@layouthoffset=\dimen208
+\Gm@layoutvoffset=\dimen209
+\Gm@dimlist=\toks39
+)
+(e:/texlive/2014/texmf-dist/tex/latex/placeins/placeins.sty
 Package: placeins 2005/04/18  v 2.2
 )
 (e:/texlive/2014/texmf-dist/tex/latex/tools/array.sty
 Package: array 2014/10/28 v2.4c Tabular extension package (FMi)
-\col@sep=\dimen202
-\extrarowheight=\dimen203
-\NC@list=\toks41
+\col@sep=\dimen210
+\extrarowheight=\dimen211
+\NC@list=\toks40
 \extratabsurround=\skip51
 \backup@length=\skip52
 )
@@ -809,15 +816,15 @@ Package: caption 2013/05/02 v3.3-89 Customizing captions (AR)
 (e:/texlive/2014/texmf-dist/tex/latex/caption/caption3.sty
 Package: caption3 2013/05/02 v1.6-88 caption3 kernel (AR)
 Package caption3 Info: TeX engine: e-TeX on input line 57.
-\captionmargin=\dimen204
-\captionmargin@=\dimen205
-\captionwidth=\dimen206
-\caption@tempdima=\dimen207
-\caption@indent=\dimen208
-\caption@parindent=\dimen209
-\caption@hangindent=\dimen210
+\captionmargin=\dimen212
+\captionmargin@=\dimen213
+\captionwidth=\dimen214
+\caption@tempdima=\dimen215
+\caption@indent=\dimen216
+\caption@parindent=\dimen217
+\caption@hangindent=\dimen218
 )
-\c@ContinuedFloat=\count150
+\c@ContinuedFloat=\count153
 Package caption Info: hyperref package is loaded.
 Package caption Info: hypcap package is loaded.
 Package caption Info: listings package is loaded.
@@ -826,52 +833,43 @@ Package caption Info: longtable package is loaded.
 (e:/texlive/2014/texmf-dist/tex/latex/caption/ltcaption.sty
 Package: ltcaption 2013/02/03 v1.3-62 longtable captions (AR)
 ))
-\c@subfigure=\count151
-\c@subtable=\count152
+\c@subfigure=\count154
+\c@subtable=\count155
 )
 (e:/texlive/2014/texmf-dist/tex/latex/mdwtools/footnote.sty
 Package: footnote 1997/01/28 1.13 Save footnotes around boxes
 \fn@notes=\box48
-\fn@width=\dimen211
+\fn@width=\dimen219
 )
 (e:/texlive/2014/texmf-dist/tex/latex/soul/soul.sty
 Package: soul 2003/11/17 v2.4 letterspacing/underlining (mf)
-\SOUL@word=\toks42
-\SOUL@lasttoken=\toks43
-\SOUL@cmds=\toks44
-\SOUL@buffer=\toks45
-\SOUL@token=\toks46
+\SOUL@word=\toks41
+\SOUL@lasttoken=\toks42
+\SOUL@cmds=\toks43
+\SOUL@buffer=\toks44
+\SOUL@token=\toks45
 \SOUL@spaceskip=\skip53
-\SOUL@ttwidth=\dimen212
-\SOUL@uldp=\dimen213
-\SOUL@ulht=\dimen214
+\SOUL@ttwidth=\dimen220
+\SOUL@uldp=\dimen221
+\SOUL@ulht=\dimen222
 )
 (e:/texlive/2014/texmf-dist/tex/latex/titlesec/titlesec.sty
 Package: titlesec 2011/12/15 v2.10.0 Sectioning titles
 \ttl@box=\box49
 \beforetitleunit=\skip54
 \aftertitleunit=\skip55
-\ttl@plus=\dimen215
-\ttl@minus=\dimen216
-\ttl@toksa=\toks47
-\titlewidth=\dimen217
-\titlewidthlast=\dimen218
-\titlewidthfirst=\dimen219
+\ttl@plus=\dimen223
+\ttl@minus=\dimen224
+\ttl@toksa=\toks46
+\titlewidth=\dimen225
+\titlewidthlast=\dimen226
+\titlewidthfirst=\dimen227
 )
-(./HandEyereport.aux
 
-LaTeX Warning: Label `eq:redest' multiply defined.
+LaTeX Warning: Unused global option(s):
+    [margin=1in].
 
-
-LaTeX Warning: Label `eq:redest@cref' multiply defined.
-
-
-LaTeX Warning: Label `eq:redest' multiply defined.
-
-
-LaTeX Warning: Label `eq:redest@cref' multiply defined.
-
-)
+(./HandEyereport.aux)
 \openout1 = `HandEyereport.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 38.
@@ -897,19 +895,19 @@ LaTeX Font Info:    ... okay on input line 38.
 
 (e:/texlive/2014/texmf-dist/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count153
-\scratchdimen=\dimen220
+\scratchcounter=\count156
+\scratchdimen=\dimen228
 \scratchbox=\box50
-\nofMPsegments=\count154
-\nofMParguments=\count155
-\everyMPshowfont=\toks48
-\MPscratchCnt=\count156
-\MPscratchDim=\dimen221
-\MPnumerator=\count157
-\makeMPintoPDFobject=\count158
-\everyMPtoPDFconversion=\toks49
+\nofMPsegments=\count157
+\nofMParguments=\count158
+\everyMPshowfont=\toks47
+\MPscratchCnt=\count159
+\MPscratchDim=\dimen229
+\MPnumerator=\count160
+\makeMPintoPDFobject=\count161
+\everyMPtoPDFconversion=\toks48
 )
-\c@lstlisting=\count159
+\c@lstlisting=\count162
  (e:/texlive/2014/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
 Package: epstopdf-base 2010/02/09 v2.5 Base part for package epstopdf
 
@@ -934,7 +932,7 @@ Package: nameref 2012/10/27 v2.43 Cross-referencing by name of section
 (e:/texlive/2014/texmf-dist/tex/generic/oberdiek/gettitlestring.sty
 Package: gettitlestring 2010/12/03 v1.4 Cleanup title references (HO)
 )
-\c@section@level=\count160
+\c@section@level=\count163
 )
 LaTeX Info: Redefining \ref on input line 38.
 LaTeX Info: Redefining \pageref on input line 38.
@@ -957,16 +955,50 @@ Package gensymb Info: Using \textohm for \ohm on input line 38.
 Package gensymb Info: Using \textmu for \micro on input line 38.
 
 ABD: EveryShipout initializing macros
+*geometry* driver: auto-detecting
+*geometry* detected driver: pdftex
+*geometry* verbose mode - [ preamble ] result:
+* driver: pdftex
+* paper: legalpaper
+* layout: <same size as paper>
+* layoutoffset:(h,v)=(0.0pt,0.0pt)
+* modes: 
+* h-part:(L,W,R)=(108.405pt, 397.485pt, 108.405pt)
+* v-part:(T,H,B)=(108.405pt, 794.97pt, 108.405pt)
+* \paperwidth=614.295pt
+* \paperheight=1011.78pt
+* \textwidth=397.485pt
+* \textheight=794.97pt
+* \oddsidemargin=36.13501pt
+* \evensidemargin=36.13501pt
+* \topmargin=-0.86499pt
+* \headheight=12.0pt
+* \headsep=25.0pt
+* \topskip=11.0pt
+* \footskip=30.0pt
+* \marginparwidth=50.0pt
+* \marginparsep=10.0pt
+* \columnsep=10.0pt
+* \skip\footins=10.0pt plus 4.0pt minus 2.0pt
+* \hoffset=0.0pt
+* \voffset=0.0pt
+* \mag=1000
+* \@twocolumnfalse
+* \@twosidefalse
+* \@mparswitchfalse
+* \@reversemarginfalse
+* (1in=72.27pt=25.4mm, 1cm=28.453pt)
+
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: End \AtBeginDocument code.
 
-<swinburne_university_of_technology_111401.jpg, id=83, 426.59375pt x 426.59375p
+<swinburne_university_of_technology_111401.jpg, id=95, 426.59375pt x 426.59375p
 t>
 File: swinburne_university_of_technology_111401.jpg Graphic file (type jpg)
  <use swinburne_university_of_technology_111401.jpg>
 Package pdftex.def Info: swinburne_university_of_technology_111401.jpg used on 
 input line 47.
-(pdftex.def)             Requested size: 180.0pt x 180.00133pt.
+(pdftex.def)             Requested size: 198.7425pt x 198.74808pt.
 LaTeX Font Info:    Try loading font information for U+msa on input line 57.
 
 (e:/texlive/2014/texmf-dist/tex/latex/amsfonts/umsa.fd
@@ -992,19 +1024,19 @@ l.66 \chapter
 
 ]
 Chapter 1.
-<IMG_20160908_142218.jpg, id=117, 3131.7pt x 4175.6pt>
+<IMG_20160908_142218.jpg, id=132, 3131.7pt x 4175.6pt>
 File: IMG_20160908_142218.jpg Graphic file (type jpg)
 
 <use IMG_20160908_142218.jpg>
 Package pdftex.def Info: IMG_20160908_142218.jpg used on input line 71.
-(pdftex.def)             Requested size: 71.9989pt x 95.95395pt.
+(pdftex.def)             Requested size: 79.49577pt x 105.9571pt.
 
-<IMG_20160912_135721.jpg, id=118, 4175.6pt x 3131.7pt>
+<IMG_20160912_135721.jpg, id=133, 4175.6pt x 3131.7pt>
 File: IMG_20160912_135721.jpg Graphic file (type jpg)
 
 <use IMG_20160912_135721.jpg>
 Package pdftex.def Info: IMG_20160912_135721.jpg used on input line 72.
-(pdftex.def)             Requested size: 136.80176pt x 102.59618pt.
+(pdftex.def)             Requested size: 151.04623pt x 113.25241pt.
 
 Underfull \hbox (badness 10000) in paragraph at lines 84--85
 
@@ -1014,271 +1046,327 @@ Underfull \hbox (badness 10000) in paragraph at lines 84--85
 
  <./IMG_20160908_142218.jpg> <./IMG_20160912_135721.jpg>]
 Chapter 2.
-<backgrond.png, id=127, 188.20313pt x 210.7875pt>
-File: backgrond.png Graphic file (type png)
- <use backgrond.png>
-Package pdftex.def Info: backgrond.png used on input line 109.
-(pdftex.def)             Requested size: 108.0011pt x 120.96385pt.
-
-<base.png, id=129, 188.20313pt x 213.04594pt>
-File: base.png Graphic file (type png)
- <use base.png>
-Package pdftex.def Info: base.png used on input line 110.
-(pdftex.def)             Requested size: 108.0011pt x 122.25989pt.
-
-<diff.png, id=130, 188.20313pt x 213.04594pt>
-File: diff.png Graphic file (type png)
- <use diff.png>
-Package pdftex.def Info: diff.png used on input line 111.
-(pdftex.def)             Requested size: 108.0011pt x 122.25989pt.
-
-<out1.png, id=132, 188.20313pt x 213.04594pt>
-File: out1.png Graphic file (type png)
- <use out1.png>
-Package pdftex.def Info: out1.png used on input line 117.
-(pdftex.def)             Requested size: 108.0011pt x 122.25989pt.
-
-<out2.png, id=133, 188.20313pt x 212.29312pt>
-File: out2.png Graphic file (type png)
- <use out2.png>
-Package pdftex.def Info: out2.png used on input line 118.
-(pdftex.def)             Requested size: 108.0011pt x 121.82788pt.
-
-<out4.png, id=134, 188.20313pt x 212.29312pt>
-File: out4.png Graphic file (type png)
- <use out4.png>
-Package pdftex.def Info: out4.png used on input line 124.
-(pdftex.def)             Requested size: 108.0011pt x 121.82788pt.
-
-<out3.png, id=135, 188.20313pt x 211.54031pt>
-File: out3.png Graphic file (type png)
- <use out3.png>
-Package pdftex.def Info: out3.png used on input line 125.
-(pdftex.def)             Requested size: 108.0011pt x 121.39586pt.
+<mount.jpg, id=146, 731.73375pt x 426.09187pt>
+File: mount.jpg Graphic file (type jpg)
+ <use mount.jpg>
+Package pdftex.def Info: mount.jpg used on input line 106.
+(pdftex.def)             Requested size: 278.23828pt x 162.02061pt.
  [3
 
-] [4 <./backgrond.png> <./base.png> <./diff.png> <./out1.png> <./out2.png> <./o
-ut4.png> <./out3.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 134--135
+ <./mount.jpg>]
+Underfull \hbox (badness 10000) in paragraph at lines 119--126
 
  []
 
-<Throwlinek.jpg, id=158, 249.18094pt x 516.42938pt>
+<backgrond.png, id=164, 188.20313pt x 210.7875pt>
+File: backgrond.png Graphic file (type png)
+ <use backgrond.png>
+Package pdftex.def Info: backgrond.png used on input line 129.
+(pdftex.def)             Requested size: 119.2467pt x 133.5591pt.
+
+<base.png, id=166, 188.20313pt x 213.04594pt>
+File: base.png Graphic file (type png)
+ <use base.png>
+Package pdftex.def Info: base.png used on input line 130.
+(pdftex.def)             Requested size: 119.2467pt x 134.99008pt.
+
+<diff.png, id=167, 188.20313pt x 213.04594pt>
+File: diff.png Graphic file (type png)
+ <use diff.png>
+Package pdftex.def Info: diff.png used on input line 131.
+(pdftex.def)             Requested size: 119.2467pt x 134.99008pt.
+
+<out1.png, id=168, 188.20313pt x 213.04594pt>
+File: out1.png Graphic file (type png)
+ <use out1.png>
+Package pdftex.def Info: out1.png used on input line 137.
+(pdftex.def)             Requested size: 119.2467pt x 134.99008pt.
+
+<out2.png, id=169, 188.20313pt x 212.29312pt>
+File: out2.png Graphic file (type png)
+ <use out2.png>
+Package pdftex.def Info: out2.png used on input line 138.
+(pdftex.def)             Requested size: 119.2467pt x 134.51309pt.
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+<out4.png, id=170, 188.20313pt x 212.29312pt>
+File: out4.png Graphic file (type png)
+ <use out4.png>
+Package pdftex.def Info: out4.png used on input line 144.
+(pdftex.def)             Requested size: 119.2467pt x 134.51309pt.
+
+<out3.png, id=171, 188.20313pt x 211.54031pt>
+File: out3.png Graphic file (type png)
+ <use out3.png>
+Package pdftex.def Info: out3.png used on input line 145.
+(pdftex.def)             Requested size: 119.2467pt x 134.03609pt.
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+<Throwlinek.jpg, id=172, 249.18094pt x 516.42938pt>
 File: Throwlinek.jpg Graphic file (type jpg)
  <use Throwlinek.jpg>
-Package pdftex.def Info: Throwlinek.jpg used on input line 141.
-(pdftex.def)             Requested size: 71.9989pt x 149.21695pt.
+Package pdftex.def Info: Throwlinek.jpg used on input line 151.
+(pdftex.def)             Requested size: 79.49577pt x 164.74857pt.
 
-Overfull \hbox (9.72516pt too wide) in paragraph at lines 148--149
-\OT1/cmr/m/n/10.95 Both the hold-ing box and grip-per are recog-nised in this p
-ro-cess as []
- []
 
-[5 <./Throwlinek.jpg>] <Redest.jpg, id=167, 476.53032pt x 467.49657pt>
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+[4 <./backgrond.png> <./base.png> <./diff.png>] [5 <./out1.png> <./out2.png> <.
+/out4.png> <./out3.png> <./Throwlinek.jpg>]
+<Redest.jpg, id=195, 476.53032pt x 467.49657pt>
 File: Redest.jpg Graphic file (type jpg)
+ <use Redest.jpg>
+Package pdftex.def Info: Redest.jpg used on input line 166.
+(pdftex.def)             Requested size: 119.2467pt x 116.98085pt.
 
-<use Redest.jpg>
-Package pdftex.def Info: Redest.jpg used on input line 155.
-(pdftex.def)             Requested size: 108.0011pt x 105.95259pt.
-
-Underfull \hbox (badness 10000) in paragraph at lines 152--158
+Underfull \hbox (badness 10000) in paragraph at lines 163--169
 
  []
 
-<"angle_issue".jpg, id=169, 763.35187pt x 368.87813pt>
+<"angle_issue".jpg, id=197, 1017.8025pt x 491.8375pt>
 File: "angle_issue".jpg Graphic file (type jpg)
  <use "angle_issue".jpg>
-Package pdftex.def Info: "angle_issue".jpg used on input line 163.
-(pdftex.def)             Requested size: 251.9989pt x 121.77518pt.
+Package pdftex.def Info: "angle_issue".jpg used on input line 174.
+(pdftex.def)             Requested size: 278.23828pt x 134.45645pt.
 
-[6 <./Redest.jpg> <./angle_issue.jpg>]
-<"holding_block_with_data".png, id=183, 181.42781pt x 212.29312pt>
+<"holding_block_with_data".png, id=199, 181.42781pt x 212.29312pt>
 File: "holding_block_with_data".png Graphic file (type png)
 
 <use "holding_block_with_data".png>
-Package pdftex.def Info: "holding_block_with_data".png used on input line 174.
-(pdftex.def)             Requested size: 108.0011pt x 126.3759pt.
+Package pdftex.def Info: "holding_block_with_data".png used on input line 185.
+(pdftex.def)             Requested size: 119.2467pt x 139.5373pt.
 
-<fullSock.png, id=187, 146.04562pt x 53.44969pt>
+<barcode.jpg, id=201, 246.9225pt x 189.70876pt>
+File: barcode.jpg Graphic file (type jpg)
+ <use barcode.jpg>
+Package pdftex.def Info: barcode.jpg used on input line 192.
+(pdftex.def)             Requested size: 119.2467pt x 91.61494pt.
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+[6
+
+ <./Redest.jpg> <./angle_issue.jpg>]
+<fullSock.png, id=215, 146.04562pt x 53.44969pt>
 File: fullSock.png Graphic file (type png)
  <use fullSock.png>
-Package pdftex.def Info: fullSock.png used on input line 183.
-(pdftex.def)             Requested size: 143.9978pt x 52.70491pt.
+Package pdftex.def Info: fullSock.png used on input line 201.
+(pdftex.def)             Requested size: 158.99156pt x 58.19292pt.
 
-<emptySock.png, id=188, 146.04562pt x 53.44969pt>
+<emptySock.png, id=216, 146.04562pt x 53.44969pt>
 File: emptySock.png Graphic file (type png)
  <use emptySock.png>
-Package pdftex.def Info: emptySock.png used on input line 184.
-(pdftex.def)             Requested size: 143.9978pt x 52.70491pt.
+Package pdftex.def Info: emptySock.png used on input line 202.
+(pdftex.def)             Requested size: 158.99156pt x 58.19292pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 171--188
-
- []
-
-
-LaTeX Warning: `h' float specifier changed to `ht'.
-
-[7 <./holding_block_with_data.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 189--190
+Underfull \hbox (badness 10000) in paragraph at lines 197--206
 
  []
 
-<sock1.png, id=205, 228.10219pt x 211.54031pt>
+
+Underfull \hbox (badness 10000) in paragraph at lines 207--208
+
+ []
+
+<sock1.png, id=222, 228.10219pt x 211.54031pt>
 File: sock1.png Graphic file (type png)
  <use sock1.png>
-Package pdftex.def Info: sock1.png used on input line 195.
-(pdftex.def)             Requested size: 108.0011pt x 100.15666pt.
+Package pdftex.def Info: sock1.png used on input line 213.
+(pdftex.def)             Requested size: 119.2467pt x 110.58582pt.
 
-<sock2.png, id=206, 229.60782pt x 215.30438pt>
+<sock2.png, id=223, 229.60782pt x 215.30438pt>
 File: sock2.png Graphic file (type png)
  <use sock2.png>
-Package pdftex.def Info: sock2.png used on input line 201.
-(pdftex.def)             Requested size: 108.0011pt x 101.27519pt.
+Package pdftex.def Info: sock2.png used on input line 219.
+(pdftex.def)             Requested size: 119.2467pt x 111.82094pt.
 
-<sock3.png, id=207, 228.855pt x 207.77625pt>
+<sock3.png, id=224, 228.855pt x 207.77625pt>
 File: sock3.png Graphic file (type png)
  <use sock3.png>
-Package pdftex.def Info: sock3.png used on input line 207.
-(pdftex.def)             Requested size: 108.0011pt x 98.0543pt.
+Package pdftex.def Info: sock3.png used on input line 225.
+(pdftex.def)             Requested size: 119.2467pt x 108.26302pt.
 
-<sock4.png, id=208, 231.11343pt x 211.54031pt>
+<sock4.png, id=225, 231.11343pt x 211.54031pt>
 File: sock4.png Graphic file (type png)
  <use sock4.png>
-Package pdftex.def Info: sock4.png used on input line 213.
-(pdftex.def)             Requested size: 108.0011pt x 98.85585pt.
+Package pdftex.def Info: sock4.png used on input line 231.
+(pdftex.def)             Requested size: 119.2467pt x 109.14621pt.
 
-<sock5.png, id=209, 232.61906pt x 214.55156pt>
+<sock5.png, id=226, 232.61906pt x 214.55156pt>
 File: sock5.png Graphic file (type png)
  <use sock5.png>
-Package pdftex.def Info: sock5.png used on input line 219.
-(pdftex.def)             Requested size: 108.0011pt x 99.61157pt.
+Package pdftex.def Info: sock5.png used on input line 237.
+(pdftex.def)             Requested size: 119.2467pt x 109.98293pt.
 
-<sock6.png, id=210, 230.36063pt x 214.55156pt>
+<sock6.png, id=227, 230.36063pt x 214.55156pt>
 File: sock6.png Graphic file (type png)
  <use sock6.png>
-Package pdftex.def Info: sock6.png used on input line 225.
-(pdftex.def)             Requested size: 108.0011pt x 100.58716pt.
+Package pdftex.def Info: sock6.png used on input line 243.
+(pdftex.def)             Requested size: 119.2467pt x 111.06328pt.
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
 
-Underfull \hbox (badness 1895) in paragraph at lines 232--232
-[][][]\OT1/cmr/m/n/6 have[] [][][]an[] [][][]ex[]-[]tra[]
- []
+LaTeX Warning: Reference `pin2' on page 1 undefined on input line 253.
 
+[7 <./holding_block_with_data.png> <./barcode.jpg> <./fullSock.png> <./emptySoc
+k.png>] <"pin hole".jpg, id=244, 87.32625pt x 137.51375pt>
+File: "pin hole".jpg Graphic file (type jpg)
 
-Underfull \hbox (badness 4266) in paragraph at lines 232--232
-[][][]\OT1/cmr/m/n/6 layer[] [][][]of[] [][][]po[]-[]si[]-
- []
+<use "pin hole".jpg>
+Package pdftex.def Info: "pin hole".jpg used on input line 259.
+(pdftex.def)             Requested size: 83.47232pt x 131.45145pt.
+ <"pin hole2".jpg, id=245, 21.07875pt x 18.0675pt>
+File: "pin hole2".jpg Graphic file (type jpg)
 
-[8 <./fullSock.png> <./emptySock.png>]
-<aaah.png, id=225, 1327.96124pt x 650.43pt>
+<use "pin hole2".jpg>
+Package pdftex.def Info: "pin hole2".jpg used on input line 265.
+(pdftex.def)             Requested size: 83.47232pt x 71.5494pt.
+ <"pin hole3".jpg, id=246, 21.07875pt x 18.0675pt>
+File: "pin hole3".jpg Graphic file (type jpg)
+
+<use "pin hole3".jpg>
+Package pdftex.def Info: "pin hole3".jpg used on input line 271.
+(pdftex.def)             Requested size: 83.47232pt x 71.5494pt.
+ [8 <./sock1.png> <./sock2.png> <./sock3.png> <./sock4.png> <./sock5.png> <./so
+ck6.png (PNG copy)>]
+<aaah.png, id=259, 1327.96124pt x 650.43pt>
 File: aaah.png Graphic file (type png)
  <use aaah.png>
-Package pdftex.def Info: aaah.png used on input line 244.
-(pdftex.def)             Requested size: 360.0pt x 176.3231pt.
- [9 <./sock1.png> <./sock2.png> <./sock3.png> <./sock4.png> <./sock5.png> <./so
-ck6.png (PNG copy)>]
-<vector.png, id=236, 553.31718pt x 433.62pt>
+Package pdftex.def Info: aaah.png used on input line 288.
+(pdftex.def)             Requested size: 397.485pt x 194.68388pt.
+
+<vector.png, id=260, 553.31718pt x 433.62pt>
 File: vector.png Graphic file (type png)
  <use vector.png>
-Package pdftex.def Info: vector.png used on input line 251.
-(pdftex.def)             Requested size: 180.0pt x 141.05716pt.
+Package pdftex.def Info: vector.png used on input line 295.
+(pdftex.def)             Requested size: 198.7425pt x 155.74579pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 257--258
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+[9 <./pin hole.jpg> <./pin hole2.jpg> <./pin hole3.jpg> <./aaah.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 301--302
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 261--262
+Underfull \hbox (badness 10000) in paragraph at lines 305--306
 
  []
 
-[10 <./aaah.png> <./vector.png>]
-<measumrnetflux.jpg, id=247, 743.77875pt x 374.90062pt>
+<measumrnetflux.jpg, id=272, 743.77875pt x 374.90062pt>
 File: measumrnetflux.jpg Graphic file (type jpg)
 
 <use measumrnetflux.jpg>
-Package pdftex.def Info: measumrnetflux.jpg used on input line 265.
-(pdftex.def)             Requested size: 251.9989pt x 127.01833pt.
- [11 <./measumrnetflux.jpg>] [12]
-Chapter 3.
-<commstack1.png, id=262, 486.73845pt x 311.4837pt>
-File: commstack1.png Graphic file (type png)
- <use commstack1.png>
-Package pdftex.def Info: commstack1.png used on input line 305.
-(pdftex.def)             Requested size: 251.9989pt x 161.26428pt.
-
-<commstack2.png, id=264, 486.73845pt x 395.67825pt>
-File: commstack2.png Graphic file (type png)
- <use commstack2.png>
-Package pdftex.def Info: commstack2.png used on input line 315.
-(pdftex.def)             Requested size: 251.9989pt x 204.85426pt.
-
-[13
-
- <./commstack1.png>] [14 <./commstack2.png>]
-Chapter 4.
-
-Overfull \hbox (100.64912pt too wide) in paragraph at lines 332--379
-[]|  [] 
+Package pdftex.def Info: measumrnetflux.jpg used on input line 309.
+(pdftex.def)             Requested size: 278.23828pt x 140.24988pt.
+ [10 <./vector.png> <./measumrnetflux.jpg>]
+Underfull \hbox (badness 6792) in paragraph at lines 337--337
+[][]\OT1/cmr/m/n/6 add[] [][][]er[]-[]ror[] [][][]fix[]
  []
 
+[11]
+Chapter 3.
+<commstack1.png, id=290, 486.73845pt x 311.4837pt>
+File: commstack1.png Graphic file (type png)
+ <use commstack1.png>
+Package pdftex.def Info: commstack1.png used on input line 350.
+(pdftex.def)             Requested size: 198.7425pt x 127.18158pt.
 
-Overfull \hbox (90.06728pt too wide) in paragraph at lines 422--423
+<commstack2.png, id=292, 486.73845pt x 395.67825pt>
+File: commstack2.png Graphic file (type png)
+ <use commstack2.png>
+Package pdftex.def Info: commstack2.png used on input line 360.
+(pdftex.def)             Requested size: 198.7425pt x 161.55896pt.
+
+<pinPlace1.png, id=294, 81.6651pt x 57.45465pt>
+File: pinPlace1.png Graphic file (type png)
+ <use pinPlace1.png>
+Package pdftex.def Info: pinPlace1.png used on input line 371.
+(pdftex.def)             Requested size: 158.99156pt x 111.86864pt.
+
+<pinPlace2.png, id=295, 81.6651pt x 49.1436pt>
+File: pinPlace2.png Graphic file (type png)
+ <use pinPlace2.png>
+Package pdftex.def Info: pinPlace2.png used on input line 375.
+(pdftex.def)             Requested size: 158.99156pt x 95.68637pt.
+
+<pinPlace3.png, id=296, 81.6651pt x 57.816pt>
+File: pinPlace3.png Graphic file (type png)
+ <use pinPlace3.png>
+Package pdftex.def Info: pinPlace3.png used on input line 379.
+(pdftex.def)             Requested size: 158.99156pt x 112.5722pt.
+
+<pinPlace4.png, id=297, 81.6651pt x 53.84116pt>
+File: pinPlace4.png Graphic file (type png)
+ <use pinPlace4.png>
+Package pdftex.def Info: pinPlace4.png used on input line 383.
+(pdftex.def)             Requested size: 158.99156pt x 104.83287pt.
+ [12
+
+ <./commstack1.png> <./commstack2.png>] [13 <./pinPlace1.png> <./pinPlace2.png>
+ <./pinPlace3.png> <./pinPlace4.png>]
+Chapter 4.
+
+Overfull \hbox (52.58228pt too wide) in paragraph at lines 494--495
 [][] 
  []
 
-[15
+[14
 
-] [16] [17]
+] [15] [16]
 Chapter 5.
 
-Underfull \hbox (badness 10000) in paragraph at lines 453--459
+Underfull \hbox (badness 10000) in paragraph at lines 525--531
 
  []
 
-[18
+[17
 
-] [19] [20]
+] [18]
 Appendix A.
 (e:/texlive/2014/texmf-dist/tex/latex/listings/lstlang1.sty
 File: lstlang1.sty 2014/09/06 1.5e listings language file
-) [21
+) [19
 
-] [22] [23]
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 636.
+] [20]
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 707.
 
 
 (e:/texlive/2014/texmf-dist/tex/latex/base/omscmr.fd
 File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10.95> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 636.
- [24] [25]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 657.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 657.
-
-(./HandEyereport.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 657.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 657.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 707.
+ [21]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 728.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 728.
+ (./HandEyereport.aux)
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 728.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 728.
 Package rerunfilecheck Info: File `HandEyereport.out' has not changed.
-(rerunfilecheck)             Checksum: 627D0E21B0F3C4AF93AE883C34A47562;1227.
+(rerunfilecheck)             Checksum: 2457BE3086DE34596E6A800C2A82BD8D;1436.
 
 
-LaTeX Warning: There were multiply-defined labels.
+LaTeX Warning: There were undefined references.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 657.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 728.
  ) 
 Here is how much of TeX's memory you used:
- 24627 strings out of 493109
- 447251 string characters out of 6138587
- 748691 words of memory out of 5000000
- 27386 multiletter control sequences out of 15000+600000
- 16767 words of font info for 61 fonts, out of 8000000 for 9000
+ 24706 strings out of 493109
+ 450873 string characters out of 6138587
+ 784731 words of memory out of 5000000
+ 27448 multiletter control sequences out of 15000+600000
+ 16934 words of font info for 62 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 59i,9n,94p,1306b,2702s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 59i,9n,94p,1365b,2463s stack positions out of 5000i,500n,10000p,200000b,80000s
 {e:/texlive/2014/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc}<e:/tex
 live/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb><e:/texlive/2014
 /texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb><e:/texlive/2014/texmf-di
@@ -1292,12 +1380,12 @@ i9.pfb><e:/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb><e:
 st/fonts/type1/public/amsfonts/cm/cmr9.pfb><e:/texlive/2014/texmf-dist/fonts/ty
 pe1/public/amsfonts/cm/cmsy10.pfb><e:/texlive/2014/texmf-dist/fonts/type1/publi
 c/amsfonts/cm/cmsy8.pfb><e:/texlive/2014/texmf-dist/fonts/type1/public/amsfonts
-/cm/cmti10.pfb><e:/texlive/2014/texmf-dist/fonts/type1/public/cm-super/sfrm1095
-.pfb>
-Output written on HandEyereport.pdf (26 pages, 5375995 bytes).
+/cm/cmti10.pfb><e:/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt9
+.pfb><e:/texlive/2014/texmf-dist/fonts/type1/public/cm-super/sfrm1095.pfb>
+Output written on HandEyereport.pdf (22 pages, 5548503 bytes).
 PDF statistics:
- 612 PDF objects out of 1000 (max. 8388607)
- 517 compressed objects within 6 object streams
- 245 named destinations out of 1000 (max. 500000)
- 300 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 648 PDF objects out of 1000 (max. 8388607)
+ 543 compressed objects within 6 object streams
+ 255 named destinations out of 1000 (max. 500000)
+ 369 words of extra memory for PDF output out of 10000 (max. 10000000)
 
