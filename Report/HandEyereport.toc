@@ -10,13 +10,14 @@
 \contentsline {subsection}{\numberline {2.4.1}Pinhole and gripper location}{9}{subsection.2.4.1}
 \contentsline {subsection}{\numberline {2.4.2}Measurement correction}{10}{subsection.2.4.2}
 \contentsline {subsection}{\numberline {2.4.3}Path to gripper arm co-ordinates}{10}{subsection.2.4.3}
-\contentsline {section}{\numberline {2.5}Camera future development suggested}{11}{section.2.5}
-\contentsline {chapter}{\numberline {3}Robotic Arm Control}{12}{chapter.3}
-\contentsline {section}{\numberline {3.1}Open ABB}{12}{section.3.1}
-\contentsline {section}{\numberline {3.2}Coordination}{12}{section.3.2}
-\contentsline {section}{\numberline {3.3}Pin placement operation}{13}{section.3.3}
-\contentsline {chapter}{\numberline {4}Operation Flow}{14}{chapter.4}
-\contentsline {chapter}{\numberline {5}Matlab Simulation}{17}{chapter.5}
-\contentsline {section}{\numberline {5.1}Denavit-Hartenberg Algorithm}{17}{section.5.1}
-\contentsline {section}{\numberline {5.2}Matlab implementation}{17}{section.5.2}
-\contentsline {chapter}{\numberline {A}Matlab Code}{19}{appendix.A}
+\contentsline {subsection}{\numberline {2.4.4}Error correction}{11}{subsection.2.4.4}
+\contentsline {section}{\numberline {2.5}Camera future development suggested}{12}{section.2.5}
+\contentsline {chapter}{\numberline {3}Robotic Arm Control}{13}{chapter.3}
+\contentsline {section}{\numberline {3.1}Open ABB}{13}{section.3.1}
+\contentsline {section}{\numberline {3.2}Coordination}{13}{section.3.2}
+\contentsline {section}{\numberline {3.3}Pin placement operation}{14}{section.3.3}
+\contentsline {chapter}{\numberline {4}Operation Flow}{15}{chapter.4}
+\contentsline {chapter}{\numberline {5}Matlab Simulation}{18}{chapter.5}
+\contentsline {section}{\numberline {5.1}Denavit-Hartenberg Algorithm}{18}{section.5.1}
+\contentsline {section}{\numberline {5.2}Matlab implementation}{18}{section.5.2}
+\contentsline {chapter}{\numberline {A}Matlab Code}{20}{appendix.A}

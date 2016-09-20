@@ -83,18 +83,6 @@ The secondary objective is having the robotic arm collect a pin, and place it in
 
 For this project, the confirmation of pins being ready in the supply is not being explored. This is due to the industry application being intended to use a vibrating bowl feed, and thus the assumption can be made pins will always be available. For this proof of concept, a rack of three pins is made, with the gripper positions being hard coded.\\    
 
-%\chapter{Gripper Design}
-%With such small objects being handled, a custom gripper device was developed. The main gripper mechanism uses a Festo parallel, nematic gripper. While the gripping appendages have been custom made for this operation. Shown in \cref{fig:gripper2} are the open and closed CAD renderings of the gripper. Dark-grey being the Festo gripper, light grey being the main gripper appendage and green being the 3D printed gripper tips, modelled to specify grasp the cavity plugs.\footnote{two cavity plug sizes were initially requested}
-
-%
-%\begin{figure}[h]
-%\centering
-%\includegraphics[width=0.4\linewidth]{gripper2}\ %
-%\includegraphics[width=0.4\linewidth]{gripper1}
-%\caption{CAD rendering of plug gripper}
-%\label{fig:gripper2}
-%\end{figure}
-
 
 \chapter{Computer Vision}
 The computer vision of this project uses Open-CV for c++. This library contains many image-based functions for sourcing, manipulating, and presenting visual data. This library has been used for two roles, object detention, and robotic gripper required motion determination. Of these two task, the latter relies on the former. 
@@ -337,34 +325,38 @@ These vectors are the pixel space components aligned to world-space axis. To obt
 
 \subsection{Error correction}
 
-After adapting the system to use a HD phone-camera, errors in the calculations of robot-frame pin positions were observed, see \cref{fig:error2}.
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=0.7\linewidth]{error2}
-	\caption{Displays the magnitude (x10) and direction of the error observed for calculated robot-frame positions.}
-	\label{fig:error2}
-\end{figure}
-The green dots are the expected robot-frame locations Xn, and the red lines are the error vectors Err, the vector from the actual location Xn, to the calculated estimate positions Mn, with magnitude scaled by 10 for observation purposes. \begin{equation}10(Err) = 10(Xn-Mn)\end{equation}
+After adapting the system to use a HD camera, errors in the conversions to robot-frame positions were observed, as seen in \cref{fig:error2}(a).
 
-This error is likely caused by the increased field-of-view of the camera, causing perspective and radial image distortion. To remedy this, a correction function was applied to the calculated target pin locations, working by pushing (or pulling) the more distant points from a focal point F. The corrected location is calculated by:
+The green dots are the expected robot-frame locations, \textit{Xn}, and the red lines are the error vectors, \textit{Err}, a vector from \textit{Xn} to the calculated estimate position, \textit{Mn}, with magnitude scaled by 10 for observation purposes. The value for \textit{Err} is derived from \cref{error} \begin{equation}10(Err) = 10(Xn-Mn) \label{error}\end{equation}
+
+This error has been observed to be due to the field-of-view of the camera, causing perspective and radial image distortion. To remedy this, a correction function was applied to the calculated target pin locations in relation to the distance to the camera focal point \textit{F}. The corrected location is thus calculated by:
 
 \begin{equation}
-CorrectionFactor = (alpha)|F-Mn| + (beta)(sign(F-Mn))|F-Xn|^2
+CorrectionFactor = (\alpha)|F-Mn| + (\beta)(sigm(F-Mn))|F-Xn|^2
 \end{equation} 
 \begin{equation}
 CorrectedPoint = InputPoint - CorrectionFactor
 \end{equation} 
-
-The amount each calculated point is corrected is quadratically dependent on its position in relation to a selected global focal point. Initially, the constants alpha, beta and F were chosen by using a GUI application, allowing the user to experiment by placing the focal point and selecting values for alpha and beta. An example of the improvement obtained by this methodology is shown in \cref{fig:error4}.The cyan dots are the error vectors observed after correction, and the blue dot is the focal point. This methodology results in a notable increase in overall accuracy, and the ability to mitigate all error in a small target area by selecting appropriate constants.
-\begin{figure}[h]
+where $\alpha$ and $\beta$ are user set constant, which relate to the observed distortion of the camera.\\
+\begin{figure}[t]
 	\centering
-	\includegraphics[width=0.7\linewidth]{error4}
-	\caption{After correction}
-	\label{fig:error4}
+	\begin{subfigure}{0.45\linewidth}
+		\includegraphics[width=\linewidth]{error2}
+		\subcaption{Before correction}
+	\end{subfigure} %
+	\begin{subfigure}{0.45\linewidth}
+		\includegraphics[width=\linewidth]{error4}
+		\subcaption{After correction}
+	\end{subfigure}
+	\caption{Dipiction of magnitude (x10) and direction of measurement errors, observed for calculated robot-frame positions.}	\
+	\label{fig:error2}
 \end{figure}
+The amount each calculated point is corrected is quadratically dependent on its position in relation to a selected global focal point. Initially, the constants $\alpha$, $\beta$ and \textit{F} were chosen by using a GUI application, allowing the user to experiment by manually setting the focal point via clicking inside the image, and inputting values for $\alpha$ and $\beta$. An example of the improvement obtained by this approach is shown in \cref{fig:error2}(b). The cyan dots are the error vectors observed after correction, and the white dot is the focal point. This design results in a notable increase in overall accuracy, and the ability to mitigate all error in a small target area by selecting appropriate constants.\\
 
-
-This process has now been automated and moved to the calibration stage of the program, as new constants must be selected when the camera position is changed. \note{Do we want to elaborate on the calibration automation?}
+To reduce the manual calibration process during set-up, the focal point positioning was automated by using a known position. This automation process did not alter the $\alpha$ or $\beta$ values, as these are seen to remain constant for the camera.\\
+To begin, the robotic arm was manually driven to a position 150mm on both the x and y axis in the robotic-arm frame. The holding box was then placed in such a position that the first allocated pin was at this gripper tip location.\\
+The robotic arm was returned to the home position, and the object detection and camera frame to robot-arm frame conversion was preformed. The resulting conversion was then passed through the above error correction, with a focal point at x=0mm, y=1000mm from home. The focal point was then adjusted on the x and y axis based on the difference from the error correction output from the expected output of x=150mm, y=150mm.\\
+This process was repeated until the error correction resulted the expected output, with a tolerance of 0.5mm.   
 
 \section{Camera future development suggested}
 The current camera system requires some manual calibration adjustments, is recording a large about of the unused work space, and loses pin-hole detection ability when the robotic arm moves over the holding box. To improve the camera accuracy it is suggested that a low resolution camera is used for work space analyses to detect the holding box. A second camera may then be mounted on the robotic gripper for a close-range socket analyses, and pin-hole detection. This would allow the gripper to find the pin hole, with a much lower camera view distortion, and would allow the arm to make final potion adjustments with camera feedback during placement. 
@@ -392,7 +384,7 @@ The command stack was thus extended as shown in \cref{fig:commstack2}
 \label{fig:commstack2}
 \end{figure}
  
-\section{Pin placement operation}
+\section{Pin placement operation}\label{driving}
 As the pin needed to be fully pressed into the hole two sub operations were required for the pin placement; first, the gripped pin was driven as far into the hole as possible, while having the gripper not damage the socket. The gripper was then raised, and the flat surface of the gripper pressing the pin the remaining depth into the hole. 
 This process is shown in \cref{fig:pinPlace2}
 \begin{figure}[h]
@@ -403,7 +395,7 @@ This process is shown in \cref{fig:pinPlace2}
 \end{subfigure} \ \ \
 	\begin{subfigure}{0.4\linewidth}
 		\includegraphics[width=\linewidth]{pinPlace2}
-		\subcaption{Drive pin into hole}
+		\subcaption{Inserting pin into hole}
 	\end{subfigure} \ \ \
 		\begin{subfigure}{0.4\linewidth}
 			\includegraphics[width=\linewidth]{pinPlace3}
@@ -411,16 +403,38 @@ This process is shown in \cref{fig:pinPlace2}
 		\end{subfigure} \ \ \
 			\begin{subfigure}{0.4\linewidth}
 				\includegraphics[width=\linewidth]{pinPlace4}
-				\subcaption{Drive pin into socket}
+				\subcaption{Drive pin remaining distance}
 			\end{subfigure}
 \caption{Pin placement illustration}
 \label{fig:pinPlace2}
 \end{figure}
 
 
+%\chapter{Gripper Design}
+%With such small objects being handled, a custom gripper device was developed. The main gripper mechanism uses a Festo parallel, nematic gripper. While the gripping appendages have been custom made for this operation. Shown in \cref{fig:gripper2} are the open and closed CAD renderings of the first gripper. Dark-grey being the Festo gripper, light grey being the main gripper appendage and green being the 3D printed gripper tips, modelled to specify grasp the cavity plugs with griping sockets. Additionally, it can be seen that the gripper appendage has a flat surface, for driving the pin the remaining distance into the socket hole, as discussed in \cref{driving}.\\
+%\begin{figure}[h]
+%	\centering
+%	\includegraphics[width=0.3\linewidth]{gripper2}\ %
+%	\includegraphics[width=0.3\linewidth]{gripper1}
+%	\caption{CAD rendering of plug gripper 1}
+%	\label{fig:gripper2}
+%\end{figure}\\
+%This design focused on two sizes of pins being graspable by the gripping device. However, the off-centre position of the gripper, resulted in errors emerging when placing the pins. Furthermore, to have the larger gripping socket correctly facing the pin supply, the robotic arm required a 180$^\circ$ rotation during the pick-up motion, which caused alignment errors when measuring the distance from gripper to pin-hole.\\
+%
+%To reduce this error rate, the pin grasping socket was centralised, and the 3D printed tip was made more easily interchangeable. This reduces the error of pin placement, while still allowing for smaller pins to be placed after manually changing the grasping tip.\\ The length of the appendage was also reduces, as the extension provided no benefits, though resulted in alignment issues with slight angular offsets. 
+%
+%\begin{figure}
+%\centering
+%\includegraphics[width=0.6\linewidth]{"gripper2 (2)"}\vspace*{0.1\linewidth}
+%\includegraphics[width=0.6\linewidth]{gripper22}
+%\caption{Gripper plug 2}
+%\label{fig:gripper2(2)}
+%\end{figure}
 
 \chapter{Operation Flow}
-With the system's ability to know where to move to, and the ability to coordinate these movements, the operation flow charts can now be presented. Figure \ref{mainFlow} shows the standard operation flow, with purple action points being computer vision processes, and pink being robotic arm actions. Figure \ref{calFlow} shows the operation for calibrating the difference between robotic arm frame, and the camera frame. 
+With the system's ability to know where to move to, and the ability to coordinate these movements, the operation flow charts can now be presented. Fig. \ref{mainFlow} shows the standard operation flow, with purple action points being computer vision processes, and pink being robotic arm actions. Fig. \ref{calFlow} shows the operation for calibrating the difference between robotic arm frame, and the camera frame.\\
+From \cref{mainFlow} it can be seen that the gripper returns to the 'zero' position and restarts pin hole measurements after each pin placement. This flow was chosen over calculating all hole positions and making all motion in one round, as each pin placement may move the holding box a small amount. This would result in all further pin placements being incorrect and pins not entering the correct holes. 
+ 
 %\pagenumbering{gobble}
 \tikzstyle{decision} = [diamond, draw, fill=white!20, 
 text width=4.5em, text badly centered, node distance=3cm, inner sep=0pt]
@@ -438,12 +452,13 @@ text width=4.5em, text badly centered, node distance=3cm, inner sep=0pt]
 %\node [block, right of= start, node distance=3cm] (calabrate) {Calabration of camera to gripper frame};
 \node [cloud, below of = start] (image11) {Update image};
 \node [cloud, right of=image11, node distance=3cm] (image12) {Object detection};
-\node [decision, below of=image11, node distance=2.5cm] (decide3) {Is there a pin to place?};
+\node [decision, below of=image11, node distance=3cm] (decide3) {Is there a pin to place?};
 \node [cloud, below of=decide3, node distance=3.5cm] (image13) {Measure pin distance};
-\node [decision, below of=image13, node distance=3cm] (decide) {Enough measurements made?};
-\node [cloud, below of=decide, node distance=3.5cm] (image21) {Average measrument};
-\node [cloud, right of=image21, node distance=3cm] (image22) {Dump measurements};
-\node [cloud, right of=image22, node distance=3cm] (image23) {Convert to robotic arm coordinates};
+\node [cloud, right of=image13, node distance=3cm] (image23) {Convert to robotic arm coordinates};
+\node [cloud, right of=image23, node distance=3cm] (image24) {Focal point error correction};
+\node [decision, below of=image13, node distance=3.5cm] (decide) {Enough measurements made?};
+\node [cloud, below of=decide, node distance=3.5cm] (image21) {Average measurements};
+\node [cloud, right of=image21, node distance=3cm] (image22) {Dump old measurements};
 \node [block, below of=image21, node distance=2.5cm] (pinget1) {Move to pin supply};
 \node [block, right of=pinget1, node distance=3cm] (pinget2) {Close gripper};
 \node [block, below of=pinget1, node distance=2.5cm] (pinset1) {Move to pin hole};
@@ -457,17 +472,18 @@ text width=4.5em, text badly centered, node distance=3cm, inner sep=0pt]
 \path [line] (begin) -- (start);
 \path [line] (start) -- (image11);
 \path [line] (image11) -- (image12);
-\path [line] (image12) |- (decide3.north);
+\path [line] (image12.south) -- ++(0,-0.25) -|  (decide3);
 
 \path [line] (decide3) -- node [left]{yes} (image13);
 \path [line] (decide3) -- node [above] {no} (Finish);
 
-\path [line] (image13) -- (decide);
+\path [line] (image13) -- (image23);
+\path [line] (image23) -- (image24);
+\path [line] (image24.south) -- ++(0,-0.5) -|  (decide);
 \path [line] (decide.west) -| ++(-0.5,6) node [right] {no} |- (image11.west);
 \path [line] (decide) -- node [left] {yes} (image21);
 \path [line] (image21) -- (image22);
-\path [line] (image22) -- (image23);
-\path [line] (image23.south) -- ++(0,-0.5) -|  (pinget1);
+\path [line] (image22.south) -- ++(0,-0.5) -|  (pinget1);
 
 \path [line] (pinget1) --  (pinget2);
 \path [line] (pinget2) |- ++(-1,-1.25) -| (pinset1.north);
@@ -480,7 +496,7 @@ text width=4.5em, text badly centered, node distance=3cm, inner sep=0pt]
 \end{tikzpicture}
 
 \caption{Main Process} \label{mainFlow}
-\end{figure}
+\end{figure} 
 
 \begin{figure}
 	\begin{tikzpicture}
@@ -490,8 +506,8 @@ text width=4.5em, text badly centered, node distance=3cm, inner sep=0pt]
 	\node [cloud, right of= calabrate1, node distance=3cm] (calabrate2) {Object detection};
 	\node [cloud, right of= calabrate2, node distance=3cm] (calabrate22) {Measure gripper location in camera};
 	\node [decision, right of=calabrate22, node distance=4cm] (decide) {Enough measurements made?};
-	\node [cloud, below of=start, node distance=3cm] (image1) {Average measrument};
-	\node [cloud, right of=image1, node distance=3cm] (image12) {Dump measrument};
+	\node [cloud, below of=start, node distance=3cm] (image1) {Average measurements};
+	\node [cloud, right of=image1, node distance=3cm] (image12) {Dump old measurements};
 		
 	\node [block, below of= image1, node distance=3cm] (calabrate3) {Move 200 along X-axis};
 	\node [cloud, right of= calabrate3, node distance=3cm] (calabrate4) {Update image};

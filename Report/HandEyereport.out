@@ -10,13 +10,14 @@
 \BOOKMARK [2][-]{subsection.2.4.1}{Pinhole and gripper location}{section.2.4}% 10
 \BOOKMARK [2][-]{subsection.2.4.2}{Measurement correction}{section.2.4}% 11
 \BOOKMARK [2][-]{subsection.2.4.3}{Path to gripper arm co-ordinates}{section.2.4}% 12
-\BOOKMARK [1][-]{section.2.5}{Camera future development suggested}{chapter.2}% 13
-\BOOKMARK [0][-]{chapter.3}{Robotic Arm Control}{}% 14
-\BOOKMARK [1][-]{section.3.1}{Open ABB}{chapter.3}% 15
-\BOOKMARK [1][-]{section.3.2}{Coordination}{chapter.3}% 16
-\BOOKMARK [1][-]{section.3.3}{Pin placement operation}{chapter.3}% 17
-\BOOKMARK [0][-]{chapter.4}{Operation Flow}{}% 18
-\BOOKMARK [0][-]{chapter.5}{Matlab Simulation}{}% 19
-\BOOKMARK [1][-]{section.5.1}{Denavit-Hartenberg Algorithm}{chapter.5}% 20
-\BOOKMARK [1][-]{section.5.2}{Matlab implementation}{chapter.5}% 21
-\BOOKMARK [0][-]{appendix.A}{Matlab Code}{}% 22
+\BOOKMARK [2][-]{subsection.2.4.4}{Error correction}{section.2.4}% 13
+\BOOKMARK [1][-]{section.2.5}{Camera future development suggested}{chapter.2}% 14
+\BOOKMARK [0][-]{chapter.3}{Robotic Arm Control}{}% 15
+\BOOKMARK [1][-]{section.3.1}{Open ABB}{chapter.3}% 16
+\BOOKMARK [1][-]{section.3.2}{Coordination}{chapter.3}% 17
+\BOOKMARK [1][-]{section.3.3}{Pin placement operation}{chapter.3}% 18
+\BOOKMARK [0][-]{chapter.4}{Operation Flow}{}% 19
+\BOOKMARK [0][-]{chapter.5}{Matlab Simulation}{}% 20
+\BOOKMARK [1][-]{section.5.1}{Denavit-Hartenberg Algorithm}{chapter.5}% 21
+\BOOKMARK [1][-]{section.5.2}{Matlab implementation}{chapter.5}% 22
+\BOOKMARK [0][-]{appendix.A}{Matlab Code}{}% 23
