@@ -334,7 +334,37 @@ Pcy*Yc = Pc - Pcx*Xc
 \end{equation}
 
 These vectors are the pixel space components aligned to world-space axis. To obtain the world-space scaled vector of the pin-hole Pw, the constants Pcx and Pcy are multiplied by the pixel to world scaling factor (200mm / the magnitude of Xc (pixels)). The gripper can now be commanded to move the transformed world pin-hole vector, Pw, for placement of the pin.
-\note{add error fix section here}
+
+\subsection{Error correction}
+
+After adapting the system to use a HD phone-camera, errors in the calculations of robot-frame pin positions were observed, see \cref{fig:error2}.
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.7\linewidth]{error2}
+	\caption{Displays the magnitude (x10) and direction of the error observed for calculated robot-frame positions.}
+	\label{fig:error2}
+\end{figure}
+The green dots are the expected robot-frame locations Xn, and the red lines are the error vectors Err, the vector from the actual location Xn, to the calculated estimate positions Mn, with magnitude scaled by 10 for observation purposes. \begin{equation}10(Err) = 10(Xn-Mn)\end{equation}
+
+This error is likely caused by the increased field-of-view of the camera, causing perspective and radial image distortion. To remedy this, a correction function was applied to the calculated target pin locations, working by pushing (or pulling) the more distant points from a focal point F. The corrected location is calculated by:
+
+\begin{equation}
+CorrectionFactor = (alpha)|F-Mn| + (beta)(sign(F-Mn))|F-Xn|^2
+\end{equation} 
+\begin{equation}
+CorrectedPoint = InputPoint - CorrectionFactor
+\end{equation} 
+
+The amount each calculated point is corrected is quadratically dependent on its position in relation to a selected global focal point. Initially, the constants alpha, beta and F were chosen by using a GUI application, allowing the user to experiment by placing the focal point and selecting values for alpha and beta. An example of the improvement obtained by this methodology is shown in \cref{fig:error4}.The cyan dots are the error vectors observed after correction, and the blue dot is the focal point. This methodology results in a notable increase in overall accuracy, and the ability to mitigate all error in a small target area by selecting appropriate constants.
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.7\linewidth]{error4}
+	\caption{After correction}
+	\label{fig:error4}
+\end{figure}
+
+
+This process has now been automated and moved to the calibration stage of the program, as new constants must be selected when the camera position is changed. \note{Do we want to elaborate on the calibration automation?}
 
 \section{Camera future development suggested}
 The current camera system requires some manual calibration adjustments, is recording a large about of the unused work space, and loses pin-hole detection ability when the robotic arm moves over the holding box. To improve the camera accuracy it is suggested that a low resolution camera is used for work space analyses to detect the holding box. A second camera may then be mounted on the robotic gripper for a close-range socket analyses, and pin-hole detection. This would allow the gripper to find the pin hole, with a much lower camera view distortion, and would allow the arm to make final potion adjustments with camera feedback during placement. 
