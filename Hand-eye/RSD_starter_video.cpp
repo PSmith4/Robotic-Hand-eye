@@ -31,7 +31,7 @@
 #include <stdio.h>
 #define _USE_MATH_DEFINES
 #include <math.h>
-
+#include "ErrorReducer.h"
 
 using namespace cv;
 using namespace std;
@@ -53,6 +53,49 @@ namespace {
         out_world_pos: the resultant position in world horizontal plane
     */
 
+    float sign(float a){return (a < 0.0f)?-1.0f:1.0f;}
+
+    Point2f focal_point(30,204);
+
+    Point2f ErrorCorrection(Point2f input)
+    {
+        cout<<"input pos:"<<input.x<<" "<<input.y<<endl;
+        double alpha=1;
+        double beta=0;
+
+        Vec2f dis = Vec2f(focal_point.x,focal_point.y)- Vec2f(input.x,input.y);
+
+        Point2f output= input- Point2f(0.1f*alpha*dis.val[0] + 0.1f*sign(dis.val[0])*beta*dis.val[0]*dis.val[0],0.1f*alpha*dis.val[1]+0.1f*sign(dis.val[1])*beta*dis.val[1]*dis.val[1]);
+            cout<< "fixed pos:"<<output.x<<" "<<output.y<<endl;
+
+        return output;
+    }
+
+    void autoFocalPoint(Point2f input)
+    {
+    Point2f output(0,1000);
+      while (output.x<149.5 || output.x>150.5)
+        {
+
+            while (output.y<149.5 || output.y>150.5)
+            {
+                if (output.x>150)
+                    focal_point.x++;
+                else
+                    focal_point.x--;
+
+                if (output.y>150)
+                    focal_point.y++;
+                else
+                    focal_point.y--;
+
+                output=ErrorCorrection(input);
+
+                cout<<"focal"<<focal_point.x<<" "<<focal_point.y<<endl;
+            }
+
+        }
+    }
 	Point2f meanMeasurment(vector<Point2f>& measurments)
 	{
 		Point2f avg;
@@ -65,6 +108,7 @@ namespace {
 			{
                 mean_x=mean_x+measurments.at(i).x;
                 mean_y=mean_y+measurments.at(i).y;
+                //cout<<measurments.at(i).y<<endl;
 			}
 			mean_x=mean_x/float (measurments.size());
             mean_y=mean_y/float (measurments.size());
@@ -130,6 +174,11 @@ namespace {
        //cout << "world poi position (" << w_x << ", " << w_y << ")" << endl;
        out_world_pos.x = w_x;
        out_world_pos.y = w_y;
+
+        //autoFocalPoint(out_world_pos);
+       out_world_pos=ErrorCorrection(out_world_pos);
+
+       cout<<"world pos"<<out_world_pos.x<<" "<<out_world_pos.y<<endl;
     }
 
     void help(char** av) {
@@ -361,7 +410,7 @@ namespace {
 	{
 
 
-		//Robot.movefromZero(200,00); //change this line
+		//Robot.movefromZero(1500,150); //change this line
 		cout<<"moving to" <<pinPoint.x<<","<<pinPoint.y<<"from home "<<endl;
         if(sqrt((pinPoint.x*pinPoint.x)+(pinPoint.y*pinPoint.y)) < 350)
         {
@@ -486,7 +535,7 @@ namespace {
 			try
 					{
 
-					RoboticMotion(Robot, meanMeasurment(pinPoints));
+					 RoboticMotion(Robot, meanMeasurment(pinPoints));
 					 for(int i=0; i<10; i++)
                     {
                         waitKey(3); //delay N millis, usually long enough to display and capture input
@@ -526,6 +575,7 @@ namespace {
 					break;
 				case 'm':
 				case 'M':
+                    Robot.movefromZero(150,150);
 					try
 					{
 					/*Point2f pin =meanMeasurment(pinPoints) ;

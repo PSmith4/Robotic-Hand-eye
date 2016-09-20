@@ -317,7 +317,7 @@
 	<setjmp.h>
 	<math.h>
 
-1473839089 source:/home/phil/Robotic-Hand-eye/Hand-eye/RSD_starter_video.cpp
+1474352062 source:/home/phil/Robotic-Hand-eye/Hand-eye/RSD_starter_video.cpp
 	"RobotShell.h"
 	"opencv2/highgui/highgui.hpp"
 	"opencv2/video/background_segm.hpp"
@@ -330,6 +330,7 @@
 	"Gripper.h"
 	<stdio.h>
 	<math.h>
+	"ErrorReducer.h"
 	"ratio.h"
 
 1473837995 source:/home/phil/Robotic-Hand-eye/Hand-eye/Socket.cpp
@@ -823,4 +824,7 @@
 
 1472791811 source:/home/phil/Robotic-Hand-eye/Hand-eye/ratio.cpp
 	"ratio.h"
+
+1474343353 /home/phil/Robotic-Hand-eye/Hand-eye/include/ErrorReducer.h
+	<opencv2/core/core.hpp>
 
